@@ -31,13 +31,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <html lang={locale} data-theme={theme} className={`${jakarta.variable} ${grotesk.variable}`}>
-      <body className="flex min-h-screen bg-ink-bg">
+      <body className="flex min-h-screen justify-center bg-ink-bg">
         <ThemeProvider initialTheme={theme}>
           <LocaleProvider initialLocale={locale}>
-            <SideRail />
-            <div className="flex min-h-screen flex-1 flex-col">
-              <div className="flex-1">{children}</div>
-              <Footer />
+            {/* The 64px icon rail on the left had nothing balancing it on
+                the right, so every mx-auto'd container inside sat exactly
+                64px left of true-center — small, but enough to read as
+                "everything's shifted left". A matching 64px spacer on the
+                right (same responsive breakpoint as the rail) makes the
+                content column's own centering land on true center. */}
+            <div className="flex w-full max-w-[1440px]">
+              <SideRail />
+              <div className="flex min-h-screen flex-1 flex-col">
+                <div className="flex-1">{children}</div>
+                <Footer />
+              </div>
+              <div className="hidden w-16 flex-none md:block" aria-hidden="true" />
             </div>
           </LocaleProvider>
         </ThemeProvider>
