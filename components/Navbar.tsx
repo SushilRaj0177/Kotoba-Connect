@@ -28,7 +28,7 @@ export default async function Navbar({ title }: { title?: string } = {}) {
 
   return (
     <header className="sticky top-0 z-10 bg-ink-bg/90 border-b-2 border-ink-border backdrop-blur">
-      <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
+      <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-3 px-4 py-3 sm:px-6">
         <Link href="/" className="flex-none md:hidden">
           <span className="font-jp text-2xl font-black text-ink-accent">言葉</span>
         </Link>
