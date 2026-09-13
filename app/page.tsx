@@ -24,7 +24,7 @@ export default async function HomePage() {
   return (
     <>
       <Navbar />
-      <main className="mx-auto flex max-w-[1600px] gap-6 px-4 py-6 sm:px-6">
+      <main className="mx-auto flex max-w-5xl gap-6 px-4 py-6 sm:px-6">
         <div className="min-w-0 flex-1">
           <div className="mb-6">
             <h1 className="font-display text-2xl font-extrabold text-ink-text-header">{t("home.title")}</h1>
