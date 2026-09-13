@@ -5,6 +5,7 @@ import { getServerTranslator } from "@/lib/i18n/server";
 import LanguageToggle from "@/components/i18n/LanguageToggle";
 import ThemeToggle from "@/components/theme/ThemeToggle";
 import Avatar from "@/components/Avatar";
+import NotificationBell from "@/components/NotificationBell";
 
 export default async function Navbar({ title }: { title?: string } = {}) {
   const supabase = createClient();
@@ -51,10 +52,15 @@ export default async function Navbar({ title }: { title?: string } = {}) {
           )}
           {user ? (
             <div className="flex items-center gap-2">
-              <div className="hidden items-center gap-1.5 sm:flex">
+              <NotificationBell userId={user.id} />
+              <Link
+                href={`/u/${username ?? ""}`}
+                className="hidden items-center gap-1.5 sm:flex"
+                title={t("nav.profile")}
+              >
                 <Avatar username={username ?? "user"} size={24} />
-                <span className="text-sm text-ink-text-muted">@{username ?? "user"}</span>
-              </div>
+                <span className="text-sm text-ink-text-muted hover:text-ink-text">@{username ?? "user"}</span>
+              </Link>
               <form action={signOut}>
                 <button
                   type="submit"

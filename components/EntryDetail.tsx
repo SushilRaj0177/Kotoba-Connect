@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import type { ContextEntry, TokenAnnotation } from "@/types/database";
 import FormalityBadge from "@/components/FormalityBadge";
@@ -9,6 +10,8 @@ import EmptyState from "@/components/EmptyState";
 import ReportButton from "@/components/ReportButton";
 import AiNuanceCallout from "@/components/AiNuanceCallout";
 import Avatar from "@/components/Avatar";
+import BookmarkButton from "@/components/BookmarkButton";
+import DeleteEntryButton from "@/components/DeleteEntryButton";
 import { spamSignal } from "@/lib/moderation";
 import { errorMessage } from "@/lib/errors";
 import { useLocale } from "@/components/i18n/LocaleProvider";
@@ -16,9 +19,11 @@ import { useLocale } from "@/components/i18n/LocaleProvider";
 export default function EntryDetail({
   entry,
   userId,
+  bookmarked = false,
 }: {
   entry: ContextEntry;
   userId: string | null;
+  bookmarked?: boolean;
 }) {
   const { t } = useLocale();
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
@@ -108,7 +113,9 @@ export default function EntryDetail({
         <Avatar username={username} size={40} />
         <div className="min-w-0 flex-1">
           <div className="mb-1 flex flex-wrap items-baseline gap-2">
-            <span className="text-sm font-semibold text-ink-text-header">@{username}</span>
+            <Link href={`/u/${username}`} className="text-sm font-semibold text-ink-text-header hover:underline">
+              @{username}
+            </Link>
             <FormalityBadge level={entry.formality_level} />
           </div>
           <TokenizedText
@@ -121,9 +128,26 @@ export default function EntryDetail({
             summary={entry.ai_nuance_summary}
             formalitySuggestion={entry.ai_formality_suggestion}
           />
-          <p className="mt-2 text-xs text-ink-text-muted">
-            {entry.upvotes_count} {t("detail.upvotes")}
-          </p>
+          {!!entry.tags?.length && (
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {entry.tags.map((tag) => (
+                <Link
+                  key={tag}
+                  href={`/tags/${encodeURIComponent(tag)}`}
+                  className="rounded-full bg-ink-bg-input px-2 py-0.5 text-xs text-ink-text-muted transition hover:text-ink-accent"
+                >
+                  #{tag}
+                </Link>
+              ))}
+            </div>
+          )}
+          <div className="mt-3 flex items-center gap-4 text-xs">
+            <span className="text-ink-text-muted">
+              {entry.upvotes_count} {t("detail.upvotes")}
+            </span>
+            <BookmarkButton entryId={entry.id} userId={userId} initialBookmarked={bookmarked} />
+            {userId === entry.user_id && <DeleteEntryButton entryId={entry.id} redirectHome />}
+          </div>
           <p className="mt-3 text-xs text-ink-text-muted">{t("detail.clickHint")}</p>
         </div>
       </div>

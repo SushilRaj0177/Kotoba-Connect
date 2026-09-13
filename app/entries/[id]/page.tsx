@@ -21,6 +21,17 @@ export default async function EntryPage({ params }: { params: { id: string } }) 
 
   if (!entry) notFound();
 
+  let bookmarked = false;
+  if (user) {
+    const { data: save } = await supabase
+      .from("bookmarks")
+      .select("entry_id")
+      .eq("user_id", user.id)
+      .eq("entry_id", params.id)
+      .maybeSingle();
+    bookmarked = !!save;
+  }
+
   return (
     <>
       <Navbar />
@@ -31,7 +42,7 @@ export default async function EntryPage({ params }: { params: { id: string } }) 
         >
           {t("detail.back")}
         </Link>
-        <EntryDetail entry={entry as ContextEntry} userId={user?.id ?? null} />
+        <EntryDetail entry={entry as ContextEntry} userId={user?.id ?? null} bookmarked={bookmarked} />
       </main>
     </>
   );
