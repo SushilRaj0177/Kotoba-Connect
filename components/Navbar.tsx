@@ -9,13 +9,15 @@ export default async function Navbar() {
   } = await supabase.auth.getUser();
 
   let username: string | null = null;
+  let isAdmin = false;
   if (user) {
     const { data: profile } = await supabase
       .from("profiles")
-      .select("username")
+      .select("username, is_admin")
       .eq("id", user.id)
       .single();
     username = profile?.username ?? null;
+    isAdmin = !!profile?.is_admin;
   }
 
   return (
@@ -26,6 +28,11 @@ export default async function Navbar() {
         </Link>
         {user ? (
           <div className="flex items-center gap-3 text-sm">
+            {isAdmin && (
+              <Link href="/admin" className="font-medium text-accent hover:underline">
+                Moderation
+              </Link>
+            )}
             <span className="hidden text-slate-muted sm:inline">@{username ?? "user"}</span>
             <form action={signOut}>
               <button

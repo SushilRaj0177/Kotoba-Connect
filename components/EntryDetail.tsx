@@ -6,6 +6,10 @@ import type { ContextEntry, TokenAnnotation } from "@/types/database";
 import FormalityBadge from "@/components/FormalityBadge";
 import TokenizedText from "@/components/TokenizedText";
 import EmptyState from "@/components/EmptyState";
+import ReportButton from "@/components/ReportButton";
+import AiNuanceCallout from "@/components/AiNuanceCallout";
+import { spamSignal } from "@/lib/moderation";
+import { errorMessage } from "@/lib/errors";
 
 export default function EntryDetail({
   entry,
@@ -67,6 +71,11 @@ export default function EntryDetail({
       setError("Sign in to add an annotation.");
       return;
     }
+    const spam = spamSignal(note) || spamSignal(culturalContext);
+    if (spam) {
+      setError(spam);
+      return;
+    }
 
     setSubmitting(true);
     const supabase = createClient();
@@ -79,7 +88,7 @@ export default function EntryDetail({
     });
 
     if (insertError) {
-      setError("Could not save the annotation. Try again.");
+      setError(errorMessage(insertError, "Could not save the annotation. Try again."));
     } else {
       setNote("");
       setCulturalContext("");
@@ -100,7 +109,11 @@ export default function EntryDetail({
           />
           <FormalityBadge level={entry.formality_level} />
         </div>
-        <p className="text-sm text-slate-muted">{entry.primary_translation}</p>
+        <p className="mb-2 text-sm text-slate-muted">{entry.primary_translation}</p>
+        <AiNuanceCallout
+          summary={entry.ai_nuance_summary}
+          formalitySuggestion={entry.ai_formality_suggestion}
+        />
         <p className="mt-2 text-xs text-slate-muted">
           Posted by @{entry.profiles?.username ?? "unknown"} · {entry.upvotes_count} upvotes
         </p>
@@ -133,7 +146,10 @@ export default function EntryDetail({
                 {a.cultural_context && (
                   <p className="mt-1 text-xs text-slate-muted">{a.cultural_context}</p>
                 )}
-                <p className="mt-1 text-xs text-slate-muted">@{a.profiles?.username ?? "unknown"}</p>
+                <div className="mt-1 flex items-center gap-2 text-xs text-slate-muted">
+                  <span>@{a.profiles?.username ?? "unknown"}</span>
+                  <ReportButton targetType="annotation" targetId={a.id} userId={userId} />
+                </div>
               </li>
             ))}
           </ul>

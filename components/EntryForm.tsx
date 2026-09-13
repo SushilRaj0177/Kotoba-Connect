@@ -4,6 +4,8 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { FormalityLevel, KuromojiToken } from "@/types/database";
 import TokenizedText from "@/components/TokenizedText";
+import { spamSignal } from "@/lib/moderation";
+import { errorMessage } from "@/lib/errors";
 
 const FORMALITY_LEVELS: FormalityLevel[] = [
   "Sonkeigo",
@@ -70,6 +72,11 @@ export default function EntryForm({
       setError("Add a primary translation so others understand the meaning.");
       return;
     }
+    const spam = spamSignal(trimmedJapanese) || spamSignal(trimmedTranslation);
+    if (spam) {
+      setError(spam);
+      return;
+    }
 
     setSubmitting(true);
     try {
@@ -92,16 +99,28 @@ export default function EntryForm({
         .slice(0, 8);
 
       const supabase = createClient();
-      const { error: insertError } = await supabase.from("context_entries").insert({
-        user_id: userId,
-        raw_japanese: trimmedJapanese,
-        primary_translation: trimmedTranslation,
-        formality_level: formality,
-        furigana_parsed: finalTokens,
-        tags,
-      });
+      const { data: inserted, error: insertError } = await supabase
+        .from("context_entries")
+        .insert({
+          user_id: userId,
+          raw_japanese: trimmedJapanese,
+          primary_translation: trimmedTranslation,
+          formality_level: formality,
+          furigana_parsed: finalTokens,
+          tags,
+        })
+        .select("id")
+        .single();
 
       if (insertError) throw insertError;
+
+      // Phase 2 enrichment (Groq classification, embeddings) — best-effort,
+      // never blocks the post from succeeding. No-ops server-side if the
+      // relevant API keys aren't configured.
+      if (inserted?.id) {
+        fetch(`/api/entries/${inserted.id}/analyze`, { method: "POST" }).catch(() => {});
+        fetch(`/api/entries/${inserted.id}/embed`, { method: "POST" }).catch(() => {});
+      }
 
       setRawJapanese("");
       setTranslation("");
@@ -109,7 +128,7 @@ export default function EntryForm({
       setTokens([]);
       onCreated?.();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not save the entry. Try again.");
+      setError(errorMessage(err, "Could not save the entry. Try again."));
     } finally {
       setSubmitting(false);
     }
