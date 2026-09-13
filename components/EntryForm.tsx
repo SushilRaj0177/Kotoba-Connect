@@ -139,12 +139,12 @@ export default function EntryForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-lg border border-discord-border bg-discord-bg-secondary p-4 sm:p-5"
+      className="rounded-lg border border-ink-border bg-ink-bg-secondary p-4 sm:p-5"
     >
-      <h2 className="mb-3 text-sm font-semibold text-discord-text-header">{t("form.heading")}</h2>
+      <h2 className="mb-3 text-sm font-semibold text-ink-text-header">{t("form.heading")}</h2>
 
       <div className="mb-3">
-        <label htmlFor="raw_japanese" className="mb-1 block text-xs font-medium text-discord-text-muted">
+        <label htmlFor="raw_japanese" className="mb-1 block text-xs font-medium text-ink-text-muted">
           {t("form.rawLabel")}
         </label>
         <textarea
@@ -158,18 +158,18 @@ export default function EntryForm({
           rows={2}
           maxLength={500}
           placeholder="例：お先に失礼します"
-          className="w-full resize-none rounded-lg border-none bg-discord-bg-input px-3 py-2 font-jp text-base text-discord-text placeholder:text-discord-text-muted focus:outline-none focus:ring-2 focus:ring-discord-blurple"
+          className="w-full resize-none rounded-lg border-none bg-ink-bg-input px-3 py-2 font-jp text-base text-ink-text placeholder:text-ink-text-muted focus:outline-none focus:ring-2 focus:ring-ink-accent"
         />
-        {tokenizing && <p className="mt-1 text-xs text-discord-text-muted">{t("form.tokenizing")}</p>}
+        {tokenizing && <p className="mt-1 text-xs text-ink-text-muted">{t("form.tokenizing")}</p>}
         {!!tokens.length && (
-          <div className="mt-2 rounded-lg bg-discord-bg-input p-2">
+          <div className="mt-2 rounded-lg bg-ink-bg-input p-2">
             <TokenizedText tokens={tokens} />
           </div>
         )}
       </div>
 
       <div className="mb-3">
-        <label htmlFor="translation" className="mb-1 block text-xs font-medium text-discord-text-muted">
+        <label htmlFor="translation" className="mb-1 block text-xs font-medium text-ink-text-muted">
           {t("form.translationLabel")}
         </label>
         <input
@@ -178,20 +178,20 @@ export default function EntryForm({
           onChange={(e) => setTranslation(e.target.value)}
           maxLength={300}
           placeholder={t("form.translationPlaceholder")}
-          className="w-full rounded-lg border-none bg-discord-bg-input px-3 py-2 text-sm text-discord-text placeholder:text-discord-text-muted focus:outline-none focus:ring-2 focus:ring-discord-blurple"
+          className="w-full rounded-lg border-none bg-ink-bg-input px-3 py-2 text-sm text-ink-text placeholder:text-ink-text-muted focus:outline-none focus:ring-2 focus:ring-ink-accent"
         />
       </div>
 
       <div className="mb-3 grid grid-cols-2 gap-3">
         <div>
-          <label htmlFor="formality" className="mb-1 block text-xs font-medium text-discord-text-muted">
+          <label htmlFor="formality" className="mb-1 block text-xs font-medium text-ink-text-muted">
             {t("form.formalityLabel")}
           </label>
           <select
             id="formality"
             value={formality}
             onChange={(e) => setFormality(e.target.value as FormalityLevel)}
-            className="w-full rounded-lg border-none bg-discord-bg-input px-3 py-2 text-sm text-discord-text focus:outline-none focus:ring-2 focus:ring-discord-blurple"
+            className="w-full rounded-lg border-none bg-ink-bg-input px-3 py-2 text-sm text-ink-text focus:outline-none focus:ring-2 focus:ring-ink-accent"
           >
             {FORMALITY_LEVELS.map((level) => (
               <option key={level} value={level}>
@@ -201,7 +201,7 @@ export default function EntryForm({
           </select>
         </div>
         <div>
-          <label htmlFor="tags" className="mb-1 block text-xs font-medium text-discord-text-muted">
+          <label htmlFor="tags" className="mb-1 block text-xs font-medium text-ink-text-muted">
             {t("form.tagsLabel")}
           </label>
           <input
@@ -209,19 +209,19 @@ export default function EntryForm({
             value={tagsInput}
             onChange={(e) => setTagsInput(e.target.value)}
             placeholder={t("form.tagsPlaceholder")}
-            className="w-full rounded-lg border-none bg-discord-bg-input px-3 py-2 text-sm text-discord-text placeholder:text-discord-text-muted focus:outline-none focus:ring-2 focus:ring-discord-blurple"
+            className="w-full rounded-lg border-none bg-ink-bg-input px-3 py-2 text-sm text-ink-text placeholder:text-ink-text-muted focus:outline-none focus:ring-2 focus:ring-ink-accent"
           />
         </div>
       </div>
 
       {error && (
-        <p className="mb-3 rounded-md bg-discord-red/10 px-3 py-2 text-sm text-discord-red">{error}</p>
+        <p className="mb-3 rounded-md bg-ink-red/10 px-3 py-2 text-sm text-ink-red">{error}</p>
       )}
 
       <button
         type="submit"
         disabled={submitting}
-        className="w-full rounded-lg bg-discord-blurple px-3 py-2 text-sm font-semibold text-white transition hover:bg-discord-blurple-hover disabled:opacity-60 sm:w-auto"
+        className="w-full rounded-lg bg-ink-accent px-3 py-2 text-sm font-semibold text-white transition hover:bg-ink-accent-hover disabled:opacity-60 sm:w-auto"
       >
         {submitting ? t("form.submitting") : t("form.submit")}
       </button>

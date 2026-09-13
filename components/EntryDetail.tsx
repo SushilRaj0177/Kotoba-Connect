@@ -104,11 +104,11 @@ export default function EntryDetail({
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-3 rounded-lg bg-discord-bg-secondary p-4 sm:p-5">
+      <div className="flex gap-3 rounded-lg bg-ink-bg-secondary p-4 sm:p-5">
         <Avatar username={username} size={40} />
         <div className="min-w-0 flex-1">
           <div className="mb-1 flex flex-wrap items-baseline gap-2">
-            <span className="text-sm font-semibold text-discord-text-header">@{username}</span>
+            <span className="text-sm font-semibold text-ink-text-header">@{username}</span>
             <FormalityBadge level={entry.formality_level} />
           </div>
           <TokenizedText
@@ -116,42 +116,42 @@ export default function EntryDetail({
             onTokenClick={setActiveIndex}
             activeIndex={activeIndex}
           />
-          <p className="mt-1 text-sm text-discord-text-muted">{entry.primary_translation}</p>
+          <p className="mt-1 text-sm text-ink-text-muted">{entry.primary_translation}</p>
           <AiNuanceCallout
             summary={entry.ai_nuance_summary}
             formalitySuggestion={entry.ai_formality_suggestion}
           />
-          <p className="mt-2 text-xs text-discord-text-muted">
+          <p className="mt-2 text-xs text-ink-text-muted">
             {entry.upvotes_count} {t("detail.upvotes")}
           </p>
-          <p className="mt-3 text-xs text-discord-text-muted">{t("detail.clickHint")}</p>
+          <p className="mt-3 text-xs text-ink-text-muted">{t("detail.clickHint")}</p>
         </div>
       </div>
 
-      <div className="rounded-lg bg-discord-bg-secondary p-4 sm:p-5">
-        <h2 className="mb-3 text-sm font-semibold text-discord-text-header">
+      <div className="rounded-lg bg-ink-bg-secondary p-4 sm:p-5">
+        <h2 className="mb-3 text-sm font-semibold text-ink-text-header">
           {activeIndex !== null
             ? `${t("detail.notesOn")} "${entry.furigana_parsed[activeIndex]?.surface_form}"`
             : t("detail.tokenAnnotations")}
         </h2>
 
         {loading ? (
-          <p className="text-sm text-discord-text-muted">Loading annotations…</p>
+          <p className="text-sm text-ink-text-muted">Loading annotations…</p>
         ) : activeIndex === null ? (
           <EmptyState title={t("detail.selectTokenTitle")} description={t("detail.selectTokenDescription")} />
         ) : activeAnnotations.length === 0 ? (
-          <p className="text-sm text-discord-text-muted">{t("detail.noNotesYet")}</p>
+          <p className="text-sm text-ink-text-muted">{t("detail.noNotesYet")}</p>
         ) : (
           <ul className="mb-4 space-y-3">
             {activeAnnotations.map((a) => (
-              <li key={a.id} className="flex gap-2.5 rounded-lg bg-discord-bg-input p-3">
+              <li key={a.id} className="flex gap-2.5 rounded-lg bg-ink-bg-input p-3">
                 <Avatar username={a.profiles?.username ?? "unknown"} size={28} />
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm text-discord-text">{a.nuance_note}</p>
+                  <p className="text-sm text-ink-text">{a.nuance_note}</p>
                   {a.cultural_context && (
-                    <p className="mt-1 text-xs text-discord-text-muted">{a.cultural_context}</p>
+                    <p className="mt-1 text-xs text-ink-text-muted">{a.cultural_context}</p>
                   )}
-                  <div className="mt-1 flex items-center gap-2 text-xs text-discord-text-muted">
+                  <div className="mt-1 flex items-center gap-2 text-xs text-ink-text-muted">
                     <span>@{a.profiles?.username ?? "unknown"}</span>
                     <ReportButton targetType="annotation" targetId={a.id} userId={userId} />
                   </div>
@@ -162,34 +162,34 @@ export default function EntryDetail({
         )}
 
         {userId ? (
-          <form onSubmit={handleSubmit} className="space-y-2 border-t border-discord-border pt-3">
+          <form onSubmit={handleSubmit} className="space-y-2 border-t border-ink-border pt-3">
             <textarea
               value={note}
               onChange={(e) => setNote(e.target.value)}
               rows={2}
               maxLength={500}
               placeholder={t("detail.notePlaceholder")}
-              className="w-full resize-none rounded-lg border-none bg-discord-bg-input px-3 py-2 text-sm text-discord-text placeholder:text-discord-text-muted focus:outline-none focus:ring-2 focus:ring-discord-blurple"
+              className="w-full resize-none rounded-lg border-none bg-ink-bg-input px-3 py-2 text-sm text-ink-text placeholder:text-ink-text-muted focus:outline-none focus:ring-2 focus:ring-ink-accent"
             />
             <input
               value={culturalContext}
               onChange={(e) => setCulturalContext(e.target.value)}
               maxLength={300}
               placeholder={t("detail.contextPlaceholder")}
-              className="w-full rounded-lg border-none bg-discord-bg-input px-3 py-2 text-sm text-discord-text placeholder:text-discord-text-muted focus:outline-none focus:ring-2 focus:ring-discord-blurple"
+              className="w-full rounded-lg border-none bg-ink-bg-input px-3 py-2 text-sm text-ink-text placeholder:text-ink-text-muted focus:outline-none focus:ring-2 focus:ring-ink-accent"
             />
-            {error && <p className="text-sm text-discord-red">{error}</p>}
+            {error && <p className="text-sm text-ink-red">{error}</p>}
             <button
               type="submit"
               disabled={submitting || activeIndex === null}
-              className="rounded-lg bg-discord-blurple px-3 py-2 text-sm font-semibold text-white transition hover:bg-discord-blurple-hover disabled:opacity-60"
+              className="rounded-lg bg-ink-accent px-3 py-2 text-sm font-semibold text-white transition hover:bg-ink-accent-hover disabled:opacity-60"
             >
               {submitting ? t("detail.saving") : t("detail.addNote")}
             </button>
           </form>
         ) : (
-          <p className="border-t border-discord-border pt-3 text-sm text-discord-text-muted">
-            <a href="/login" className="font-semibold text-discord-text-link hover:underline">
+          <p className="border-t border-ink-border pt-3 text-sm text-ink-text-muted">
+            <a href="/login" className="font-semibold text-ink-text-link hover:underline">
               {t("detail.signInToAnnotate")}
             </a>{" "}
             {t("detail.signInSuffix")}

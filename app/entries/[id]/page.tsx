@@ -27,7 +27,7 @@ export default async function EntryPage({ params }: { params: { id: string } }) 
       <main className="mx-auto max-w-3xl px-4 py-6 sm:px-6">
         <Link
           href="/"
-          className="mb-4 inline-block text-sm font-medium text-discord-text-link hover:underline"
+          className="mb-4 inline-block text-sm font-medium text-ink-text-link hover:underline"
         >
           {t("detail.back")}
         </Link>

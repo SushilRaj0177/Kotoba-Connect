@@ -51,13 +51,13 @@ export default function EntryCard({
   });
 
   return (
-    <article className="group relative flex gap-3 rounded-lg px-3 py-2.5 transition hover:bg-discord-bg-secondary">
+    <article className="flex gap-3 rounded-lg bg-ink-bg-secondary p-3.5">
       <Avatar username={username} size={40} />
 
       <div className="min-w-0 flex-1">
         <div className="mb-0.5 flex flex-wrap items-baseline gap-2">
-          <span className="text-sm font-semibold text-discord-text-header">@{username}</span>
-          <span className="text-xs text-discord-text-muted">{timestamp}</span>
+          <span className="text-sm font-semibold text-ink-text-header">@{username}</span>
+          <span className="text-xs text-ink-text-muted">{timestamp}</span>
           <FormalityBadge level={entry.formality_level} />
         </div>
 
@@ -65,7 +65,7 @@ export default function EntryCard({
           <TokenizedText tokens={entry.furigana_parsed} />
         </Link>
 
-        <p className="mt-1 text-sm text-discord-text-muted">{entry.primary_translation}</p>
+        <p className="mt-1 text-sm text-ink-text-muted">{entry.primary_translation}</p>
 
         <AiNuanceCallout
           summary={entry.ai_nuance_summary}
@@ -77,37 +77,34 @@ export default function EntryCard({
             {entry.tags.map((tag) => (
               <span
                 key={tag}
-                className="rounded-full bg-discord-bg-input px-2 py-0.5 text-xs text-discord-text-muted"
+                className="rounded-full bg-ink-bg-input px-2 py-0.5 text-xs text-ink-text-muted"
               >
                 #{tag}
               </span>
             ))}
           </div>
         )}
-      </div>
 
-      {/* Discord-style hover toolbar: floats over the top-right corner of the
-          row on desktop; stays visible on touch screens, where hover doesn't exist. */}
-      <div className="absolute -top-3 right-3 flex items-center gap-0.5 rounded-md border border-discord-border bg-discord-bg-secondary p-0.5 opacity-100 shadow-lg transition-opacity sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100">
-        <button
-          type="button"
-          onClick={handleVote}
-          disabled={!currentUserId || voting}
-          title={currentUserId ? t("card.upvote") : t("card.signInToVote")}
-          className={`flex items-center gap-1 rounded px-2 py-1 text-xs font-semibold transition ${
-            hasVoted ? "text-discord-blurple" : "text-discord-text-muted hover:text-discord-text"
-          } disabled:cursor-not-allowed disabled:opacity-50`}
-        >
-          ▲ {count}
-        </button>
-        <Link
-          href={`/entries/${entry.id}`}
-          title={t("card.annotate")}
-          className="rounded px-2 py-1 text-xs font-semibold text-discord-text-muted transition hover:text-discord-text"
-        >
-          #
-        </Link>
-        <ReportButton targetType="entry" targetId={entry.id} userId={currentUserId} />
+        <div className="mt-2.5 flex items-center gap-4 text-xs">
+          <button
+            type="button"
+            onClick={handleVote}
+            disabled={!currentUserId || voting}
+            title={currentUserId ? t("card.upvote") : t("card.signInToVote")}
+            className={`flex items-center gap-1 font-semibold transition ${
+              hasVoted ? "text-ink-accent" : "text-ink-text-muted hover:text-ink-text"
+            } disabled:cursor-not-allowed disabled:opacity-50`}
+          >
+            ▲ {count}
+          </button>
+          <Link
+            href={`/entries/${entry.id}`}
+            className="font-medium text-ink-text-link hover:underline"
+          >
+            {t("card.annotate")}
+          </Link>
+          <ReportButton targetType="entry" targetId={entry.id} userId={currentUserId} />
+        </div>
       </div>
     </article>
   );

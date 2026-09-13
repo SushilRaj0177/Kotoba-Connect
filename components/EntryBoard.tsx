@@ -84,8 +84,8 @@ export default function EntryBoard({ userId }: { userId: string | null }) {
       {userId ? (
         <EntryForm userId={userId} onCreated={loadEntries} />
       ) : (
-        <div className="rounded-lg border border-dashed border-discord-border bg-discord-bg-secondary p-4 text-center text-sm text-discord-text-muted">
-          <a href="/login" className="font-semibold text-discord-text-link hover:underline">
+        <div className="rounded-lg border border-dashed border-ink-border bg-ink-bg-secondary p-4 text-center text-sm text-ink-text-muted">
+          <a href="/login" className="font-semibold text-ink-text-link hover:underline">
             {t("board.signInPrompt")}
           </a>{" "}
           {t("board.signInSuffix")}
@@ -97,12 +97,12 @@ export default function EntryBoard({ userId }: { userId: string | null }) {
       {loading ? (
         <EntryListSkeleton />
       ) : error ? (
-        <div className="rounded-lg border border-discord-red/30 bg-discord-red/10 p-4 text-center">
-          <p className="text-sm text-discord-red">{error}</p>
+        <div className="rounded-lg border border-ink-red/30 bg-ink-red/10 p-4 text-center">
+          <p className="text-sm text-ink-red">{error}</p>
           <button
             type="button"
             onClick={loadEntries}
-            className="mt-2 text-sm font-semibold text-discord-text-link hover:underline"
+            className="mt-2 text-sm font-semibold text-ink-text-link hover:underline"
           >
             {t("board.retry")}
           </button>
@@ -111,7 +111,7 @@ export default function EntryBoard({ userId }: { userId: string | null }) {
         searchResults.length === 0 ? (
           <EmptyState title={t("board.searchEmptyTitle")} description={t("board.searchEmptyDescription")} />
         ) : (
-          <div>
+          <div className="space-y-3">
             {searchResults.map((entry) => (
               <EntryCard key={entry.id} entry={entry} currentUserId={userId} />
             ))}
@@ -120,7 +120,7 @@ export default function EntryBoard({ userId }: { userId: string | null }) {
       ) : entries.length === 0 ? (
         <EmptyState title={t("board.emptyTitle")} description={t("board.emptyDescription")} />
       ) : (
-        <div>
+        <div className="space-y-3">
           {entries.map((entry) => (
             <EntryCard key={entry.id} entry={entry} currentUserId={userId} />
           ))}
