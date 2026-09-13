@@ -40,20 +40,21 @@ export default function EntryBoard({
     }
 
     let votedIds = new Set<string>();
+    let bookmarkedIds = new Set<string>();
     if (userId && data?.length) {
-      const { data: votes } = await supabase
-        .from("entry_upvotes")
-        .select("entry_id")
-        .eq("user_id", userId)
-        .in(
-          "entry_id",
-          data.map((e) => e.id)
-        );
+      const ids = data.map((e) => e.id);
+      const [{ data: votes }, { data: saves }] = await Promise.all([
+        supabase.from("entry_upvotes").select("entry_id").eq("user_id", userId).in("entry_id", ids),
+        supabase.from("bookmarks").select("entry_id").eq("user_id", userId).in("entry_id", ids),
+      ]);
       votedIds = new Set((votes ?? []).map((v) => v.entry_id));
+      bookmarkedIds = new Set((saves ?? []).map((s) => s.entry_id));
     }
 
     setEntries(
-      (data ?? []).map((e) => ({ ...e, has_voted: votedIds.has(e.id) }) as ContextEntry)
+      (data ?? []).map(
+        (e) => ({ ...e, has_voted: votedIds.has(e.id), is_bookmarked: bookmarkedIds.has(e.id) }) as ContextEntry
+      )
     );
     setLoading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -119,7 +120,12 @@ export default function EntryBoard({
         ) : (
           <div className="space-y-3">
             {searchResults.map((entry) => (
-              <EntryCard key={entry.id} entry={entry} currentUserId={userId} />
+              <EntryCard
+                key={entry.id}
+                entry={entry}
+                currentUserId={userId}
+                bookmarked={!!entry.is_bookmarked}
+              />
             ))}
           </div>
         )

@@ -21,9 +21,32 @@ export interface Profile {
   id: string;
   username: string;
   avatar_url: string | null;
+  bio: string | null;
+  website: string | null;
   reputation_score: number;
   is_admin: boolean;
   created_at: string;
+}
+
+export interface Bookmark {
+  user_id: string;
+  entry_id: string;
+  created_at: string;
+}
+
+export type NotificationType = "upvote" | "annotation";
+
+export interface AppNotification {
+  id: string;
+  user_id: string;
+  actor_id: string | null;
+  type: NotificationType;
+  entry_id: string | null;
+  annotation_id: string | null;
+  read: boolean;
+  created_at: string;
+  actor?: Pick<Profile, "username" | "avatar_url"> | null;
+  entry?: Pick<ContextEntry, "raw_japanese"> | null;
 }
 
 export type ReportStatus = "pending" | "resolved" | "dismissed";
@@ -58,6 +81,7 @@ export interface ContextEntry {
   embedding?: number[] | null;
   profiles?: Pick<Profile, "username" | "avatar_url">;
   has_voted?: boolean;
+  is_bookmarked?: boolean;
   similarity?: number;
 }
 
@@ -104,6 +128,16 @@ export interface Database {
         Row: { user_id: string; entry_id: string };
         Insert: { user_id: string; entry_id: string };
         Update: never;
+      };
+      bookmarks: {
+        Row: Bookmark;
+        Insert: { user_id: string; entry_id: string };
+        Update: never;
+      };
+      notifications: {
+        Row: AppNotification;
+        Insert: never;
+        Update: Partial<Pick<AppNotification, "read">>;
       };
     };
     Functions: {

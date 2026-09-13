@@ -72,11 +72,6 @@
   color-scheme: dark;
 }
 
-html {
-  /* +25% default zoom — scales every rem-based size site-wide. */
-  font-size: 125%;
-}
-
 body {
   @apply bg-ink-bg text-ink-text antialiased;
 }
