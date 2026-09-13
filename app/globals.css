@@ -3,68 +3,68 @@
 @tailwind utilities;
 
 /*
-  Warm, cozy color system as RGB triplets (so Tailwind's opacity modifiers
-  work: bg-ink-accent/10, etc.) — one set per theme, swapped by the
-  `data-theme` attribute on <html>. Light is a warm paper/cream palette;
-  dark is a warm candlelit brown, not a cold neutral charcoal.
+  Bright, energetic, gamified palette — vivid accents on a light neutral
+  background, bold contrast, visible borders (needed for the chunky
+  "3D press" button style). Dark theme keeps the same accent hues popping
+  on a deep navy background instead of inverting to something muddy.
 */
 :root[data-theme="light"] {
-  --c-bg: 250 246 240;
-  --c-bg-secondary: 255 252 247;
-  --c-bg-input: 242 235 224;
-  --c-bg-hover: 236 227 212;
-  --c-border: 232 221 203;
-  --c-text: 58 51 46;
-  --c-text-muted: 138 122 106;
-  --c-text-header: 37 31 27;
-  --c-accent: 199 90 42;
-  --c-accent-hover: 173 76 33;
-  --c-link: 61 122 106;
-  --c-green: 79 138 92;
-  --c-red: 178 62 48;
-  --c-red-hover: 154 50 38;
-  --c-yellow: 178 128 21;
+  --c-bg: 248 249 251;
+  --c-bg-secondary: 255 255 255;
+  --c-bg-input: 243 244 248;
+  --c-bg-hover: 235 237 242;
+  --c-border: 226 229 235;
+  --c-text: 63 66 74;
+  --c-text-muted: 142 147 158;
+  --c-text-header: 29 31 36;
+  --c-accent: 255 61 127;
+  --c-accent-hover: 230 43 109;
+  --c-accent-shadow: 199 25 91;
+  --c-link: 14 165 233;
+  --c-green: 34 197 94;
+  --c-red: 255 75 75;
+  --c-red-hover: 235 55 55;
+  --c-yellow: 250 176 5;
 }
 
 :root[data-theme="dark"] {
-  --c-bg: 26 22 19;
-  --c-bg-secondary: 45 37 32;
-  --c-bg-input: 55 45 39;
-  --c-bg-hover: 63 52 45;
-  --c-border: 64 53 45;
-  --c-text: 231 219 205;
-  --c-text-muted: 163 145 127;
-  --c-text-header: 246 237 226;
-  --c-accent: 224 134 82;
-  --c-accent-hover: 233 154 107;
-  --c-link: 130 195 176;
-  --c-green: 129 186 143;
-  --c-red: 224 128 111;
-  --c-red-hover: 235 148 132;
-  --c-yellow: 224 182 108;
+  --c-bg: 18 18 27;
+  --c-bg-secondary: 28 28 40;
+  --c-bg-input: 37 37 51;
+  --c-bg-hover: 46 46 62;
+  --c-border: 56 56 74;
+  --c-text: 219 219 230;
+  --c-text-muted: 150 150 168;
+  --c-text-header: 246 246 250;
+  --c-accent: 255 90 150;
+  --c-accent-hover: 255 115 168;
+  --c-accent-shadow: 199 55 108;
+  --c-link: 56 189 248;
+  --c-green: 74 222 128;
+  --c-red: 248 113 113;
+  --c-red-hover: 252 138 138;
+  --c-yellow: 250 204 21;
 }
 
 :root {
-  /* Fallback (used only before hydration if the theme cookie is somehow
-     missing) — matches the light theme so first paint isn't jarring. */
-  --c-bg: 250 246 240;
-  --c-bg-secondary: 255 252 247;
-  --c-bg-input: 242 235 224;
-  --c-bg-hover: 236 227 212;
-  --c-border: 232 221 203;
-  --c-text: 58 51 46;
-  --c-text-muted: 138 122 106;
-  --c-text-header: 37 31 27;
-  --c-accent: 199 90 42;
-  --c-accent-hover: 173 76 33;
-  --c-link: 61 122 106;
-  --c-green: 79 138 92;
-  --c-red: 178 62 48;
-  --c-red-hover: 154 50 38;
-  --c-yellow: 178 128 21;
+  --c-bg: 248 249 251;
+  --c-bg-secondary: 255 255 255;
+  --c-bg-input: 243 244 248;
+  --c-bg-hover: 235 237 242;
+  --c-border: 226 229 235;
+  --c-text: 63 66 74;
+  --c-text-muted: 142 147 158;
+  --c-text-header: 29 31 36;
+  --c-accent: 255 61 127;
+  --c-accent-hover: 230 43 109;
+  --c-accent-shadow: 199 25 91;
+  --c-link: 14 165 233;
+  --c-green: 34 197 94;
+  --c-red: 255 75 75;
+  --c-red-hover: 235 55 55;
+  --c-yellow: 250 176 5;
 
-  /* --font-sans / --font-display come from next/font (see app/layout.tsx),
-     applied as classes on <html> — not redeclared here. */
+  /* --font-sans / --font-display come from next/font (see app/layout.tsx). */
   --font-jp: "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
   color-scheme: light;
 }
@@ -75,7 +75,6 @@
 
 body {
   @apply bg-ink-bg text-ink-text antialiased;
-  transition: background-color 0.2s ease;
 }
 
 ::selection {
@@ -96,6 +95,20 @@ body {
 }
 *::-webkit-scrollbar-track {
   background: transparent;
+}
+
+/* Chunky "3D press" button — the signature gamified interaction: a solid
+   drop shadow that the button appears to press flat into on click. */
+.btn-chunky {
+  box-shadow: 0 4px 0 rgb(var(--c-accent-shadow));
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+.btn-chunky:active:not(:disabled) {
+  transform: translateY(4px);
+  box-shadow: 0 0 0 rgb(var(--c-accent-shadow));
+}
+.btn-chunky:disabled {
+  box-shadow: 0 4px 0 rgb(var(--c-accent-shadow) / 0.4);
 }
 
 @keyframes pulse-soft {

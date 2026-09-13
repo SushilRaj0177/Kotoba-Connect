@@ -63,7 +63,7 @@ export default function ReportButton({
       {open && (
         <form
           onSubmit={handleSubmit}
-          className="absolute right-0 top-full z-20 mt-2 w-56 space-y-2 rounded-2xl bg-ink-bg-secondary p-3 shadow-cozy"
+          className="absolute right-0 top-full z-20 mt-2 w-56 space-y-2 rounded-2xl bg-ink-bg-secondary p-3 border-2 border-ink-border"
         >
           <select
             value={reason}

@@ -94,7 +94,7 @@ export default function AdminQueue() {
   return (
     <div className="space-y-3">
       {reports.map((report) => (
-        <div key={report.id} className="rounded-2xl bg-ink-bg-secondary p-4 shadow-cozy">
+        <div key={report.id} className="rounded-2xl bg-ink-bg-secondary p-4 border-2 border-ink-border">
           <div className="mb-2 flex items-center justify-between text-xs text-ink-text-muted">
             <span className="rounded-full bg-ink-bg-input px-2 py-0.5 font-medium uppercase">
               {report.target_type}

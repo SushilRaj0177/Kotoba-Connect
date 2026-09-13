@@ -84,7 +84,7 @@ export default function EntryBoard({ userId }: { userId: string | null }) {
       {userId ? (
         <EntryForm userId={userId} onCreated={loadEntries} />
       ) : (
-        <div className="rounded-2xl bg-ink-bg-secondary p-4 text-center text-sm text-ink-text-muted shadow-cozy">
+        <div className="rounded-2xl bg-ink-bg-secondary p-4 text-center text-sm text-ink-text-muted border-2 border-ink-border">
           <a href="/login" className="font-semibold text-ink-text-link hover:underline">
             {t("board.signInPrompt")}
           </a>{" "}

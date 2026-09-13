@@ -139,7 +139,7 @@ export default function EntryForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-2xl bg-ink-bg-secondary p-4 shadow-cozy sm:p-5"
+      className="rounded-2xl bg-ink-bg-secondary p-4 border-2 border-ink-border sm:p-5"
     >
       <h2 className="mb-3 text-sm font-semibold text-ink-text-header">{t("form.heading")}</h2>
 
@@ -221,7 +221,7 @@ export default function EntryForm({
       <button
         type="submit"
         disabled={submitting}
-        className="w-full rounded-full bg-ink-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-ink-accent-hover disabled:opacity-60 sm:w-auto"
+        className="btn-chunky w-full rounded-2xl bg-ink-accent px-6 py-3 text-sm font-extrabold uppercase tracking-wide text-white disabled:opacity-60 sm:w-auto"
       >
         {submitting ? t("form.submitting") : t("form.submit")}
       </button>

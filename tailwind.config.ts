@@ -17,9 +17,9 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Warm "ink on paper" palette — CSS-variable driven so the same
-        // classes work under both the light (cream/paper) and dark
-        // (candlelit brown) themes; see globals.css for the values.
+        // Bright, energetic, gamified palette — CSS-variable driven so the
+        // same classes work under both the light and dark themes; see
+        // globals.css for the actual values.
         ink: {
           bg: withOpacity("--c-bg"),
           "bg-secondary": withOpacity("--c-bg-secondary"),
@@ -28,6 +28,7 @@ const config: Config = {
           border: withOpacity("--c-border"),
           accent: withOpacity("--c-accent"),
           "accent-hover": withOpacity("--c-accent-hover"),
+          "accent-shadow": withOpacity("--c-accent-shadow"),
           green: withOpacity("--c-green"),
           red: withOpacity("--c-red"),
           "red-hover": withOpacity("--c-red-hover"),
@@ -41,11 +42,11 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["var(--font-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
-        display: ["var(--font-display)", "Georgia", "serif"],
+        display: ["var(--font-display)", "ui-sans-serif", "sans-serif"],
         jp: ["var(--font-jp)", "sans-serif"],
       },
       boxShadow: {
-        cozy: "0 1px 2px rgb(0 0 0 / 0.04), 0 4px 16px -4px rgb(0 0 0 / 0.08)",
+        chunky: "0 4px 0 rgb(var(--c-accent-shadow))",
       },
     },
   },
