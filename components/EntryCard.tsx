@@ -9,14 +9,18 @@ import TokenizedText from "@/components/TokenizedText";
 import ReportButton from "@/components/ReportButton";
 import AiNuanceCallout from "@/components/AiNuanceCallout";
 import Avatar from "@/components/Avatar";
+import BookmarkButton from "@/components/BookmarkButton";
+import DeleteEntryButton from "@/components/DeleteEntryButton";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 
 export default function EntryCard({
   entry,
   currentUserId,
+  bookmarked = false,
 }: {
   entry: ContextEntry;
   currentUserId: string | null;
+  bookmarked?: boolean;
 }) {
   const { t } = useLocale();
   const [hasVoted, setHasVoted] = useState(!!entry.has_voted);
@@ -56,7 +60,12 @@ export default function EntryCard({
 
       <div className="min-w-0 flex-1">
         <div className="mb-1 flex flex-wrap items-baseline gap-2">
-          <span className="text-sm font-semibold text-ink-text-header">@{username}</span>
+          <Link
+            href={`/u/${username}`}
+            className="text-sm font-semibold text-ink-text-header hover:underline"
+          >
+            @{username}
+          </Link>
           <span className="text-xs text-ink-text-muted">{timestamp}</span>
           <FormalityBadge level={entry.formality_level} />
         </div>
@@ -75,12 +84,13 @@ export default function EntryCard({
         {!!entry.tags?.length && (
           <div className="mt-2 flex flex-wrap gap-1.5">
             {entry.tags.map((tag) => (
-              <span
+              <Link
                 key={tag}
-                className="rounded-full bg-ink-bg-input px-2 py-0.5 text-xs text-ink-text-muted"
+                href={`/tags/${encodeURIComponent(tag)}`}
+                className="rounded-full bg-ink-bg-input px-2 py-0.5 text-xs text-ink-text-muted transition hover:text-ink-accent"
               >
                 #{tag}
-              </span>
+              </Link>
             ))}
           </div>
         )}
@@ -113,7 +123,9 @@ export default function EntryCard({
           >
             {t("card.annotate")}
           </Link>
+          <BookmarkButton entryId={entry.id} userId={currentUserId} initialBookmarked={bookmarked} />
           <ReportButton targetType="entry" targetId={entry.id} userId={currentUserId} />
+          {currentUserId === entry.user_id && <DeleteEntryButton entryId={entry.id} />}
         </div>
       </div>
     </article>
