@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Nunito, Baloo_2 } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/Footer";
+import SideRail from "@/components/SideRail";
 import { LocaleProvider } from "@/components/i18n/LocaleProvider";
 import { getServerLocale } from "@/lib/i18n/server";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
@@ -22,11 +23,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <html lang={locale} data-theme={theme} className={`${nunito.variable} ${baloo.variable}`}>
-      <body className="flex min-h-screen flex-col bg-ink-bg">
+      <body className="flex min-h-screen bg-ink-bg">
         <ThemeProvider initialTheme={theme}>
           <LocaleProvider initialLocale={locale}>
-            <div className="flex-1">{children}</div>
-            <Footer />
+            <SideRail />
+            <div className="flex min-h-screen flex-1 flex-col">
+              <div className="flex-1">{children}</div>
+              <Footer />
+            </div>
           </LocaleProvider>
         </ThemeProvider>
       </body>
