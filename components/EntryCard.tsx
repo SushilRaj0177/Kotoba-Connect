@@ -51,7 +51,7 @@ export default function EntryCard({
   });
 
   return (
-    <article className="flex gap-3 rounded-2xl bg-ink-bg-secondary p-4 shadow-cozy">
+    <article className="flex gap-3 rounded-2xl bg-ink-bg-secondary p-4 border-2 border-ink-border">
       <Avatar username={username} size={40} />
 
       <div className="min-w-0 flex-1">
@@ -91,7 +91,7 @@ export default function EntryCard({
             onClick={handleVote}
             disabled={!currentUserId || voting}
             title={currentUserId ? t("card.upvote") : t("card.signInToVote")}
-            className={`flex items-center gap-1.5 font-semibold transition ${
+            className={`flex items-center gap-1.5 font-bold transition active:scale-90 ${
               hasVoted ? "text-ink-accent" : "text-ink-text-muted hover:text-ink-text"
             } disabled:cursor-not-allowed disabled:opacity-50`}
           >

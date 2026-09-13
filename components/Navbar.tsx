@@ -26,13 +26,13 @@ export default async function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-10 bg-ink-bg/90 shadow-cozy backdrop-blur">
+    <header className="sticky top-0 z-10 bg-ink-bg/90 border-b-2 border-ink-border">
       <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
         <Link href="/" className="flex min-w-0 items-center gap-2.5">
           <span className="flex h-9 w-9 flex-none items-center justify-center rounded-full bg-ink-accent font-jp text-base font-bold text-white">
             言
           </span>
-          <span className="truncate font-display text-lg font-semibold text-ink-text-header">
+          <span className="truncate font-display text-lg font-extrabold text-ink-text-header">
             {t("app.name")}
           </span>
         </Link>
@@ -66,7 +66,7 @@ export default async function Navbar() {
           ) : (
             <Link
               href="/login"
-              className="rounded-full bg-ink-accent px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-ink-accent-hover"
+              className="btn-chunky rounded-xl bg-ink-accent px-4 py-1.5 text-sm font-extrabold uppercase tracking-wide text-white"
             >
               {t("nav.signIn")}
             </Link>
