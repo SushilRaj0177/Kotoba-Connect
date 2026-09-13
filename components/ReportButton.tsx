@@ -4,6 +4,7 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { REPORT_REASONS } from "@/lib/moderation";
 import { errorMessage } from "@/lib/errors";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 
 export default function ReportButton({
   targetType,
@@ -14,6 +15,7 @@ export default function ReportButton({
   targetId: string;
   userId: string | null;
 }) {
+  const { t } = useLocale();
   const [open, setOpen] = useState(false);
   const [reason, setReason] = useState<string>(REPORT_REASONS[0]);
   const [detail, setDetail] = useState("");
@@ -45,58 +47,61 @@ export default function ReportButton({
   }
 
   if (done) {
-    return <span className="text-xs text-slate-muted">Reported — thanks for flagging this.</span>;
-  }
-
-  if (!open) {
-    return (
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className="text-xs text-slate-muted hover:text-red-600 hover:underline"
-      >
-        Report
-      </button>
-    );
+    return <span className="px-2 text-xs text-discord-text-muted">{t("card.reported")}</span>;
   }
 
   return (
-    <form onSubmit={handleSubmit} className="mt-2 space-y-2 rounded-lg border border-slate-200 bg-slate-50 p-2">
-      <select
-        value={reason}
-        onChange={(e) => setReason(e.target.value)}
-        className="w-full rounded-md border border-slate-200 px-2 py-1 text-xs"
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="rounded px-2 py-1 text-xs font-semibold text-discord-text-muted transition hover:text-discord-red"
       >
-        {REPORT_REASONS.map((r) => (
-          <option key={r} value={r}>
-            {r}
-          </option>
-        ))}
-      </select>
-      <input
-        value={detail}
-        onChange={(e) => setDetail(e.target.value)}
-        maxLength={200}
-        placeholder="Optional details"
-        className="w-full rounded-md border border-slate-200 px-2 py-1 text-xs"
-      />
-      {error && <p className="text-xs text-red-600">{error}</p>}
-      <div className="flex gap-2">
-        <button
-          type="submit"
-          disabled={submitting}
-          className="rounded-md bg-red-600 px-2 py-1 text-xs font-semibold text-white disabled:opacity-60"
+        {t("card.report")}
+      </button>
+
+      {open && (
+        <form
+          onSubmit={handleSubmit}
+          className="absolute right-0 top-full z-20 mt-1 w-56 space-y-2 rounded-lg border border-discord-border bg-discord-bg-floating p-2 shadow-xl"
         >
-          {submitting ? "Sending…" : "Submit report"}
-        </button>
-        <button
-          type="button"
-          onClick={() => setOpen(false)}
-          className="rounded-md px-2 py-1 text-xs text-slate-muted hover:bg-slate-100"
-        >
-          Cancel
-        </button>
-      </div>
-    </form>
+          <select
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            className="w-full rounded-md border-none bg-discord-bg-input px-2 py-1 text-xs text-discord-text"
+          >
+            {REPORT_REASONS.map((r) => (
+              <option key={r} value={r}>
+                {r}
+              </option>
+            ))}
+          </select>
+          <input
+            value={detail}
+            onChange={(e) => setDetail(e.target.value)}
+            maxLength={200}
+            placeholder="Optional details"
+            className="w-full rounded-md border-none bg-discord-bg-input px-2 py-1 text-xs text-discord-text placeholder:text-discord-text-muted"
+          />
+          {error && <p className="text-xs text-discord-red">{error}</p>}
+          <div className="flex gap-2">
+            <button
+              type="submit"
+              disabled={submitting}
+              className="rounded-md bg-discord-red px-2 py-1 text-xs font-semibold text-white hover:bg-discord-red-hover disabled:opacity-60"
+            >
+              {submitting ? "Sending…" : "Submit report"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              className="rounded-md px-2 py-1 text-xs text-discord-text-muted hover:bg-discord-bg-hover"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      )}
+    </div>
   );
 }

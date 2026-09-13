@@ -3,12 +3,34 @@
 @tailwind utilities;
 
 :root {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "gg sans", "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-jp: "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
+  color-scheme: dark;
 }
 
 body {
-  @apply bg-slate-50 text-ink antialiased;
+  @apply bg-discord-bg text-discord-text antialiased;
+}
+
+::selection {
+  background-color: rgba(88, 101, 242, 0.4);
+}
+
+/* Slim, Discord-style scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #1a1b1e transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: #1a1b1e;
+  border-radius: 4px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 @keyframes pulse-soft {
@@ -17,7 +39,7 @@ body {
     opacity: 1;
   }
   50% {
-    opacity: 0.55;
+    opacity: 0.4;
   }
 }
 

@@ -8,6 +8,8 @@ import FormalityBadge from "@/components/FormalityBadge";
 import TokenizedText from "@/components/TokenizedText";
 import ReportButton from "@/components/ReportButton";
 import AiNuanceCallout from "@/components/AiNuanceCallout";
+import Avatar from "@/components/Avatar";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 
 export default function EntryCard({
   entry,
@@ -16,6 +18,7 @@ export default function EntryCard({
   entry: ContextEntry;
   currentUserId: string | null;
 }) {
+  const { t } = useLocale();
   const [hasVoted, setHasVoted] = useState(!!entry.has_voted);
   const [count, setCount] = useState(entry.upvotes_count);
   const [voting, setVoting] = useState(false);
@@ -39,56 +42,72 @@ export default function EntryCard({
     setVoting(false);
   }
 
+  const username = entry.profiles?.username ?? "unknown";
+  const timestamp = new Date(entry.created_at).toLocaleString(undefined, {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+
   return (
-    <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition hover:shadow-md sm:p-5">
-      <div className="mb-2 flex items-start justify-between gap-2">
-        <Link href={`/entries/${entry.id}`} className="min-w-0">
+    <article className="group relative flex gap-3 rounded-lg px-3 py-2.5 transition hover:bg-discord-bg-secondary">
+      <Avatar username={username} size={40} />
+
+      <div className="min-w-0 flex-1">
+        <div className="mb-0.5 flex flex-wrap items-baseline gap-2">
+          <span className="text-sm font-semibold text-discord-text-header">@{username}</span>
+          <span className="text-xs text-discord-text-muted">{timestamp}</span>
+          <FormalityBadge level={entry.formality_level} />
+        </div>
+
+        <Link href={`/entries/${entry.id}`} className="block min-w-0">
           <TokenizedText tokens={entry.furigana_parsed} />
         </Link>
-        <FormalityBadge level={entry.formality_level} />
+
+        <p className="mt-1 text-sm text-discord-text-muted">{entry.primary_translation}</p>
+
+        <AiNuanceCallout
+          summary={entry.ai_nuance_summary}
+          formalitySuggestion={entry.ai_formality_suggestion}
+        />
+
+        {!!entry.tags?.length && (
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {entry.tags.map((tag) => (
+              <span
+                key={tag}
+                className="rounded-full bg-discord-bg-input px-2 py-0.5 text-xs text-discord-text-muted"
+              >
+                #{tag}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
-      <p className="mb-3 text-sm text-slate-muted">{entry.primary_translation}</p>
-
-      <AiNuanceCallout
-        summary={entry.ai_nuance_summary}
-        formalitySuggestion={entry.ai_formality_suggestion}
-      />
-
-      {!!entry.tags?.length && (
-        <div className="mb-3 flex flex-wrap gap-1.5">
-          {entry.tags.map((tag) => (
-            <span
-              key={tag}
-              className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-muted"
-            >
-              #{tag}
-            </span>
-          ))}
-        </div>
-      )}
-
-      <div className="flex items-center justify-between text-xs text-slate-muted">
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={handleVote}
-            disabled={!currentUserId || voting}
-            title={currentUserId ? "Upvote" : "Sign in to upvote"}
-            className={`flex items-center gap-1 rounded-full border px-2.5 py-1 font-semibold transition ${
-              hasVoted
-                ? "border-accent bg-blue-50 text-accent"
-                : "border-slate-200 text-ink hover:bg-slate-50"
-            } disabled:cursor-not-allowed disabled:opacity-50`}
-          >
-            ▲ {count}
-          </button>
-          <span>@{entry.profiles?.username ?? "unknown"}</span>
-          <ReportButton targetType="entry" targetId={entry.id} userId={currentUserId} />
-        </div>
-        <Link href={`/entries/${entry.id}`} className="font-medium text-accent hover:underline">
-          Annotate tokens →
+      {/* Discord-style hover toolbar: floats over the top-right corner of the
+          row on desktop; stays visible on touch screens, where hover doesn't exist. */}
+      <div className="absolute -top-3 right-3 flex items-center gap-0.5 rounded-md border border-discord-border bg-discord-bg-secondary p-0.5 opacity-100 shadow-lg transition-opacity sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100">
+        <button
+          type="button"
+          onClick={handleVote}
+          disabled={!currentUserId || voting}
+          title={currentUserId ? t("card.upvote") : t("card.signInToVote")}
+          className={`flex items-center gap-1 rounded px-2 py-1 text-xs font-semibold transition ${
+            hasVoted ? "text-discord-blurple" : "text-discord-text-muted hover:text-discord-text"
+          } disabled:cursor-not-allowed disabled:opacity-50`}
+        >
+          ▲ {count}
+        </button>
+        <Link
+          href={`/entries/${entry.id}`}
+          title={t("card.annotate")}
+          className="rounded px-2 py-1 text-xs font-semibold text-discord-text-muted transition hover:text-discord-text"
+        >
+          #
         </Link>
+        <ReportButton targetType="entry" targetId={entry.id} userId={currentUserId} />
       </div>
     </article>
   );

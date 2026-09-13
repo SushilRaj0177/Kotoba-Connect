@@ -8,8 +8,10 @@ import EntryCard from "@/components/EntryCard";
 import EmptyState from "@/components/EmptyState";
 import SearchBar from "@/components/SearchBar";
 import { EntryListSkeleton } from "@/components/Skeletons";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 
 export default function EntryBoard({ userId }: { userId: string | null }) {
+  const { t } = useLocale();
   const [entries, setEntries] = useState<ContextEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -26,7 +28,7 @@ export default function EntryBoard({ userId }: { userId: string | null }) {
       .limit(50);
 
     if (fetchError) {
-      setError("Couldn't load entries. Check your connection and try again.");
+      setError(t("board.loadError"));
       setLoading(false);
       return;
     }
@@ -48,6 +50,7 @@ export default function EntryBoard({ userId }: { userId: string | null }) {
       (data ?? []).map((e) => ({ ...e, has_voted: votedIds.has(e.id) }) as ContextEntry)
     );
     setLoading(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
   useEffect(() => {
@@ -77,15 +80,15 @@ export default function EntryBoard({ userId }: { userId: string | null }) {
   }, [loadEntries]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {userId ? (
         <EntryForm userId={userId} onCreated={loadEntries} />
       ) : (
-        <div className="rounded-xl border border-dashed border-slate-300 bg-white p-4 text-center text-sm text-slate-muted">
-          <a href="/login" className="font-semibold text-accent hover:underline">
-            Sign in
+        <div className="rounded-lg border border-dashed border-discord-border bg-discord-bg-secondary p-4 text-center text-sm text-discord-text-muted">
+          <a href="/login" className="font-semibold text-discord-text-link hover:underline">
+            {t("board.signInPrompt")}
           </a>{" "}
-          to post a sentence, vote, or add nuance notes.
+          {t("board.signInSuffix")}
         </div>
       )}
 
@@ -94,36 +97,30 @@ export default function EntryBoard({ userId }: { userId: string | null }) {
       {loading ? (
         <EntryListSkeleton />
       ) : error ? (
-        <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-center">
-          <p className="text-sm text-red-600">{error}</p>
+        <div className="rounded-lg border border-discord-red/30 bg-discord-red/10 p-4 text-center">
+          <p className="text-sm text-discord-red">{error}</p>
           <button
             type="button"
             onClick={loadEntries}
-            className="mt-2 text-sm font-semibold text-accent hover:underline"
+            className="mt-2 text-sm font-semibold text-discord-text-link hover:underline"
           >
-            Retry
+            {t("board.retry")}
           </button>
         </div>
       ) : searchResults !== null ? (
         searchResults.length === 0 ? (
-          <EmptyState
-            title="No matches"
-            description="Nothing close in meaning yet — try a different phrase, or post it yourself."
-          />
+          <EmptyState title={t("board.searchEmptyTitle")} description={t("board.searchEmptyDescription")} />
         ) : (
-          <div className="space-y-4">
+          <div>
             {searchResults.map((entry) => (
               <EntryCard key={entry.id} entry={entry} currentUserId={userId} />
             ))}
           </div>
         )
       ) : entries.length === 0 ? (
-        <EmptyState
-          title="No entries yet"
-          description="Be the first to post a Japanese sentence with its pragmatic context."
-        />
+        <EmptyState title={t("board.emptyTitle")} description={t("board.emptyDescription")} />
       ) : (
-        <div className="space-y-4">
+        <div>
           {entries.map((entry) => (
             <EntryCard key={entry.id} entry={entry} currentUserId={userId} />
           ))}
