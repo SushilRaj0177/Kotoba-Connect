@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, Space_Grotesk } from "next/font/google";
+import { Inter, Sora } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/Footer";
 import SideRail from "@/components/SideRail";
@@ -8,14 +8,16 @@ import { getServerLocale } from "@/lib/i18n/server";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { getServerTheme } from "@/lib/theme";
 
-const jakarta = Plus_Jakarta_Sans({
+const inter = Inter({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["400", "500", "600", "700"],
   variable: "--font-sans",
 });
-const grotesk = Space_Grotesk({
+// Heavier, more geometric than the body font — headings and CTAs get real
+// visual weight instead of just being a bigger size of the same face.
+const sora = Sora({
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  weight: ["700", "800"],
   variable: "--font-display",
 });
 
@@ -30,7 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const theme = getServerTheme();
 
   return (
-    <html lang={locale} data-theme={theme} className={`${jakarta.variable} ${grotesk.variable}`}>
+    <html lang={locale} data-theme={theme} className={`${inter.variable} ${sora.variable}`}>
       <body className="flex min-h-screen bg-ink-bg">
         <ThemeProvider initialTheme={theme}>
           <LocaleProvider initialLocale={locale}>
