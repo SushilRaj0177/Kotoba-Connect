@@ -54,7 +54,7 @@ export default function SearchBar({
       const ids = results.map((r) => r.id);
       const { data: fullEntries } = await supabase
         .from("context_entries")
-        .select("*, profiles(username, avatar_url)")
+        .select("*, profiles!context_entries_user_id_fkey(username, avatar_url)")
         .in("id", ids);
 
       const order = new Map(ids.map((id, i) => [id, i]));

@@ -23,7 +23,7 @@ export default function EntryBoard({ userId }: { userId: string | null }) {
 
     const { data, error: fetchError } = await supabase
       .from("context_entries")
-      .select("*, profiles(username, avatar_url)")
+      .select("*, profiles!context_entries_user_id_fkey(username, avatar_url)")
       .order("created_at", { ascending: false })
       .limit(50);
 
