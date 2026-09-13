@@ -119,6 +119,9 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
       "A board for real Japanese sentences — pinned with the politeness register, slang, and cultural nuance a dictionary won't tell you.",
     "rail.tipTitle": "Try this",
     "rail.tipBody": "Post a line from anime, a manga panel, or something you overheard — then click any word to annotate it.",
+    "rail.topContributorsTitle": "Top contributors",
+    "rail.trendingTagsTitle": "Trending tags",
+    "rail.viewAll": "View all",
 
     "profile.memberSince": "Member since",
     "profile.reputation": "Reputation",
@@ -274,6 +277,9 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "rail.aboutBody": "実際の日本語文を集めたボードです。辞書にはない丁寧さのレベル、スラング、文化的ニュアンスを記録します。",
     "rail.tipTitle": "試してみよう",
     "rail.tipBody": "アニメのセリフや漫画の一コマ、耳にした言葉を投稿してみましょう。単語をクリックすると注釈できます。",
+    "rail.topContributorsTitle": "貢献度ランキング",
+    "rail.trendingTagsTitle": "人気のタグ",
+    "rail.viewAll": "すべて見る",
 
     "profile.memberSince": "登録日",
     "profile.reputation": "評判値",
