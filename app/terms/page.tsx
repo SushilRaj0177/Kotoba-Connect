@@ -5,7 +5,7 @@ export const metadata = { title: "Terms of Service — Kotoba Engine" };
 export default function TermsPage() {
   return (
     <>
-      <Navbar />
+      <Navbar title="Terms" />
       <main className="mx-auto max-w-2xl px-4 py-10 text-sm text-ink-text sm:px-6">
         <h1 className="mb-6 text-2xl font-bold text-ink-text-header">Terms of Service</h1>
         <p className="mb-4 text-ink-text-muted">

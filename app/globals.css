@@ -27,11 +27,11 @@
 }
 
 :root[data-theme="dark"] {
-  --c-bg: 18 18 27;
-  --c-bg-secondary: 28 28 40;
-  --c-bg-input: 37 37 51;
-  --c-bg-hover: 46 46 62;
-  --c-border: 56 56 74;
+  --c-bg: 0 0 0;
+  --c-bg-secondary: 15 15 17;
+  --c-bg-input: 24 24 27;
+  --c-bg-hover: 32 32 36;
+  --c-border: 40 40 45;
   --c-text: 219 219 230;
   --c-text-muted: 150 150 168;
   --c-text-header: 246 246 250;
@@ -96,21 +96,20 @@ body {
   background: transparent;
 }
 
-/* Primary CTA treatment: a warm gradient with a soft colored glow that
-   lifts on hover and settles on click — motion-driven energy rather than
-   a flat-color skeuomorphic "press" button. */
+/* Primary CTA treatment: a single flat accent color, no gradient — the
+   reference apps (Reddit, Discord, X) all lean on flat color + confident
+   type rather than gradients. A subtle lift on hover keeps it feeling
+   alive without any skeuomorphic "press" mechanic. */
 .btn-chunky {
-  background-image: linear-gradient(135deg, rgb(var(--c-accent)), rgb(var(--c-accent-2)));
-  box-shadow: 0 6px 16px -4px rgb(var(--c-accent) / 0.45);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  background-color: rgb(var(--c-accent));
+  transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
 }
 .btn-chunky:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px -4px rgb(var(--c-accent) / 0.55);
+  background-color: rgb(var(--c-accent-hover));
+  box-shadow: 0 4px 14px -4px rgb(var(--c-accent) / 0.4);
 }
 .btn-chunky:active:not(:disabled) {
-  transform: translateY(0) scale(0.97);
-  box-shadow: 0 4px 10px -4px rgb(var(--c-accent) / 0.4);
+  transform: scale(0.97);
 }
 .btn-chunky:disabled {
   box-shadow: none;

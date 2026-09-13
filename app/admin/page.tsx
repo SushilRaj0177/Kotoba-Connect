@@ -21,7 +21,7 @@ export default async function AdminPage() {
 
   return (
     <>
-      <Navbar />
+      <Navbar title="Moderation" />
       <main className="mx-auto max-w-3xl px-4 py-6 sm:px-6">
         <h1 className="mb-1 text-xl font-bold text-ink-text-header">Moderation queue</h1>
         <p className="mb-6 text-sm text-ink-text-muted">

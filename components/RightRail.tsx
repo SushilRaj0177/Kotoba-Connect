@@ -34,7 +34,7 @@ export default async function RightRail() {
         <p className="text-sm leading-relaxed text-ink-text-muted">{t("rail.aboutBody")}</p>
       </div>
 
-      <div className="rounded-2xl bg-gradient-to-br from-ink-accent to-ink-accent-2 p-4 text-white">
+      <div className="rounded-2xl bg-ink-accent p-4 text-white">
         <h2 className="mb-1 text-sm font-extrabold">{t("rail.tipTitle")}</h2>
         <p className="text-sm leading-relaxed text-white/90">{t("rail.tipBody")}</p>
       </div>
