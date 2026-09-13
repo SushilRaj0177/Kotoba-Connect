@@ -63,12 +63,12 @@ export default function ReportButton({
       {open && (
         <form
           onSubmit={handleSubmit}
-          className="absolute right-0 top-full z-20 mt-1 w-56 space-y-2 rounded-lg border border-ink-border bg-ink-bg-tertiary p-2 shadow-xl"
+          className="absolute right-0 top-full z-20 mt-2 w-56 space-y-2 rounded-2xl bg-ink-bg-secondary p-3 shadow-cozy"
         >
           <select
             value={reason}
             onChange={(e) => setReason(e.target.value)}
-            className="w-full rounded-md border-none bg-ink-bg-input px-2 py-1 text-xs text-ink-text"
+            className="w-full rounded-lg border-none bg-ink-bg-input px-2 py-1.5 text-xs text-ink-text"
           >
             {REPORT_REASONS.map((r) => (
               <option key={r} value={r}>
@@ -81,21 +81,21 @@ export default function ReportButton({
             onChange={(e) => setDetail(e.target.value)}
             maxLength={200}
             placeholder="Optional details"
-            className="w-full rounded-md border-none bg-ink-bg-input px-2 py-1 text-xs text-ink-text placeholder:text-ink-text-muted"
+            className="w-full rounded-lg border-none bg-ink-bg-input px-2 py-1.5 text-xs text-ink-text placeholder:text-ink-text-muted"
           />
           {error && <p className="text-xs text-ink-red">{error}</p>}
           <div className="flex gap-2">
             <button
               type="submit"
               disabled={submitting}
-              className="rounded-md bg-ink-red px-2 py-1 text-xs font-semibold text-white hover:bg-ink-red-hover disabled:opacity-60"
+              className="rounded-full bg-ink-red px-3 py-1 text-xs font-semibold text-white hover:bg-ink-red-hover disabled:opacity-60"
             >
               {submitting ? "Sending…" : "Submit report"}
             </button>
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="rounded-md px-2 py-1 text-xs text-ink-text-muted hover:bg-ink-bg-hover"
+              className="rounded-full px-3 py-1 text-xs text-ink-text-muted hover:bg-ink-bg-hover"
             >
               Cancel
             </button>

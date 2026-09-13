@@ -94,7 +94,7 @@ export default function AdminQueue() {
   return (
     <div className="space-y-3">
       {reports.map((report) => (
-        <div key={report.id} className="rounded-lg bg-ink-bg-secondary p-4">
+        <div key={report.id} className="rounded-2xl bg-ink-bg-secondary p-4 shadow-cozy">
           <div className="mb-2 flex items-center justify-between text-xs text-ink-text-muted">
             <span className="rounded-full bg-ink-bg-input px-2 py-0.5 font-medium uppercase">
               {report.target_type}
@@ -108,7 +108,7 @@ export default function AdminQueue() {
               type="button"
               onClick={() => dismiss(report)}
               disabled={actingOn === report.id}
-              className="rounded-md bg-ink-bg-input px-3 py-1.5 text-xs font-semibold text-ink-text hover:bg-ink-bg-hover disabled:opacity-60"
+              className="rounded-full bg-ink-bg-input px-3 py-1.5 text-xs font-semibold text-ink-text hover:bg-ink-bg-hover disabled:opacity-60"
             >
               Dismiss
             </button>
@@ -116,7 +116,7 @@ export default function AdminQueue() {
               type="button"
               onClick={() => deleteAndResolve(report)}
               disabled={actingOn === report.id}
-              className="rounded-md bg-ink-red px-3 py-1.5 text-xs font-semibold text-white hover:bg-ink-red-hover disabled:opacity-60"
+              className="rounded-full bg-ink-red px-3 py-1.5 text-xs font-semibold text-white hover:bg-ink-red-hover disabled:opacity-60"
             >
               Delete content & resolve
             </button>

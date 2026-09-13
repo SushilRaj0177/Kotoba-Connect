@@ -51,11 +51,11 @@ export default function EntryCard({
   });
 
   return (
-    <article className="flex gap-3 rounded-lg bg-ink-bg-secondary p-3.5">
+    <article className="flex gap-3 rounded-2xl bg-ink-bg-secondary p-4 shadow-cozy">
       <Avatar username={username} size={40} />
 
       <div className="min-w-0 flex-1">
-        <div className="mb-0.5 flex flex-wrap items-baseline gap-2">
+        <div className="mb-1 flex flex-wrap items-baseline gap-2">
           <span className="text-sm font-semibold text-ink-text-header">@{username}</span>
           <span className="text-xs text-ink-text-muted">{timestamp}</span>
           <FormalityBadge level={entry.formality_level} />
@@ -85,17 +85,27 @@ export default function EntryCard({
           </div>
         )}
 
-        <div className="mt-2.5 flex items-center gap-4 text-xs">
+        <div className="mt-3 flex items-center gap-4 text-xs">
           <button
             type="button"
             onClick={handleVote}
             disabled={!currentUserId || voting}
             title={currentUserId ? t("card.upvote") : t("card.signInToVote")}
-            className={`flex items-center gap-1 font-semibold transition ${
+            className={`flex items-center gap-1.5 font-semibold transition ${
               hasVoted ? "text-ink-accent" : "text-ink-text-muted hover:text-ink-text"
             } disabled:cursor-not-allowed disabled:opacity-50`}
           >
-            ▲ {count}
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill={hasVoted ? "currentColor" : "none"}
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M12 21s-6.7-4.35-9.3-8.1C1 10.1 1.6 6.6 4.6 5.1c2.4-1.2 5 .1 7.4 3 2.4-2.9 5-4.2 7.4-3 3 1.5 3.6 5 1.9 7.8C18.7 16.65 12 21 12 21z" />
+            </svg>
+            {count}
           </button>
           <Link
             href={`/entries/${entry.id}`}

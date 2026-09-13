@@ -51,8 +51,8 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "card.annotate": "Annotate tokens →",
     "card.report": "Report",
     "card.reported": "Reported — thanks for flagging this.",
-    "card.upvote": "Upvote",
-    "card.signInToVote": "Sign in to upvote",
+    "card.upvote": "Like",
+    "card.signInToVote": "Sign in to like",
 
     "detail.back": "← Back to board",
     "detail.clickHint": "Click any word above to pin a pragmatic nuance note to that token.",
@@ -67,7 +67,7 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "detail.saving": "Saving…",
     "detail.signInToAnnotate": "Sign in",
     "detail.signInSuffix": "to add a note.",
-    "detail.upvotes": "upvotes",
+    "detail.upvotes": "likes",
     "detail.postedBy": "Posted by",
 
     "ai.label": "AI pragmatic read",
@@ -143,8 +143,8 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "card.annotate": "トークンを注釈する →",
     "card.report": "報告",
     "card.reported": "報告しました — ご協力ありがとうございます。",
-    "card.upvote": "投票する",
-    "card.signInToVote": "投票するにはサインインしてください",
+    "card.upvote": "いいね",
+    "card.signInToVote": "いいねするにはサインインしてください",
 
     "detail.back": "← ボードに戻る",
     "detail.clickHint": "上の単語をクリックすると、その語にニュアンスノートを固定できます。",
@@ -159,7 +159,7 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "detail.saving": "保存中…",
     "detail.signInToAnnotate": "サインイン",
     "detail.signInSuffix": "してノートを追加してください。",
-    "detail.upvotes": "件の投票",
+    "detail.upvotes": "件のいいね",
     "detail.postedBy": "投稿者:",
 
     "ai.label": "AIによる語用論的解釈",

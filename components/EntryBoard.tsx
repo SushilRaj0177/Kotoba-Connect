@@ -84,7 +84,7 @@ export default function EntryBoard({ userId }: { userId: string | null }) {
       {userId ? (
         <EntryForm userId={userId} onCreated={loadEntries} />
       ) : (
-        <div className="rounded-lg border border-dashed border-ink-border bg-ink-bg-secondary p-4 text-center text-sm text-ink-text-muted">
+        <div className="rounded-2xl bg-ink-bg-secondary p-4 text-center text-sm text-ink-text-muted shadow-cozy">
           <a href="/login" className="font-semibold text-ink-text-link hover:underline">
             {t("board.signInPrompt")}
           </a>{" "}
@@ -97,7 +97,7 @@ export default function EntryBoard({ userId }: { userId: string | null }) {
       {loading ? (
         <EntryListSkeleton />
       ) : error ? (
-        <div className="rounded-lg border border-ink-red/30 bg-ink-red/10 p-4 text-center">
+        <div className="rounded-2xl bg-ink-red/10 p-4 text-center">
           <p className="text-sm text-ink-red">{error}</p>
           <button
             type="button"

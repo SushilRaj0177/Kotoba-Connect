@@ -2,31 +2,96 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+  Warm, cozy color system as RGB triplets (so Tailwind's opacity modifiers
+  work: bg-ink-accent/10, etc.) — one set per theme, swapped by the
+  `data-theme` attribute on <html>. Light is a warm paper/cream palette;
+  dark is a warm candlelit brown, not a cold neutral charcoal.
+*/
+:root[data-theme="light"] {
+  --c-bg: 250 246 240;
+  --c-bg-secondary: 255 252 247;
+  --c-bg-input: 242 235 224;
+  --c-bg-hover: 236 227 212;
+  --c-border: 232 221 203;
+  --c-text: 58 51 46;
+  --c-text-muted: 138 122 106;
+  --c-text-header: 37 31 27;
+  --c-accent: 199 90 42;
+  --c-accent-hover: 173 76 33;
+  --c-link: 61 122 106;
+  --c-green: 79 138 92;
+  --c-red: 178 62 48;
+  --c-red-hover: 154 50 38;
+  --c-yellow: 178 128 21;
+}
+
+:root[data-theme="dark"] {
+  --c-bg: 26 22 19;
+  --c-bg-secondary: 45 37 32;
+  --c-bg-input: 55 45 39;
+  --c-bg-hover: 63 52 45;
+  --c-border: 64 53 45;
+  --c-text: 231 219 205;
+  --c-text-muted: 163 145 127;
+  --c-text-header: 246 237 226;
+  --c-accent: 224 134 82;
+  --c-accent-hover: 233 154 107;
+  --c-link: 130 195 176;
+  --c-green: 129 186 143;
+  --c-red: 224 128 111;
+  --c-red-hover: 235 148 132;
+  --c-yellow: 224 182 108;
+}
+
 :root {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  /* Fallback (used only before hydration if the theme cookie is somehow
+     missing) — matches the light theme so first paint isn't jarring. */
+  --c-bg: 250 246 240;
+  --c-bg-secondary: 255 252 247;
+  --c-bg-input: 242 235 224;
+  --c-bg-hover: 236 227 212;
+  --c-border: 232 221 203;
+  --c-text: 58 51 46;
+  --c-text-muted: 138 122 106;
+  --c-text-header: 37 31 27;
+  --c-accent: 199 90 42;
+  --c-accent-hover: 173 76 33;
+  --c-link: 61 122 106;
+  --c-green: 79 138 92;
+  --c-red: 178 62 48;
+  --c-red-hover: 154 50 38;
+  --c-yellow: 178 128 21;
+
+  /* --font-sans / --font-display come from next/font (see app/layout.tsx),
+     applied as classes on <html> — not redeclared here. */
   --font-jp: "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
   color-scheme: dark;
 }
 
 body {
   @apply bg-ink-bg text-ink-text antialiased;
+  transition: background-color 0.2s ease;
 }
 
 ::selection {
-  background-color: rgba(232, 84, 47, 0.35);
+  background-color: rgb(var(--c-accent) / 0.3);
 }
 
-/* Slim scrollbar to match the dark theme */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #1a1b1e transparent;
+  scrollbar-color: rgb(var(--c-border)) transparent;
 }
 *::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 *::-webkit-scrollbar-thumb {
-  background-color: #1a1b1e;
+  background-color: rgb(var(--c-border));
   border-radius: 4px;
 }
 *::-webkit-scrollbar-track {
@@ -39,7 +104,7 @@ body {
     opacity: 1;
   }
   50% {
-    opacity: 0.4;
+    opacity: 0.45;
   }
 }
 

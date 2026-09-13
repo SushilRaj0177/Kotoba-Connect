@@ -104,7 +104,7 @@ export default function EntryDetail({
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-3 rounded-lg bg-ink-bg-secondary p-4 sm:p-5">
+      <div className="flex gap-3 rounded-2xl bg-ink-bg-secondary p-4 shadow-cozy sm:p-5">
         <Avatar username={username} size={40} />
         <div className="min-w-0 flex-1">
           <div className="mb-1 flex flex-wrap items-baseline gap-2">
@@ -128,7 +128,7 @@ export default function EntryDetail({
         </div>
       </div>
 
-      <div className="rounded-lg bg-ink-bg-secondary p-4 sm:p-5">
+      <div className="rounded-2xl bg-ink-bg-secondary p-4 shadow-cozy sm:p-5">
         <h2 className="mb-3 text-sm font-semibold text-ink-text-header">
           {activeIndex !== null
             ? `${t("detail.notesOn")} "${entry.furigana_parsed[activeIndex]?.surface_form}"`
@@ -144,7 +144,7 @@ export default function EntryDetail({
         ) : (
           <ul className="mb-4 space-y-3">
             {activeAnnotations.map((a) => (
-              <li key={a.id} className="flex gap-2.5 rounded-lg bg-ink-bg-input p-3">
+              <li key={a.id} className="flex gap-2.5 rounded-2xl bg-ink-bg-input p-3">
                 <Avatar username={a.profiles?.username ?? "unknown"} size={28} />
                 <div className="min-w-0 flex-1">
                   <p className="text-sm text-ink-text">{a.nuance_note}</p>
@@ -182,7 +182,7 @@ export default function EntryDetail({
             <button
               type="submit"
               disabled={submitting || activeIndex === null}
-              className="rounded-lg bg-ink-accent px-3 py-2 text-sm font-semibold text-white transition hover:bg-ink-accent-hover disabled:opacity-60"
+              className="rounded-full bg-ink-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-ink-accent-hover disabled:opacity-60"
             >
               {submitting ? t("detail.saving") : t("detail.addNote")}
             </button>
