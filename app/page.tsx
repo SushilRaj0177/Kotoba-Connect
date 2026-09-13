@@ -11,6 +11,16 @@ export default async function HomePage() {
     data: { user },
   } = await supabase.auth.getUser();
 
+  let username: string | null = null;
+  if (user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("username")
+      .eq("id", user.id)
+      .single();
+    username = profile?.username ?? null;
+  }
+
   return (
     <>
       <Navbar />
@@ -20,7 +30,7 @@ export default async function HomePage() {
             <h1 className="font-display text-2xl font-extrabold text-ink-text-header">{t("home.title")}</h1>
             <p className="text-sm text-ink-text-muted">{t("home.subtitle")}</p>
           </div>
-          <EntryBoard userId={user?.id ?? null} />
+          <EntryBoard userId={user?.id ?? null} username={username} />
         </div>
         <RightRail />
       </main>

@@ -29,7 +29,7 @@ export default async function SideRail() {
       <Link
         href="/"
         title={t("app.name")}
-        className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-ink-accent to-ink-accent-2 font-jp text-lg font-black text-white"
+        className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-ink-accent font-jp text-lg font-black text-white"
       >
         言
       </Link>

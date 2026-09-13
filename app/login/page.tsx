@@ -116,9 +116,7 @@ export default function LoginPage() {
 
       <div className="w-full max-w-sm rounded-2xl bg-ink-bg-secondary p-8 border-2 border-ink-border">
         <div className="mb-6 text-center">
-          <span className="bg-gradient-to-br from-ink-accent to-ink-accent-2 bg-clip-text font-jp text-4xl font-black text-transparent">
-            言葉
-          </span>
+          <span className="font-jp text-4xl font-black text-ink-accent">言葉</span>
           <p className="mt-1 text-sm text-ink-text-muted">{t("login.title")}</p>
         </div>
 

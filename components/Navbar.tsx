@@ -6,7 +6,7 @@ import LanguageToggle from "@/components/i18n/LanguageToggle";
 import ThemeToggle from "@/components/theme/ThemeToggle";
 import Avatar from "@/components/Avatar";
 
-export default async function Navbar() {
+export default async function Navbar({ title }: { title?: string } = {}) {
   const supabase = createClient();
   const { t } = getServerTranslator();
   const {
@@ -26,13 +26,17 @@ export default async function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-10 bg-ink-bg/90 border-b-2 border-ink-border">
+    <header className="sticky top-0 z-10 bg-ink-bg/90 border-b-2 border-ink-border backdrop-blur">
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
         <Link href="/" className="flex-none md:hidden">
-          <span className="bg-gradient-to-br from-ink-accent to-ink-accent-2 bg-clip-text font-jp text-2xl font-black text-transparent">
-            言葉
-          </span>
+          <span className="font-jp text-2xl font-black text-ink-accent">言葉</span>
         </Link>
+
+        {/* Balances the toggles/auth cluster on the right — every reference
+            app anchors something on both sides of its header. */}
+        <span className="hidden truncate font-display text-lg font-extrabold text-ink-text-header md:block">
+          {title ?? t("nav.home")}
+        </span>
 
         <div className="ml-auto flex items-center gap-2.5">
           <ThemeToggle />

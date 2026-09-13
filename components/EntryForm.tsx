@@ -7,6 +7,7 @@ import TokenizedText from "@/components/TokenizedText";
 import { spamSignal } from "@/lib/moderation";
 import { errorMessage } from "@/lib/errors";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import Avatar from "@/components/Avatar";
 
 const FORMALITY_LEVELS: FormalityLevel[] = [
   "Sonkeigo",
@@ -19,9 +20,11 @@ const FORMALITY_LEVELS: FormalityLevel[] = [
 
 export default function EntryForm({
   userId,
+  username,
   onCreated,
 }: {
   userId: string;
+  username?: string | null;
   onCreated?: () => void;
 }) {
   const { t } = useLocale();
@@ -141,7 +144,10 @@ export default function EntryForm({
       onSubmit={handleSubmit}
       className="rounded-2xl bg-ink-bg-secondary p-4 border-2 border-ink-border sm:p-5"
     >
-      <h2 className="mb-3 text-sm font-semibold text-ink-text-header">{t("form.heading")}</h2>
+      <div className="mb-3 flex items-center gap-2.5">
+        <Avatar username={username ?? "user"} size={32} />
+        <h2 className="text-sm font-semibold text-ink-text-header">{t("form.heading")}</h2>
+      </div>
 
       <div className="mb-3">
         <label htmlFor="raw_japanese" className="mb-1 block text-xs font-medium text-ink-text-muted">

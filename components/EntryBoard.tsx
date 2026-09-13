@@ -10,7 +10,13 @@ import SearchBar from "@/components/SearchBar";
 import { EntryListSkeleton } from "@/components/Skeletons";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 
-export default function EntryBoard({ userId }: { userId: string | null }) {
+export default function EntryBoard({
+  userId,
+  username,
+}: {
+  userId: string | null;
+  username: string | null;
+}) {
   const { t } = useLocale();
   const [entries, setEntries] = useState<ContextEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -82,7 +88,7 @@ export default function EntryBoard({ userId }: { userId: string | null }) {
   return (
     <div className="space-y-4">
       {userId ? (
-        <EntryForm userId={userId} onCreated={loadEntries} />
+        <EntryForm userId={userId} username={username} onCreated={loadEntries} />
       ) : (
         <div className="rounded-2xl bg-ink-bg-secondary p-4 text-center text-sm text-ink-text-muted border-2 border-ink-border">
           <a href="/login" className="font-semibold text-ink-text-link hover:underline">
