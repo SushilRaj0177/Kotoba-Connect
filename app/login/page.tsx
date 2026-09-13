@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { signIn, signUp, resendConfirmation, type AuthState } from "@/app/auth/actions";
 import { createClient } from "@/lib/supabase/client";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import LanguageToggle from "@/components/i18n/LanguageToggle";
 
 const initialState: AuthState = { error: null };
 
@@ -13,7 +15,7 @@ function SubmitButton({ label, pendingLabel }: { label: string; pendingLabel: st
     <button
       type="submit"
       disabled={pending}
-      className="w-full rounded-lg bg-accent px-3 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:opacity-60"
+      className="w-full rounded-lg bg-discord-blurple px-3 py-2.5 text-sm font-semibold text-white transition hover:bg-discord-blurple-hover disabled:opacity-60"
     >
       {pending ? pendingLabel : label}
     </button>
@@ -21,6 +23,7 @@ function SubmitButton({ label, pendingLabel }: { label: string; pendingLabel: st
 }
 
 function GoogleButton() {
+  const { t } = useLocale();
   const [loading, setLoading] = useState(false);
 
   async function handleClick() {
@@ -37,7 +40,7 @@ function GoogleButton() {
       type="button"
       onClick={handleClick}
       disabled={loading}
-      className="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-ink transition hover:bg-slate-50 disabled:opacity-60"
+      className="flex w-full items-center justify-center gap-2 rounded-lg bg-discord-bg-input px-3 py-2.5 text-sm font-semibold text-discord-text transition hover:bg-discord-bg-hover disabled:opacity-60"
     >
       <svg width="16" height="16" viewBox="0 0 48 48" aria-hidden="true">
         <path
@@ -57,12 +60,13 @@ function GoogleButton() {
           d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.2 4.2-4 5.6l6.6 5.6C41.4 36 44 30.5 44 24c0-1.3-.1-2.7-.4-3.5z"
         />
       </svg>
-      Continue with Google
+      {t("login.google")}
     </button>
   );
 }
 
 function ConfirmationPending({ email }: { email: string }) {
+  const { t } = useLocale();
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
 
   async function handleResend() {
@@ -74,147 +78,159 @@ function ConfirmationPending({ email }: { email: string }) {
   return (
     <div className="text-center">
       <p className="font-jp text-3xl">📬</p>
-      <h2 className="mt-3 text-lg font-bold text-ink">Check your inbox</h2>
-      <p className="mt-2 text-sm text-slate-muted">
-        We sent a confirmation link to <span className="font-medium text-ink">{email}</span>.
-        Click it to activate your account.
+      <h2 className="mt-3 text-lg font-bold text-discord-text-header">{t("login.confirmTitle")}</h2>
+      <p className="mt-2 text-sm text-discord-text-muted">
+        {t("login.confirmBody")} <span className="font-medium text-discord-text">{email}</span>.{" "}
+        {t("login.confirmBody2")}
       </p>
       <button
         type="button"
         onClick={handleResend}
         disabled={status === "sending"}
-        className="mt-4 text-sm font-semibold text-accent hover:underline disabled:opacity-60"
+        className="mt-4 text-sm font-semibold text-discord-text-link hover:underline disabled:opacity-60"
       >
         {status === "sending"
-          ? "Sending…"
+          ? t("login.resendSending")
           : status === "sent"
-            ? "Sent — check your inbox again"
-            : "Resend confirmation email"}
+            ? t("login.resendSent")
+            : t("login.resend")}
       </button>
-      {status === "error" && (
-        <p className="mt-2 text-sm text-red-600">Couldn't resend. Try again shortly.</p>
-      )}
+      {status === "error" && <p className="mt-2 text-sm text-discord-red">{t("login.resendError")}</p>}
     </div>
   );
 }
 
 export default function LoginPage() {
+  const { t } = useLocale();
   const [mode, setMode] = useState<"signIn" | "signUp">("signIn");
   const action = mode === "signIn" ? signIn : signUp;
   const [state, formAction] = useFormState(action, initialState);
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-sm flex-col justify-center px-6 py-12">
-      <div className="mb-8 text-center">
-        <h1 className="font-jp text-3xl font-bold text-ink">言葉 Kotoba Engine</h1>
-        <p className="mt-2 text-sm text-slate-muted">
-          Sign in to annotate real Japanese pragmatics.
-        </p>
+    <main className="flex min-h-screen flex-col items-center justify-center px-6 py-12">
+      <div className="mb-4 flex w-full max-w-sm justify-end">
+        <LanguageToggle />
       </div>
 
-      {state.pendingConfirmation && state.email ? (
-        <ConfirmationPending email={state.email} />
-      ) : (
-        <>
-          <div className="mb-6 flex rounded-lg bg-slate-100 p-1 text-sm font-medium">
-            <button
-              type="button"
-              onClick={() => setMode("signIn")}
-              className={`flex-1 rounded-md py-2 transition ${
-                mode === "signIn" ? "bg-white shadow text-ink" : "text-slate-muted"
-              }`}
-            >
-              Sign in
-            </button>
-            <button
-              type="button"
-              onClick={() => setMode("signUp")}
-              className={`flex-1 rounded-md py-2 transition ${
-                mode === "signUp" ? "bg-white shadow text-ink" : "text-slate-muted"
-              }`}
-            >
-              Create account
-            </button>
-          </div>
+      <div className="w-full max-w-sm rounded-lg bg-discord-bg-secondary p-8 shadow-xl">
+        <div className="mb-6 text-center">
+          <span className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-discord-blurple font-jp text-xl font-bold text-white">
+            言
+          </span>
+          <h1 className="text-xl font-bold text-discord-text-header">{t("app.name")}</h1>
+          <p className="mt-1 text-sm text-discord-text-muted">{t("login.title")}</p>
+        </div>
 
-          <GoogleButton />
+        {state.pendingConfirmation && state.email ? (
+          <ConfirmationPending email={state.email} />
+        ) : (
+          <>
+            <div className="mb-5 flex rounded-lg bg-discord-bg-input p-1 text-sm font-medium">
+              <button
+                type="button"
+                onClick={() => setMode("signIn")}
+                className={`flex-1 rounded-md py-2 transition ${
+                  mode === "signIn"
+                    ? "bg-discord-blurple text-white"
+                    : "text-discord-text-muted hover:text-discord-text"
+                }`}
+              >
+                {t("login.tabSignIn")}
+              </button>
+              <button
+                type="button"
+                onClick={() => setMode("signUp")}
+                className={`flex-1 rounded-md py-2 transition ${
+                  mode === "signUp"
+                    ? "bg-discord-blurple text-white"
+                    : "text-discord-text-muted hover:text-discord-text"
+                }`}
+              >
+                {t("login.tabSignUp")}
+              </button>
+            </div>
 
-          <div className="my-4 flex items-center gap-3 text-xs text-slate-muted">
-            <div className="h-px flex-1 bg-slate-200" />
-            or
-            <div className="h-px flex-1 bg-slate-200" />
-          </div>
+            <GoogleButton />
 
-          <form action={formAction} className="space-y-4" key={mode}>
-            {mode === "signUp" && (
+            <div className="my-4 flex items-center gap-3 text-xs text-discord-text-muted">
+              <div className="h-px flex-1 bg-discord-border" />
+              {t("login.or")}
+              <div className="h-px flex-1 bg-discord-border" />
+            </div>
+
+            <form action={formAction} className="space-y-4" key={mode}>
+              {mode === "signUp" && (
+                <div>
+                  <label htmlFor="username" className="mb-1 block text-xs font-semibold uppercase text-discord-text-muted">
+                    {t("login.username")}
+                  </label>
+                  <input
+                    id="username"
+                    name="username"
+                    required
+                    minLength={3}
+                    maxLength={20}
+                    placeholder="tokyo_nuance"
+                    className="w-full rounded-lg border-none bg-discord-bg-input px-3 py-2 text-sm text-discord-text placeholder:text-discord-text-muted focus:outline-none focus:ring-2 focus:ring-discord-blurple"
+                  />
+                </div>
+              )}
               <div>
-                <label htmlFor="username" className="mb-1 block text-sm font-medium text-ink">
-                  Username
+                <label htmlFor="email" className="mb-1 block text-xs font-semibold uppercase text-discord-text-muted">
+                  {t("login.email")}
                 </label>
                 <input
-                  id="username"
-                  name="username"
+                  id="email"
+                  name="email"
+                  type="email"
                   required
-                  minLength={3}
-                  maxLength={20}
-                  placeholder="tokyo_nuance"
-                  className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+                  placeholder="you@example.com"
+                  className="w-full rounded-lg border-none bg-discord-bg-input px-3 py-2 text-sm text-discord-text placeholder:text-discord-text-muted focus:outline-none focus:ring-2 focus:ring-discord-blurple"
                 />
               </div>
-            )}
-            <div>
-              <label htmlFor="email" className="mb-1 block text-sm font-medium text-ink">
-                Email
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                placeholder="you@example.com"
-                className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+              <div>
+                <label htmlFor="password" className="mb-1 block text-xs font-semibold uppercase text-discord-text-muted">
+                  {t("login.password")}
+                </label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  required
+                  minLength={6}
+                  placeholder="••••••••"
+                  className="w-full rounded-lg border-none bg-discord-bg-input px-3 py-2 text-sm text-discord-text placeholder:text-discord-text-muted focus:outline-none focus:ring-2 focus:ring-discord-blurple"
+                />
+              </div>
+
+              {state.error && (
+                <p className="rounded-md bg-discord-red/10 px-3 py-2 text-sm text-discord-red">
+                  {state.error}
+                </p>
+              )}
+
+              <SubmitButton
+                label={mode === "signIn" ? t("login.submitSignIn") : t("login.submitSignUp")}
+                pendingLabel={t("login.pleaseWait")}
               />
-            </div>
-            <div>
-              <label htmlFor="password" className="mb-1 block text-sm font-medium text-ink">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                minLength={6}
-                placeholder="••••••••"
-                className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
-              />
-            </div>
 
-            {state.error && (
-              <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-600">{state.error}</p>
-            )}
-
-            <SubmitButton
-              label={mode === "signIn" ? "Sign in" : "Create account"}
-              pendingLabel="Please wait…"
-            />
-
-            {mode === "signUp" && (
-              <p className="text-center text-xs text-slate-muted">
-                By creating an account you agree to the{" "}
-                <a href="/terms" className="underline hover:text-ink">
-                  Terms
-                </a>{" "}
-                and{" "}
-                <a href="/privacy" className="underline hover:text-ink">
-                  Privacy Policy
-                </a>
-                .
-              </p>
-            )}
-          </form>
-        </>
-      )}
+              {mode === "signUp" && (
+                <p className="text-center text-xs text-discord-text-muted">
+                  {t("login.agreePrefix")}{" "}
+                  <a href="/terms" className="text-discord-text-link underline hover:text-discord-text">
+                    {t("footer.terms")}
+                  </a>{" "}
+                  {t("login.agreeAnd")}{" "}
+                  <a href="/privacy" className="text-discord-text-link underline hover:text-discord-text">
+                    {t("footer.privacy")}
+                  </a>
+                  .
+                </p>
+              )}
+            </form>
+          </>
+        )}
+      </div>
     </main>
   );
 }

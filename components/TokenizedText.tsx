@@ -14,7 +14,7 @@ export default function TokenizedText({
   if (!tokens.length) return null;
 
   return (
-    <div className="flex flex-wrap gap-1 font-jp text-lg leading-loose">
+    <div className="flex flex-wrap gap-1 font-jp text-lg leading-loose text-discord-text-header">
       {tokens.map((token, i) => (
         <button
           key={i}
@@ -23,8 +23,8 @@ export default function TokenizedText({
           onClick={() => onTokenClick?.(i)}
           title={`${token.pos} · ${token.basic_form}${token.reading ? ` · ${token.reading}` : ""}`}
           className={`rounded px-0.5 transition ${
-            onTokenClick ? "cursor-pointer hover:bg-blue-100" : "cursor-default"
-          } ${activeIndex === i ? "bg-accent text-white hover:bg-accent" : ""}`}
+            onTokenClick ? "cursor-pointer hover:bg-discord-bg-hover" : "cursor-default"
+          } ${activeIndex === i ? "bg-discord-blurple text-white hover:bg-discord-blurple" : ""}`}
         >
           {token.surface_form}
         </button>

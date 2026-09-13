@@ -6,6 +6,7 @@ import type { FormalityLevel, KuromojiToken } from "@/types/database";
 import TokenizedText from "@/components/TokenizedText";
 import { spamSignal } from "@/lib/moderation";
 import { errorMessage } from "@/lib/errors";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 
 const FORMALITY_LEVELS: FormalityLevel[] = [
   "Sonkeigo",
@@ -23,6 +24,7 @@ export default function EntryForm({
   userId: string;
   onCreated?: () => void;
 }) {
+  const { t } = useLocale();
   const [rawJapanese, setRawJapanese] = useState("");
   const [translation, setTranslation] = useState("");
   const [formality, setFormality] = useState<FormalityLevel>("Teineigo");
@@ -47,7 +49,7 @@ export default function EntryForm({
       if (!res.ok) throw new Error(data.error || "Tokenization failed.");
       setTokens(data.tokens);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not reach the tokenizer.");
+      setError(errorMessage(err, "Could not reach the tokenizer."));
     } finally {
       setTokenizing(false);
     }
@@ -61,15 +63,15 @@ export default function EntryForm({
     const trimmedTranslation = translation.trim();
 
     if (!trimmedJapanese) {
-      setError("Enter the Japanese sentence.");
+      setError(t("form.errorEmptyJapanese"));
       return;
     }
     if (!/[぀-ヿ一-龯]/.test(trimmedJapanese)) {
-      setError("That doesn't look like Japanese text — include kana or kanji.");
+      setError(t("form.errorNotJapanese"));
       return;
     }
     if (!trimmedTranslation) {
-      setError("Add a primary translation so others understand the meaning.");
+      setError(t("form.errorEmptyTranslation"));
       return;
     }
     const spam = spamSignal(trimmedJapanese) || spamSignal(trimmedTranslation);
@@ -94,7 +96,7 @@ export default function EntryForm({
 
       const tags = tagsInput
         .split(",")
-        .map((t) => t.trim())
+        .map((tag) => tag.trim())
         .filter(Boolean)
         .slice(0, 8);
 
@@ -128,7 +130,7 @@ export default function EntryForm({
       setTokens([]);
       onCreated?.();
     } catch (err) {
-      setError(errorMessage(err, "Could not save the entry. Try again."));
+      setError(errorMessage(err, t("form.errorGeneric")));
     } finally {
       setSubmitting(false);
     }
@@ -137,13 +139,13 @@ export default function EntryForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5"
+      className="rounded-lg border border-discord-border bg-discord-bg-secondary p-4 sm:p-5"
     >
-      <h2 className="mb-3 text-sm font-semibold text-ink">Add a Japanese sentence</h2>
+      <h2 className="mb-3 text-sm font-semibold text-discord-text-header">{t("form.heading")}</h2>
 
       <div className="mb-3">
-        <label htmlFor="raw_japanese" className="mb-1 block text-xs font-medium text-slate-muted">
-          Raw Japanese text
+        <label htmlFor="raw_japanese" className="mb-1 block text-xs font-medium text-discord-text-muted">
+          {t("form.rawLabel")}
         </label>
         <textarea
           id="raw_japanese"
@@ -156,40 +158,40 @@ export default function EntryForm({
           rows={2}
           maxLength={500}
           placeholder="例：お先に失礼します"
-          className="w-full resize-none rounded-lg border border-slate-200 px-3 py-2 font-jp text-base focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+          className="w-full resize-none rounded-lg border-none bg-discord-bg-input px-3 py-2 font-jp text-base text-discord-text placeholder:text-discord-text-muted focus:outline-none focus:ring-2 focus:ring-discord-blurple"
         />
-        {tokenizing && <p className="mt-1 text-xs text-slate-muted">Tokenizing…</p>}
+        {tokenizing && <p className="mt-1 text-xs text-discord-text-muted">{t("form.tokenizing")}</p>}
         {!!tokens.length && (
-          <div className="mt-2 rounded-lg bg-slate-50 p-2">
+          <div className="mt-2 rounded-lg bg-discord-bg-input p-2">
             <TokenizedText tokens={tokens} />
           </div>
         )}
       </div>
 
       <div className="mb-3">
-        <label htmlFor="translation" className="mb-1 block text-xs font-medium text-slate-muted">
-          Primary translation
+        <label htmlFor="translation" className="mb-1 block text-xs font-medium text-discord-text-muted">
+          {t("form.translationLabel")}
         </label>
         <input
           id="translation"
           value={translation}
           onChange={(e) => setTranslation(e.target.value)}
           maxLength={300}
-          placeholder="Excuse me for leaving before you"
-          className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+          placeholder={t("form.translationPlaceholder")}
+          className="w-full rounded-lg border-none bg-discord-bg-input px-3 py-2 text-sm text-discord-text placeholder:text-discord-text-muted focus:outline-none focus:ring-2 focus:ring-discord-blurple"
         />
       </div>
 
       <div className="mb-3 grid grid-cols-2 gap-3">
         <div>
-          <label htmlFor="formality" className="mb-1 block text-xs font-medium text-slate-muted">
-            Formality register
+          <label htmlFor="formality" className="mb-1 block text-xs font-medium text-discord-text-muted">
+            {t("form.formalityLabel")}
           </label>
           <select
             id="formality"
             value={formality}
             onChange={(e) => setFormality(e.target.value as FormalityLevel)}
-            className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+            className="w-full rounded-lg border-none bg-discord-bg-input px-3 py-2 text-sm text-discord-text focus:outline-none focus:ring-2 focus:ring-discord-blurple"
           >
             {FORMALITY_LEVELS.map((level) => (
               <option key={level} value={level}>
@@ -199,27 +201,29 @@ export default function EntryForm({
           </select>
         </div>
         <div>
-          <label htmlFor="tags" className="mb-1 block text-xs font-medium text-slate-muted">
-            Tags (comma separated)
+          <label htmlFor="tags" className="mb-1 block text-xs font-medium text-discord-text-muted">
+            {t("form.tagsLabel")}
           </label>
           <input
             id="tags"
             value={tagsInput}
             onChange={(e) => setTagsInput(e.target.value)}
-            placeholder="anime, workplace"
-            className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+            placeholder={t("form.tagsPlaceholder")}
+            className="w-full rounded-lg border-none bg-discord-bg-input px-3 py-2 text-sm text-discord-text placeholder:text-discord-text-muted focus:outline-none focus:ring-2 focus:ring-discord-blurple"
           />
         </div>
       </div>
 
-      {error && <p className="mb-3 rounded-md bg-red-50 px-3 py-2 text-sm text-red-600">{error}</p>}
+      {error && (
+        <p className="mb-3 rounded-md bg-discord-red/10 px-3 py-2 text-sm text-discord-red">{error}</p>
+      )}
 
       <button
         type="submit"
         disabled={submitting}
-        className="w-full rounded-lg bg-accent px-3 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:opacity-60 sm:w-auto"
+        className="w-full rounded-lg bg-discord-blurple px-3 py-2 text-sm font-semibold text-white transition hover:bg-discord-blurple-hover disabled:opacity-60 sm:w-auto"
       >
-        {submitting ? "Posting…" : "Post entry"}
+        {submitting ? t("form.submitting") : t("form.submit")}
       </button>
     </form>
   );

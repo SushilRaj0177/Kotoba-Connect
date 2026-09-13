@@ -6,12 +6,14 @@ export default function PrivacyPage() {
   return (
     <>
       <Navbar />
-      <main className="mx-auto max-w-2xl px-4 py-10 text-sm text-ink sm:px-6">
-        <h1 className="mb-6 text-2xl font-bold">Privacy Policy</h1>
-        <p className="mb-4 text-slate-muted">Last updated: {new Date().toISOString().slice(0, 10)}</p>
+      <main className="mx-auto max-w-2xl px-4 py-10 text-sm text-discord-text sm:px-6">
+        <h1 className="mb-6 text-2xl font-bold text-discord-text-header">Privacy Policy</h1>
+        <p className="mb-4 text-discord-text-muted">
+          Last updated: {new Date().toISOString().slice(0, 10)}
+        </p>
 
         <section className="mb-6 space-y-2">
-          <h2 className="text-base font-semibold">What we collect</h2>
+          <h2 className="text-base font-semibold text-discord-text-header">What we collect</h2>
           <ul className="list-inside list-disc space-y-1">
             <li>Account info: email address, chosen username, and password (hashed by Supabase Auth — we never see it in plain text).</li>
             <li>If you sign in with Google, your name and email from your Google account.</li>
@@ -21,7 +23,7 @@ export default function PrivacyPage() {
         </section>
 
         <section className="mb-6 space-y-2">
-          <h2 className="text-base font-semibold">How it&apos;s used</h2>
+          <h2 className="text-base font-semibold text-discord-text-header">How it&apos;s used</h2>
           <p>
             To run the app: authenticate you, display your posts and votes to other users, enforce
             rate limits, and — if enabled — report crashes to our error monitoring tool so we can
@@ -30,7 +32,7 @@ export default function PrivacyPage() {
         </section>
 
         <section className="mb-6 space-y-2">
-          <h2 className="text-base font-semibold">Where it lives</h2>
+          <h2 className="text-base font-semibold text-discord-text-header">Where it lives</h2>
           <p>
             Data is stored in Supabase (PostgreSQL), hosted on Supabase&apos;s infrastructure. The
             app itself runs on Vercel. Both are standard third-party infrastructure providers, not
@@ -39,7 +41,7 @@ export default function PrivacyPage() {
         </section>
 
         <section className="mb-6 space-y-2">
-          <h2 className="text-base font-semibold">Your choices</h2>
+          <h2 className="text-base font-semibold text-discord-text-header">Your choices</h2>
           <p>
             You can delete your own posts and annotations at any time. To delete your account and
             associated data entirely, contact the project maintainer — deleting your Supabase auth
@@ -47,7 +49,7 @@ export default function PrivacyPage() {
           </p>
         </section>
 
-        <p className="text-xs text-slate-muted">
+        <p className="text-xs text-discord-text-muted">
           This is a starter policy for an early-stage community project, not legal advice — have
           it reviewed (especially for GDPR/CCPA if you expect users in the EU/California) before
           relying on it at scale.

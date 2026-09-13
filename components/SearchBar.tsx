@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { ContextEntry } from "@/types/database";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 
 export default function SearchBar({
   onResults,
@@ -11,6 +12,7 @@ export default function SearchBar({
   onResults: (entries: ContextEntry[]) => void;
   onClear: () => void;
 }) {
+  const { t } = useLocale();
   const [query, setQuery] = useState("");
   const [searching, setSearching] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
@@ -83,18 +85,18 @@ export default function SearchBar({
         <input
           value={query}
           onChange={(e) => handleChange(e.target.value)}
-          placeholder="Search by meaning — e.g. 'polite way to refuse'"
-          className="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+          placeholder={t("board.searchPlaceholder")}
+          className="flex-1 rounded-lg border-none bg-discord-bg-input px-3 py-2 text-sm text-discord-text placeholder:text-discord-text-muted focus:outline-none focus:ring-2 focus:ring-discord-blurple"
         />
         <button
           type="submit"
           disabled={searching}
-          className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-ink transition hover:bg-slate-50 disabled:opacity-60"
+          className="rounded-lg bg-discord-bg-input px-3 py-2 text-sm font-semibold text-discord-text transition hover:bg-discord-bg-hover disabled:opacity-60"
         >
-          {searching ? "Searching…" : "Search"}
+          {searching ? t("board.searching") : t("board.searchButton")}
         </button>
       </form>
-      {notice && <p className="mt-1 text-xs text-slate-muted">{notice}</p>}
+      {notice && <p className="mt-1 text-xs text-discord-text-muted">{notice}</p>}
     </div>
   );
 }
