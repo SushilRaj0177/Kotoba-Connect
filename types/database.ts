@@ -22,7 +22,23 @@ export interface Profile {
   username: string;
   avatar_url: string | null;
   reputation_score: number;
+  is_admin: boolean;
   created_at: string;
+}
+
+export type ReportStatus = "pending" | "resolved" | "dismissed";
+export type ReportTargetType = "entry" | "annotation";
+
+export interface ReportFlag {
+  id: string;
+  reporter_id: string;
+  target_type: ReportTargetType;
+  target_id: string;
+  reason: string;
+  status: ReportStatus;
+  created_at: string;
+  reviewed_by: string | null;
+  reviewed_at: string | null;
 }
 
 export interface ContextEntry {
@@ -36,8 +52,13 @@ export interface ContextEntry {
   tags: string[];
   upvotes_count: number;
   created_at: string;
+  ai_formality_suggestion: string | null;
+  ai_nuance_summary: string | null;
+  ai_processed: boolean;
+  embedding?: number[] | null;
   profiles?: Pick<Profile, "username" | "avatar_url">;
   has_voted?: boolean;
+  similarity?: number;
 }
 
 export interface TokenAnnotation {

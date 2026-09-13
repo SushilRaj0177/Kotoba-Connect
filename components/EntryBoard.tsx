@@ -6,12 +6,14 @@ import type { ContextEntry } from "@/types/database";
 import EntryForm from "@/components/EntryForm";
 import EntryCard from "@/components/EntryCard";
 import EmptyState from "@/components/EmptyState";
+import SearchBar from "@/components/SearchBar";
 import { EntryListSkeleton } from "@/components/Skeletons";
 
 export default function EntryBoard({ userId }: { userId: string | null }) {
   const [entries, setEntries] = useState<ContextEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchResults, setSearchResults] = useState<ContextEntry[] | null>(null);
 
   const loadEntries = useCallback(async () => {
     setError(null);
@@ -87,6 +89,8 @@ export default function EntryBoard({ userId }: { userId: string | null }) {
         </div>
       )}
 
+      <SearchBar onResults={setSearchResults} onClear={() => setSearchResults(null)} />
+
       {loading ? (
         <EntryListSkeleton />
       ) : error ? (
@@ -100,6 +104,19 @@ export default function EntryBoard({ userId }: { userId: string | null }) {
             Retry
           </button>
         </div>
+      ) : searchResults !== null ? (
+        searchResults.length === 0 ? (
+          <EmptyState
+            title="No matches"
+            description="Nothing close in meaning yet — try a different phrase, or post it yourself."
+          />
+        ) : (
+          <div className="space-y-4">
+            {searchResults.map((entry) => (
+              <EntryCard key={entry.id} entry={entry} currentUserId={userId} />
+            ))}
+          </div>
+        )
       ) : entries.length === 0 ? (
         <EmptyState
           title="No entries yet"

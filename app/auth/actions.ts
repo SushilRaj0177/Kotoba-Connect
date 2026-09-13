@@ -4,7 +4,11 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
-export type AuthState = { error: string | null };
+export type AuthState = {
+  error: string | null;
+  pendingConfirmation?: boolean;
+  email?: string;
+};
 
 export async function signIn(_prev: AuthState, formData: FormData): Promise<AuthState> {
   const email = String(formData.get("email") || "").trim();
@@ -18,6 +22,9 @@ export async function signIn(_prev: AuthState, formData: FormData): Promise<Auth
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
+    if (error.message.toLowerCase().includes("email not confirmed")) {
+      return { error: null, pendingConfirmation: true, email };
+    }
     return { error: error.message };
   }
 
@@ -41,7 +48,7 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
   }
 
   const supabase = createClient();
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: { data: { username } },
@@ -51,8 +58,23 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
     return { error: error.message };
   }
 
+  // Projects with "Confirm email" enabled (the default) don't return a
+  // session until the user clicks the link in their inbox.
+  if (!data.session) {
+    return { error: null, pendingConfirmation: true, email };
+  }
+
   revalidatePath("/", "layout");
   redirect("/");
+}
+
+export async function resendConfirmation(email: string): Promise<AuthState> {
+  const supabase = createClient();
+  const { error } = await supabase.auth.resend({ type: "signup", email });
+  if (error) {
+    return { error: error.message };
+  }
+  return { error: null, pendingConfirmation: true, email };
 }
 
 export async function signOut() {

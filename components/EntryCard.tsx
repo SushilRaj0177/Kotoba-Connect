@@ -6,6 +6,8 @@ import { createClient } from "@/lib/supabase/client";
 import type { ContextEntry } from "@/types/database";
 import FormalityBadge from "@/components/FormalityBadge";
 import TokenizedText from "@/components/TokenizedText";
+import ReportButton from "@/components/ReportButton";
+import AiNuanceCallout from "@/components/AiNuanceCallout";
 
 export default function EntryCard({
   entry,
@@ -48,6 +50,11 @@ export default function EntryCard({
 
       <p className="mb-3 text-sm text-slate-muted">{entry.primary_translation}</p>
 
+      <AiNuanceCallout
+        summary={entry.ai_nuance_summary}
+        formalitySuggestion={entry.ai_formality_suggestion}
+      />
+
       {!!entry.tags?.length && (
         <div className="mb-3 flex flex-wrap gap-1.5">
           {entry.tags.map((tag) => (
@@ -77,6 +84,7 @@ export default function EntryCard({
             ▲ {count}
           </button>
           <span>@{entry.profiles?.username ?? "unknown"}</span>
+          <ReportButton targetType="entry" targetId={entry.id} userId={currentUserId} />
         </div>
         <Link href={`/entries/${entry.id}`} className="font-medium text-accent hover:underline">
           Annotate tokens →
