@@ -16,7 +16,7 @@ function SubmitButton({ label, pendingLabel }: { label: string; pendingLabel: st
     <button
       type="submit"
       disabled={pending}
-      className="btn-chunky w-full rounded-2xl bg-ink-accent px-3 py-3 text-sm font-extrabold uppercase tracking-wide text-white disabled:opacity-60"
+      className="btn-chunky w-full rounded-2xl bg-ink-accent px-3 py-3 text-sm font-bold text-white disabled:opacity-60"
     >
       {pending ? pendingLabel : label}
     </button>
@@ -116,12 +116,9 @@ export default function LoginPage() {
 
       <div className="w-full max-w-sm rounded-2xl bg-ink-bg-secondary p-8 border-2 border-ink-border">
         <div className="mb-6 text-center">
-          <span className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-ink-accent font-jp text-xl font-bold text-white">
-            言
+          <span className="bg-gradient-to-br from-ink-accent to-ink-accent-2 bg-clip-text font-jp text-4xl font-black text-transparent">
+            言葉
           </span>
-          <h1 className="font-display text-2xl font-extrabold text-ink-text-header">
-            {t("app.name")}
-          </h1>
           <p className="mt-1 text-sm text-ink-text-muted">{t("login.title")}</p>
         </div>
 

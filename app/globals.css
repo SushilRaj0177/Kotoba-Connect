@@ -4,8 +4,7 @@
 
 /*
   Bright, energetic, gamified palette — vivid accents on a light neutral
-  background, bold contrast, visible borders (needed for the chunky
-  "3D press" button style). Dark theme keeps the same accent hues popping
+  background, bold contrast. Dark theme keeps the same accent hues popping
   on a deep navy background instead of inverting to something muddy.
 */
 :root[data-theme="light"] {
@@ -18,8 +17,8 @@
   --c-text-muted: 142 147 158;
   --c-text-header: 29 31 36;
   --c-accent: 255 61 127;
+  --c-accent-2: 255 138 61;
   --c-accent-hover: 230 43 109;
-  --c-accent-shadow: 199 25 91;
   --c-link: 14 165 233;
   --c-green: 34 197 94;
   --c-red: 255 75 75;
@@ -37,8 +36,8 @@
   --c-text-muted: 150 150 168;
   --c-text-header: 246 246 250;
   --c-accent: 255 90 150;
+  --c-accent-2: 255 158 89;
   --c-accent-hover: 255 115 168;
-  --c-accent-shadow: 199 55 108;
   --c-link: 56 189 248;
   --c-green: 74 222 128;
   --c-red: 248 113 113;
@@ -56,8 +55,8 @@
   --c-text-muted: 142 147 158;
   --c-text-header: 29 31 36;
   --c-accent: 255 61 127;
+  --c-accent-2: 255 138 61;
   --c-accent-hover: 230 43 109;
-  --c-accent-shadow: 199 25 91;
   --c-link: 14 165 233;
   --c-green: 34 197 94;
   --c-red: 255 75 75;
@@ -97,18 +96,24 @@ body {
   background: transparent;
 }
 
-/* Chunky "3D press" button — the signature gamified interaction: a solid
-   drop shadow that the button appears to press flat into on click. */
+/* Primary CTA treatment: a warm gradient with a soft colored glow that
+   lifts on hover and settles on click — motion-driven energy rather than
+   a flat-color skeuomorphic "press" button. */
 .btn-chunky {
-  box-shadow: 0 4px 0 rgb(var(--c-accent-shadow));
-  transition: transform 0.08s ease, box-shadow 0.08s ease;
+  background-image: linear-gradient(135deg, rgb(var(--c-accent)), rgb(var(--c-accent-2)));
+  box-shadow: 0 6px 16px -4px rgb(var(--c-accent) / 0.45);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.btn-chunky:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -4px rgb(var(--c-accent) / 0.55);
 }
 .btn-chunky:active:not(:disabled) {
-  transform: translateY(4px);
-  box-shadow: 0 0 0 rgb(var(--c-accent-shadow));
+  transform: translateY(0) scale(0.97);
+  box-shadow: 0 4px 10px -4px rgb(var(--c-accent) / 0.4);
 }
 .btn-chunky:disabled {
-  box-shadow: 0 4px 0 rgb(var(--c-accent-shadow) / 0.4);
+  box-shadow: none;
 }
 
 @keyframes pulse-soft {
