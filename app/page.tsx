@@ -15,8 +15,8 @@ export default async function HomePage() {
       <Navbar />
       <main className="mx-auto max-w-3xl px-4 py-6 sm:px-6">
         <div className="mb-6">
-          <h1 className="text-xl font-bold text-discord-text-header">{t("home.title")}</h1>
-          <p className="text-sm text-discord-text-muted">{t("home.subtitle")}</p>
+          <h1 className="text-xl font-bold text-ink-text-header">{t("home.title")}</h1>
+          <p className="text-sm text-ink-text-muted">{t("home.subtitle")}</p>
         </div>
         <EntryBoard userId={user?.id ?? null} />
       </main>

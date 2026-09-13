@@ -47,7 +47,7 @@ export default function ReportButton({
   }
 
   if (done) {
-    return <span className="px-2 text-xs text-discord-text-muted">{t("card.reported")}</span>;
+    return <span className="px-2 text-xs text-ink-text-muted">{t("card.reported")}</span>;
   }
 
   return (
@@ -55,7 +55,7 @@ export default function ReportButton({
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="rounded px-2 py-1 text-xs font-semibold text-discord-text-muted transition hover:text-discord-red"
+        className="rounded px-2 py-1 text-xs font-semibold text-ink-text-muted transition hover:text-ink-red"
       >
         {t("card.report")}
       </button>
@@ -63,12 +63,12 @@ export default function ReportButton({
       {open && (
         <form
           onSubmit={handleSubmit}
-          className="absolute right-0 top-full z-20 mt-1 w-56 space-y-2 rounded-lg border border-discord-border bg-discord-bg-floating p-2 shadow-xl"
+          className="absolute right-0 top-full z-20 mt-1 w-56 space-y-2 rounded-lg border border-ink-border bg-ink-bg-tertiary p-2 shadow-xl"
         >
           <select
             value={reason}
             onChange={(e) => setReason(e.target.value)}
-            className="w-full rounded-md border-none bg-discord-bg-input px-2 py-1 text-xs text-discord-text"
+            className="w-full rounded-md border-none bg-ink-bg-input px-2 py-1 text-xs text-ink-text"
           >
             {REPORT_REASONS.map((r) => (
               <option key={r} value={r}>
@@ -81,21 +81,21 @@ export default function ReportButton({
             onChange={(e) => setDetail(e.target.value)}
             maxLength={200}
             placeholder="Optional details"
-            className="w-full rounded-md border-none bg-discord-bg-input px-2 py-1 text-xs text-discord-text placeholder:text-discord-text-muted"
+            className="w-full rounded-md border-none bg-ink-bg-input px-2 py-1 text-xs text-ink-text placeholder:text-ink-text-muted"
           />
-          {error && <p className="text-xs text-discord-red">{error}</p>}
+          {error && <p className="text-xs text-ink-red">{error}</p>}
           <div className="flex gap-2">
             <button
               type="submit"
               disabled={submitting}
-              className="rounded-md bg-discord-red px-2 py-1 text-xs font-semibold text-white hover:bg-discord-red-hover disabled:opacity-60"
+              className="rounded-md bg-ink-red px-2 py-1 text-xs font-semibold text-white hover:bg-ink-red-hover disabled:opacity-60"
             >
               {submitting ? "Sending…" : "Submit report"}
             </button>
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="rounded-md px-2 py-1 text-xs text-discord-text-muted hover:bg-discord-bg-hover"
+              className="rounded-md px-2 py-1 text-xs text-ink-text-muted hover:bg-ink-bg-hover"
             >
               Cancel
             </button>

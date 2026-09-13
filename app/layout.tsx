@@ -15,7 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <html lang={locale}>
-      <body className="flex min-h-screen flex-col bg-discord-bg">
+      <body className="flex min-h-screen flex-col bg-ink-bg">
         <LocaleProvider initialLocale={locale}>
           <div className="flex-1">{children}</div>
           <Footer />

@@ -5,26 +5,25 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Discord-inspired dark palette.
-        discord: {
-          bg: "#313338", // primary content background
-          "bg-secondary": "#2b2d31", // cards, header
-          "bg-tertiary": "#1e1f22", // icon rail, darkest
-          "bg-floating": "#111214", // modals/popouts
-          "bg-input": "#383a40", // form fields
-          "bg-hover": "#3a3c43", // hover state on rows
-          "bg-active": "#404249",
-          border: "#3f4147",
-          blurple: "#5865f2",
-          "blurple-hover": "#4752c4",
-          green: "#23a55a",
-          red: "#f23f43",
-          "red-hover": "#da373c",
-          yellow: "#f0b232",
-          text: "#dbdee1", // normal body text
-          "text-muted": "#949ba4",
-          "text-header": "#f2f3f5",
-          "text-link": "#00a8fc",
+        // Dark, layered-surface palette with a shu-iro (vermillion) accent —
+        // the red of a torii gate or a hanko stamp, not a borrowed brand color.
+        ink: {
+          bg: "#18181b",
+          "bg-secondary": "#202023",
+          "bg-tertiary": "#131315",
+          "bg-input": "#28282c",
+          "bg-hover": "#2d2d32",
+          border: "#313136",
+          accent: "#e8542f",
+          "accent-hover": "#c8451f",
+          green: "#4ade80",
+          red: "#f87171",
+          "red-hover": "#ef4444",
+          yellow: "#fbbf24",
+          text: "#d4d4d8",
+          "text-muted": "#8b8b93",
+          "text-header": "#f4f4f5",
+          "text-link": "#60a5fa",
         },
       },
       fontFamily: {

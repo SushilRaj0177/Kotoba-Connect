@@ -86,17 +86,17 @@ export default function SearchBar({
           value={query}
           onChange={(e) => handleChange(e.target.value)}
           placeholder={t("board.searchPlaceholder")}
-          className="flex-1 rounded-lg border-none bg-discord-bg-input px-3 py-2 text-sm text-discord-text placeholder:text-discord-text-muted focus:outline-none focus:ring-2 focus:ring-discord-blurple"
+          className="flex-1 rounded-lg border-none bg-ink-bg-input px-3 py-2 text-sm text-ink-text placeholder:text-ink-text-muted focus:outline-none focus:ring-2 focus:ring-ink-accent"
         />
         <button
           type="submit"
           disabled={searching}
-          className="rounded-lg bg-discord-bg-input px-3 py-2 text-sm font-semibold text-discord-text transition hover:bg-discord-bg-hover disabled:opacity-60"
+          className="rounded-lg bg-ink-bg-input px-3 py-2 text-sm font-semibold text-ink-text transition hover:bg-ink-bg-hover disabled:opacity-60"
         >
           {searching ? t("board.searching") : t("board.searchButton")}
         </button>
       </form>
-      {notice && <p className="mt-1 text-xs text-discord-text-muted">{notice}</p>}
+      {notice && <p className="mt-1 text-xs text-ink-text-muted">{notice}</p>}
     </div>
   );
 }

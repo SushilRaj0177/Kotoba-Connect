@@ -1,14 +1,14 @@
-// Discord-style deterministic colored avatar: same username always gets the
-// same color and initial, no image upload needed.
+// Deterministic colored avatar: same username always gets the same color
+// and initial, no image upload needed.
 const PALETTE = [
-  "#f23f43",
-  "#f0b232",
-  "#23a55a",
-  "#00a8fc",
-  "#5865f2",
-  "#eb459e",
-  "#9c84ef",
-  "#f47b67",
+  "#e8542f",
+  "#d97706",
+  "#16a34a",
+  "#0891b2",
+  "#6366f1",
+  "#c026d3",
+  "#7c3aed",
+  "#dc2626",
 ];
 
 function colorFor(username: string): string {

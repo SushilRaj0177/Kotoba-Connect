@@ -3,20 +3,20 @@
 @tailwind utilities;
 
 :root {
-  --font-sans: "gg sans", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-jp: "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
   color-scheme: dark;
 }
 
 body {
-  @apply bg-discord-bg text-discord-text antialiased;
+  @apply bg-ink-bg text-ink-text antialiased;
 }
 
 ::selection {
-  background-color: rgba(88, 101, 242, 0.4);
+  background-color: rgba(232, 84, 47, 0.35);
 }
 
-/* Slim, Discord-style scrollbar */
+/* Slim scrollbar to match the dark theme */
 * {
   scrollbar-width: thin;
   scrollbar-color: #1a1b1e transparent;

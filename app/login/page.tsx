@@ -15,7 +15,7 @@ function SubmitButton({ label, pendingLabel }: { label: string; pendingLabel: st
     <button
       type="submit"
       disabled={pending}
-      className="w-full rounded-lg bg-discord-blurple px-3 py-2.5 text-sm font-semibold text-white transition hover:bg-discord-blurple-hover disabled:opacity-60"
+      className="w-full rounded-lg bg-ink-accent px-3 py-2.5 text-sm font-semibold text-white transition hover:bg-ink-accent-hover disabled:opacity-60"
     >
       {pending ? pendingLabel : label}
     </button>
@@ -40,7 +40,7 @@ function GoogleButton() {
       type="button"
       onClick={handleClick}
       disabled={loading}
-      className="flex w-full items-center justify-center gap-2 rounded-lg bg-discord-bg-input px-3 py-2.5 text-sm font-semibold text-discord-text transition hover:bg-discord-bg-hover disabled:opacity-60"
+      className="flex w-full items-center justify-center gap-2 rounded-lg bg-ink-bg-input px-3 py-2.5 text-sm font-semibold text-ink-text transition hover:bg-ink-bg-hover disabled:opacity-60"
     >
       <svg width="16" height="16" viewBox="0 0 48 48" aria-hidden="true">
         <path
@@ -78,16 +78,16 @@ function ConfirmationPending({ email }: { email: string }) {
   return (
     <div className="text-center">
       <p className="font-jp text-3xl">📬</p>
-      <h2 className="mt-3 text-lg font-bold text-discord-text-header">{t("login.confirmTitle")}</h2>
-      <p className="mt-2 text-sm text-discord-text-muted">
-        {t("login.confirmBody")} <span className="font-medium text-discord-text">{email}</span>.{" "}
+      <h2 className="mt-3 text-lg font-bold text-ink-text-header">{t("login.confirmTitle")}</h2>
+      <p className="mt-2 text-sm text-ink-text-muted">
+        {t("login.confirmBody")} <span className="font-medium text-ink-text">{email}</span>.{" "}
         {t("login.confirmBody2")}
       </p>
       <button
         type="button"
         onClick={handleResend}
         disabled={status === "sending"}
-        className="mt-4 text-sm font-semibold text-discord-text-link hover:underline disabled:opacity-60"
+        className="mt-4 text-sm font-semibold text-ink-text-link hover:underline disabled:opacity-60"
       >
         {status === "sending"
           ? t("login.resendSending")
@@ -95,7 +95,7 @@ function ConfirmationPending({ email }: { email: string }) {
             ? t("login.resendSent")
             : t("login.resend")}
       </button>
-      {status === "error" && <p className="mt-2 text-sm text-discord-red">{t("login.resendError")}</p>}
+      {status === "error" && <p className="mt-2 text-sm text-ink-red">{t("login.resendError")}</p>}
     </div>
   );
 }
@@ -112,27 +112,27 @@ export default function LoginPage() {
         <LanguageToggle />
       </div>
 
-      <div className="w-full max-w-sm rounded-lg bg-discord-bg-secondary p-8 shadow-xl">
+      <div className="w-full max-w-sm rounded-lg bg-ink-bg-secondary p-8 shadow-xl">
         <div className="mb-6 text-center">
-          <span className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-discord-blurple font-jp text-xl font-bold text-white">
+          <span className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-ink-accent font-jp text-xl font-bold text-white">
             言
           </span>
-          <h1 className="text-xl font-bold text-discord-text-header">{t("app.name")}</h1>
-          <p className="mt-1 text-sm text-discord-text-muted">{t("login.title")}</p>
+          <h1 className="text-xl font-bold text-ink-text-header">{t("app.name")}</h1>
+          <p className="mt-1 text-sm text-ink-text-muted">{t("login.title")}</p>
         </div>
 
         {state.pendingConfirmation && state.email ? (
           <ConfirmationPending email={state.email} />
         ) : (
           <>
-            <div className="mb-5 flex rounded-lg bg-discord-bg-input p-1 text-sm font-medium">
+            <div className="mb-5 flex rounded-lg bg-ink-bg-input p-1 text-sm font-medium">
               <button
                 type="button"
                 onClick={() => setMode("signIn")}
                 className={`flex-1 rounded-md py-2 transition ${
                   mode === "signIn"
-                    ? "bg-discord-blurple text-white"
-                    : "text-discord-text-muted hover:text-discord-text"
+                    ? "bg-ink-accent text-white"
+                    : "text-ink-text-muted hover:text-ink-text"
                 }`}
               >
                 {t("login.tabSignIn")}
@@ -142,8 +142,8 @@ export default function LoginPage() {
                 onClick={() => setMode("signUp")}
                 className={`flex-1 rounded-md py-2 transition ${
                   mode === "signUp"
-                    ? "bg-discord-blurple text-white"
-                    : "text-discord-text-muted hover:text-discord-text"
+                    ? "bg-ink-accent text-white"
+                    : "text-ink-text-muted hover:text-ink-text"
                 }`}
               >
                 {t("login.tabSignUp")}
@@ -152,16 +152,16 @@ export default function LoginPage() {
 
             <GoogleButton />
 
-            <div className="my-4 flex items-center gap-3 text-xs text-discord-text-muted">
-              <div className="h-px flex-1 bg-discord-border" />
+            <div className="my-4 flex items-center gap-3 text-xs text-ink-text-muted">
+              <div className="h-px flex-1 bg-ink-border" />
               {t("login.or")}
-              <div className="h-px flex-1 bg-discord-border" />
+              <div className="h-px flex-1 bg-ink-border" />
             </div>
 
             <form action={formAction} className="space-y-4" key={mode}>
               {mode === "signUp" && (
                 <div>
-                  <label htmlFor="username" className="mb-1 block text-xs font-semibold uppercase text-discord-text-muted">
+                  <label htmlFor="username" className="mb-1 block text-xs font-semibold uppercase text-ink-text-muted">
                     {t("login.username")}
                   </label>
                   <input
@@ -171,12 +171,12 @@ export default function LoginPage() {
                     minLength={3}
                     maxLength={20}
                     placeholder="tokyo_nuance"
-                    className="w-full rounded-lg border-none bg-discord-bg-input px-3 py-2 text-sm text-discord-text placeholder:text-discord-text-muted focus:outline-none focus:ring-2 focus:ring-discord-blurple"
+                    className="w-full rounded-lg border-none bg-ink-bg-input px-3 py-2 text-sm text-ink-text placeholder:text-ink-text-muted focus:outline-none focus:ring-2 focus:ring-ink-accent"
                   />
                 </div>
               )}
               <div>
-                <label htmlFor="email" className="mb-1 block text-xs font-semibold uppercase text-discord-text-muted">
+                <label htmlFor="email" className="mb-1 block text-xs font-semibold uppercase text-ink-text-muted">
                   {t("login.email")}
                 </label>
                 <input
@@ -185,11 +185,11 @@ export default function LoginPage() {
                   type="email"
                   required
                   placeholder="you@example.com"
-                  className="w-full rounded-lg border-none bg-discord-bg-input px-3 py-2 text-sm text-discord-text placeholder:text-discord-text-muted focus:outline-none focus:ring-2 focus:ring-discord-blurple"
+                  className="w-full rounded-lg border-none bg-ink-bg-input px-3 py-2 text-sm text-ink-text placeholder:text-ink-text-muted focus:outline-none focus:ring-2 focus:ring-ink-accent"
                 />
               </div>
               <div>
-                <label htmlFor="password" className="mb-1 block text-xs font-semibold uppercase text-discord-text-muted">
+                <label htmlFor="password" className="mb-1 block text-xs font-semibold uppercase text-ink-text-muted">
                   {t("login.password")}
                 </label>
                 <input
@@ -199,12 +199,12 @@ export default function LoginPage() {
                   required
                   minLength={6}
                   placeholder="••••••••"
-                  className="w-full rounded-lg border-none bg-discord-bg-input px-3 py-2 text-sm text-discord-text placeholder:text-discord-text-muted focus:outline-none focus:ring-2 focus:ring-discord-blurple"
+                  className="w-full rounded-lg border-none bg-ink-bg-input px-3 py-2 text-sm text-ink-text placeholder:text-ink-text-muted focus:outline-none focus:ring-2 focus:ring-ink-accent"
                 />
               </div>
 
               {state.error && (
-                <p className="rounded-md bg-discord-red/10 px-3 py-2 text-sm text-discord-red">
+                <p className="rounded-md bg-ink-red/10 px-3 py-2 text-sm text-ink-red">
                   {state.error}
                 </p>
               )}
@@ -215,13 +215,13 @@ export default function LoginPage() {
               />
 
               {mode === "signUp" && (
-                <p className="text-center text-xs text-discord-text-muted">
+                <p className="text-center text-xs text-ink-text-muted">
                   {t("login.agreePrefix")}{" "}
-                  <a href="/terms" className="text-discord-text-link underline hover:text-discord-text">
+                  <a href="/terms" className="text-ink-text-link underline hover:text-ink-text">
                     {t("footer.terms")}
                   </a>{" "}
                   {t("login.agreeAnd")}{" "}
-                  <a href="/privacy" className="text-discord-text-link underline hover:text-discord-text">
+                  <a href="/privacy" className="text-ink-text-link underline hover:text-ink-text">
                     {t("footer.privacy")}
                   </a>
                   .

@@ -15,7 +15,7 @@ export default function LanguageToggle() {
     <div
       role="group"
       aria-label={t("lang.toggleLabel")}
-      className="flex items-center rounded-full bg-discord-bg-input p-0.5 text-xs font-semibold"
+      className="flex items-center rounded-full bg-ink-bg-input p-0.5 text-xs font-semibold"
     >
       {OPTIONS.map((opt) => (
         <button
@@ -25,8 +25,8 @@ export default function LanguageToggle() {
           aria-pressed={locale === opt.value}
           className={`rounded-full px-2.5 py-1 transition ${
             locale === opt.value
-              ? "bg-discord-blurple text-white"
-              : "text-discord-text-muted hover:text-discord-text"
+              ? "bg-ink-accent text-white"
+              : "text-ink-text-muted hover:text-ink-text"
           }`}
         >
           {opt.label}
