@@ -221,7 +221,7 @@ export default function EntryForm({
       <button
         type="submit"
         disabled={submitting}
-        className="btn-chunky w-full rounded-2xl bg-ink-accent px-6 py-3 text-sm font-extrabold uppercase tracking-wide text-white disabled:opacity-60 sm:w-auto"
+        className="btn-chunky w-full rounded-2xl bg-ink-accent px-6 py-3 text-sm font-bold text-white disabled:opacity-60 sm:w-auto"
       >
         {submitting ? t("form.submitting") : t("form.submit")}
       </button>
