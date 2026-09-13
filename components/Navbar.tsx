@@ -27,20 +27,20 @@ export default async function Navbar() {
 
   return (
     <header className="sticky top-0 z-10 bg-ink-bg/90 border-b-2 border-ink-border">
-      <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
-        <Link href="/" className="flex-none">
+      <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
+        <Link href="/" className="flex-none md:hidden">
           <span className="bg-gradient-to-br from-ink-accent to-ink-accent-2 bg-clip-text font-jp text-2xl font-black text-transparent">
             言葉
           </span>
         </Link>
 
-        <div className="flex items-center gap-2.5">
+        <div className="ml-auto flex items-center gap-2.5">
           <ThemeToggle />
           <LanguageToggle />
           {isAdmin && (
             <Link
               href="/admin"
-              className="hidden text-sm font-medium text-ink-text-muted transition hover:text-ink-text sm:inline"
+              className="hidden text-sm font-medium text-ink-text-muted transition hover:text-ink-text sm:inline md:hidden"
             >
               {t("nav.moderation")}
             </Link>

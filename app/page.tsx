@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import EntryBoard from "@/components/EntryBoard";
+import RightRail from "@/components/RightRail";
 import { createClient } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
 
@@ -13,12 +14,15 @@ export default async function HomePage() {
   return (
     <>
       <Navbar />
-      <main className="mx-auto max-w-3xl px-4 py-6 sm:px-6">
-        <div className="mb-6">
-          <h1 className="font-display text-2xl font-extrabold text-ink-text-header">{t("home.title")}</h1>
-          <p className="text-sm text-ink-text-muted">{t("home.subtitle")}</p>
+      <main className="mx-auto flex max-w-5xl gap-6 px-4 py-6 sm:px-6">
+        <div className="min-w-0 flex-1">
+          <div className="mb-6">
+            <h1 className="font-display text-2xl font-extrabold text-ink-text-header">{t("home.title")}</h1>
+            <p className="text-sm text-ink-text-muted">{t("home.subtitle")}</p>
+          </div>
+          <EntryBoard userId={user?.id ?? null} />
         </div>
-        <EntryBoard userId={user?.id ?? null} />
+        <RightRail />
       </main>
     </>
   );

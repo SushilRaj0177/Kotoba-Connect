@@ -99,6 +99,15 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "login.resendError": "Couldn't resend. Try again shortly.",
 
     "lang.toggleLabel": "Language",
+
+    "rail.communityTitle": "Community",
+    "rail.entries": "Entries posted",
+    "rail.members": "Members",
+    "rail.aboutTitle": "What is this?",
+    "rail.aboutBody":
+      "A board for real Japanese sentences — pinned with the politeness register, slang, and cultural nuance a dictionary won't tell you.",
+    "rail.tipTitle": "Try this",
+    "rail.tipBody": "Post a line from anime, a manga panel, or something you overheard — then click any word to annotate it.",
   },
   ja: {
     "app.name": "言葉エンジン",
@@ -191,6 +200,14 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "login.resendError": "再送信できませんでした。しばらくしてから再度お試しください。",
 
     "lang.toggleLabel": "言語",
+
+    "rail.communityTitle": "コミュニティ",
+    "rail.entries": "投稿数",
+    "rail.members": "メンバー数",
+    "rail.aboutTitle": "これは何？",
+    "rail.aboutBody": "実際の日本語文を集めたボードです。辞書にはない丁寧さのレベル、スラング、文化的ニュアンスを記録します。",
+    "rail.tipTitle": "試してみよう",
+    "rail.tipBody": "アニメのセリフや漫画の一コマ、耳にした言葉を投稿してみましょう。単語をクリックすると注釈できます。",
   },
 };
 
