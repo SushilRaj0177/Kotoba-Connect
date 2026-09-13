@@ -27,6 +27,11 @@ real time.
 - Token-level annotation canvas: click any word in a sentence to pin cultural-nuance notes to
   that exact token index
 - Responsive UI with loading skeletons, empty states, and inline error handling + retry
+- Warm, cozy design system (cream/paper light theme, candlelit-brown dark theme) with a
+  persistent light/dark toggle — CSS-variable driven, see `app/globals.css` +
+  `tailwind.config.ts`
+- Full EN/JP language toggle across the main flow (nav, board, forms, login) via a cookie-backed
+  i18n system, not machine translation — see `lib/i18n/`
 
 **Production hardening**
 - Email/password auth + Google OAuth (Supabase Auth), with an auto-created `profiles` row per

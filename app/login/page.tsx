@@ -6,6 +6,7 @@ import { signIn, signUp, resendConfirmation, type AuthState } from "@/app/auth/a
 import { createClient } from "@/lib/supabase/client";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import LanguageToggle from "@/components/i18n/LanguageToggle";
+import ThemeToggle from "@/components/theme/ThemeToggle";
 
 const initialState: AuthState = { error: null };
 
@@ -108,16 +109,19 @@ export default function LoginPage() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center px-6 py-12">
-      <div className="mb-4 flex w-full max-w-sm justify-end">
+      <div className="mb-4 flex w-full max-w-sm items-center justify-end gap-2">
+        <ThemeToggle />
         <LanguageToggle />
       </div>
 
-      <div className="w-full max-w-sm rounded-lg bg-ink-bg-secondary p-8 shadow-xl">
+      <div className="w-full max-w-sm rounded-2xl bg-ink-bg-secondary p-8 shadow-cozy">
         <div className="mb-6 text-center">
-          <span className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-ink-accent font-jp text-xl font-bold text-white">
+          <span className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-ink-accent font-jp text-xl font-bold text-white">
             言
           </span>
-          <h1 className="text-xl font-bold text-ink-text-header">{t("app.name")}</h1>
+          <h1 className="font-display text-2xl font-semibold text-ink-text-header">
+            {t("app.name")}
+          </h1>
           <p className="mt-1 text-sm text-ink-text-muted">{t("login.title")}</p>
         </div>
 
@@ -125,11 +129,11 @@ export default function LoginPage() {
           <ConfirmationPending email={state.email} />
         ) : (
           <>
-            <div className="mb-5 flex rounded-lg bg-ink-bg-input p-1 text-sm font-medium">
+            <div className="mb-5 flex rounded-full bg-ink-bg-input p-1 text-sm font-medium">
               <button
                 type="button"
                 onClick={() => setMode("signIn")}
-                className={`flex-1 rounded-md py-2 transition ${
+                className={`flex-1 rounded-full py-2 transition ${
                   mode === "signIn"
                     ? "bg-ink-accent text-white"
                     : "text-ink-text-muted hover:text-ink-text"
@@ -140,7 +144,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => setMode("signUp")}
-                className={`flex-1 rounded-md py-2 transition ${
+                className={`flex-1 rounded-full py-2 transition ${
                   mode === "signUp"
                     ? "bg-ink-accent text-white"
                     : "text-ink-text-muted hover:text-ink-text"
