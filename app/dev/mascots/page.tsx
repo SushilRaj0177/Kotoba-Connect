@@ -1,19 +1,13 @@
 import Mascot from "@/components/Mascot";
-import { Daruma, Maneki, Shiba, Tsuru, Mochi, Tanuki, Sumo, Ramen, Obake } from "@/components/mascots/candidates";
+import { Obake, Kitsune, Neko } from "@/components/mascots/candidates";
 import { MASCOT_CATALOG } from "@/lib/mascot-registry";
 import ThemeToggle from "@/components/theme/ThemeToggle";
 
 const RENDER: Record<string, (props: { size?: number }) => React.ReactElement> = {
   kokeshi: Mascot,
-  daruma: Daruma,
-  maneki: Maneki,
-  shiba: Shiba,
-  tsuru: Tsuru,
-  mochi: Mochi,
-  tanuki: Tanuki,
-  sumo: Sumo,
-  ramen: Ramen,
   obake: Obake,
+  kitsune: Kitsune,
+  neko: Neko,
 };
 
 // Internal review page — not linked anywhere in the app nav. Ten named,
@@ -28,13 +22,13 @@ export default function MascotGalleryPage() {
         <div>
           <h1 className="font-display text-2xl font-black text-ink-text-header">Mascot gallery</h1>
           <p className="mt-1 text-sm text-ink-text-muted">
-            Internal review page — ten named, animated candidates. Kokeshi is the current default.
+            Internal review page — named, animated candidates. Kokeshi is the current default.
           </p>
         </div>
         <ThemeToggle />
       </div>
 
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         {MASCOT_CATALOG.map(({ id, name, blurb }) => {
           const Comp = RENDER[id];
           return (
