@@ -1,4 +1,4 @@
-// The board's mascot — a kokeshi (こけし), the traditional Japanese
+// The board's mascot, "Kokeshi" — a kokeshi (こけし), the traditional Japanese
 // wooden folk doll: a simple cylindrical body, a round head, a painted
 // face, no arms or legs. It's a genuinely cozy, handmade-feeling object
 // (often given as a keepsake) rather than a generic cartoon-blob
@@ -30,6 +30,7 @@ export default function Mascot({
     >
       <ellipse cx="50" cy="93" rx="24" ry="4.5" fill="black" fillOpacity="0.16" />
 
+      <g className="m-sway">
       {/* body: a simple rounded cylinder, no arms or legs */}
       <path
         d="M28 46c0-3 1-5 2-6 4-4 8-5 20-5s16 1 20 5c1 1 2 3 2 6l3 34c1 7-4 13-11 13H36c-7 0-12-6-11-13z"
@@ -73,6 +74,7 @@ export default function Mascot({
       ) : (
         <path d="M46 40q6 4 12 0" stroke="#2a2438" strokeWidth="2.6" strokeLinecap="round" fill="none" />
       )}
+      </g>
 
       <defs>
         <linearGradient id="mascotShade" x1="0" y1="0" x2="1" y2="1">

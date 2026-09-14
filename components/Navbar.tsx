@@ -5,6 +5,7 @@ import LanguageToggle from "@/components/i18n/LanguageToggle";
 import ThemeToggle from "@/components/theme/ThemeToggle";
 import AccountMenu from "@/components/AccountMenu";
 import NotificationBell from "@/components/NotificationBell";
+import Mascot from "@/components/Mascot";
 
 export default async function Navbar({ title }: { title?: string } = {}) {
   const supabase = createClient();
@@ -33,9 +34,14 @@ export default async function Navbar({ title }: { title?: string } = {}) {
         </Link>
 
         {/* Balances the toggles/auth cluster on the right — every reference
-            app anchors something on both sides of its header. */}
-        <span className="hidden truncate font-display text-lg font-extrabold text-ink-text-header md:block">
-          {title ?? t("nav.home")}
+            app anchors something on both sides of its header. The mascot
+            next to the label is what keeps this from reading as a bare
+            document title. */}
+        <span className="hidden items-center gap-2 md:flex">
+          <Mascot size={26} />
+          <span className="truncate font-display text-lg font-extrabold text-ink-text-header">
+            {title ?? t("nav.home")}
+          </span>
         </span>
 
         <div className="ml-auto flex items-center gap-2.5">

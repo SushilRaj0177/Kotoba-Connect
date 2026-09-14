@@ -19,13 +19,13 @@ export default function RailIcon({
     <Link
       href={href}
       title={title}
-      className={`group flex h-11 w-11 items-center justify-center rounded-2xl transition active:scale-90 ${
+      className={`flex h-12 w-12 flex-none items-center justify-center rounded-2xl transition active:scale-90 ${
         active
           ? "bg-ink-accent text-white shadow-[0_4px_14px_-4px_rgb(var(--c-accent)/0.6)]"
           : "text-ink-text-muted hover:bg-ink-bg-hover hover:text-ink-accent"
       }`}
     >
-      <span className="transition group-hover:scale-110">{children}</span>
+      {children}
     </Link>
   );
 }
