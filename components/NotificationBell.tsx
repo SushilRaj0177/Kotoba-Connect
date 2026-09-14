@@ -119,7 +119,11 @@ export default function NotificationBell({ userId }: { userId: string }) {
                             <strong className="font-display text-ink-text-header">
                               @{n.actor?.username ?? "someone"}
                             </strong>{" "}
-                            {n.type === "upvote" ? t("notif.upvoted") : t("notif.annotated")}
+                            {n.type === "upvote"
+                              ? t("notif.upvoted")
+                              : n.type === "annotation"
+                                ? t("notif.annotated")
+                                : t("notif.commented")}
                           </>
                         )}
                       </span>

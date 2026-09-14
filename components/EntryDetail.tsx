@@ -8,6 +8,7 @@ import FormalityBadge from "@/components/FormalityBadge";
 import TokenizedText from "@/components/TokenizedText";
 import EmptyState from "@/components/EmptyState";
 import ReportButton from "@/components/ReportButton";
+import EntryComments from "@/components/EntryComments";
 import AiNuanceCallout from "@/components/AiNuanceCallout";
 import Avatar from "@/components/Avatar";
 import UserHandle from "@/components/UserHandle";
@@ -218,6 +219,8 @@ export default function EntryDetail({
           </p>
         )}
       </div>
+
+      <EntryComments entryId={entry.id} userId={userId} />
     </div>
   );
 }
