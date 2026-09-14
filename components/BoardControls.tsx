@@ -1,6 +1,7 @@
 "use client";
 
 import type { FormalityLevel } from "@/types/database";
+import { formalityLabel } from "@/lib/formality-labels";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 
 export type SortOption = "new" | "popular";
@@ -84,7 +85,7 @@ export default function BoardControls({
                 : "bg-ink-bg-input text-ink-text-muted hover:text-ink-text"
             }`}
           >
-            {level}
+            {formalityLabel(t, level)}
           </button>
         ))}
       </div>

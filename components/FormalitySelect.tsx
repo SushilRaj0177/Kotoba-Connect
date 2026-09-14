@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import type { FormalityLevel } from "@/types/database";
 import { FORMALITY_COLORS } from "@/lib/formality-colors";
+import { formalityLabel } from "@/lib/formality-labels";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 
 const FORMALITY_LEVELS: FormalityLevel[] = [
   "Sonkeigo",
@@ -29,6 +31,7 @@ export default function FormalitySelect({
   onChange: (level: FormalityLevel) => void;
   id?: string;
 }) {
+  const { t } = useLocale();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -59,7 +62,7 @@ export default function FormalitySelect({
         className="flex w-full items-center gap-2 rounded-lg border-none bg-ink-bg-input px-3 py-2 text-left text-sm text-ink-text focus:outline-none focus:ring-2 focus:ring-ink-accent"
       >
         <span className={`h-2.5 w-2.5 flex-none rounded-full ${FORMALITY_COLORS[value]}`} aria-hidden="true" />
-        <span className="min-w-0 flex-1 truncate">{value}</span>
+        <span className="min-w-0 flex-1 truncate">{formalityLabel(t, value)}</span>
         <svg
           width="14"
           height="14"
@@ -93,7 +96,7 @@ export default function FormalitySelect({
                 }`}
               >
                 <span className={`h-2.5 w-2.5 flex-none rounded-full ${FORMALITY_COLORS[level]}`} aria-hidden="true" />
-                {level}
+                {formalityLabel(t, level)}
               </button>
             </li>
           ))}

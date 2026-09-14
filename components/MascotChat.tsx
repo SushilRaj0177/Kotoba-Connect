@@ -56,7 +56,7 @@ export default function MascotChat() {
   }
 
   return (
-    <div className="fixed bottom-5 right-5 z-30">
+    <div className="fixed bottom-[calc(4.5rem+env(safe-area-inset-bottom)+0.75rem)] right-5 z-30 md:bottom-5">
       {open && (
         <div className="mb-3 flex h-[28rem] w-80 flex-col overflow-hidden rounded-2xl bg-ink-bg-secondary border border-ink-border/70 shadow-2xl">
           <div className="flex items-center gap-2.5 border-b border-ink-border p-3">
