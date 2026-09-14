@@ -67,6 +67,8 @@ export interface ReportFlag {
   created_at: string;
   reviewed_by: string | null;
   reviewed_at: string | null;
+  ai_severity: "low" | "medium" | "high" | null;
+  ai_reasoning: string | null;
 }
 
 export interface ContextEntry {

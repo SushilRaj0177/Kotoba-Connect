@@ -44,17 +44,27 @@ export default function AdminQueue() {
     const annotationMap = new Map((annotations ?? []).map((a: any) => [a.id, a.nuance_note]));
     const commentMap = new Map((comments ?? []).map((c: any) => [c.id, c.body]));
 
-    setReports(
-      (flags ?? []).map((f) => ({
-        ...f,
-        preview:
-          f.target_type === "entry"
-            ? entryMap.get(f.target_id) ?? "(entry deleted)"
-            : f.target_type === "annotation"
-              ? annotationMap.get(f.target_id) ?? "(annotation deleted)"
-              : commentMap.get(f.target_id) ?? "(comment deleted)",
-      }))
-    );
+    const SEVERITY_RANK: Record<string, number> = { high: 0, medium: 1, low: 2 };
+    const withPreviews = (flags ?? []).map((f) => ({
+      ...f,
+      preview:
+        f.target_type === "entry"
+          ? entryMap.get(f.target_id) ?? "(entry deleted)"
+          : f.target_type === "annotation"
+            ? annotationMap.get(f.target_id) ?? "(annotation deleted)"
+            : commentMap.get(f.target_id) ?? "(comment deleted)",
+    }));
+    // AI-triaged severity sorts first (worst first); un-triaged reports
+    // (ai_severity still null — no GROQ_API_KEY, or the triage call hasn't
+    // landed yet) fall back to newest-first, same as before this existed.
+    withPreviews.sort((a, b) => {
+      const rankA = a.ai_severity ? SEVERITY_RANK[a.ai_severity] : 3;
+      const rankB = b.ai_severity ? SEVERITY_RANK[b.ai_severity] : 3;
+      if (rankA !== rankB) return rankA - rankB;
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    });
+
+    setReports(withPreviews);
     setLoading(false);
   }, []);
 
@@ -128,13 +138,32 @@ export default function AdminQueue() {
       {reports.map((report) => (
         <div key={report.id} className="rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm">
           <div className="mb-2 flex items-center justify-between text-xs text-ink-text-muted">
-            <span className="rounded-full bg-ink-bg-input px-2 py-0.5 font-medium uppercase">
-              {report.target_type}
-            </span>
+            <div className="flex items-center gap-1.5">
+              <span className="rounded-full bg-ink-bg-input px-2 py-0.5 font-medium uppercase">
+                {report.target_type}
+              </span>
+              {report.ai_severity && (
+                <span
+                  title={report.ai_reasoning ?? undefined}
+                  className={`rounded-full px-2 py-0.5 font-semibold uppercase text-white ${
+                    report.ai_severity === "high"
+                      ? "bg-ink-red"
+                      : report.ai_severity === "medium"
+                        ? "bg-amber-500"
+                        : "bg-ink-text-muted"
+                  }`}
+                >
+                  AI: {report.ai_severity}
+                </span>
+              )}
+            </div>
             <span>{new Date(report.created_at).toLocaleString()}</span>
           </div>
           <p className="mb-2 text-sm text-ink-text">{report.preview}</p>
-          <p className="mb-3 text-xs text-ink-text-muted">Reason: {report.reason}</p>
+          <p className="mb-1 text-xs text-ink-text-muted">Reason: {report.reason}</p>
+          {report.ai_reasoning && (
+            <p className="mb-3 text-xs italic text-ink-text-muted">AI note: {report.ai_reasoning}</p>
+          )}
           <div className="flex gap-2">
             <button
               type="button"
