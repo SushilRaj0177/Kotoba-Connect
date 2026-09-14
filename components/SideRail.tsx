@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import RailIcon from "@/components/RailIcon";
-import Mascot from "@/components/Mascot";
+import MascotLogo from "@/components/MascotLogo";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { useClientAuth } from "@/components/auth/ClientAuthProvider";
 
@@ -28,7 +28,7 @@ export default function SideRail() {
         title={t("app.name")}
         className="mb-2 flex h-12 w-12 flex-none items-center justify-center rounded-2xl transition hover:scale-105 hover:bg-ink-bg-hover"
       >
-        <Mascot size={40} />
+        <MascotLogo size={40} />
       </Link>
 
       <RailIcon href="/" title={t("nav.home")}>
