@@ -4,6 +4,7 @@ import Avatar from "@/components/Avatar";
 import EntryCard from "@/components/EntryCard";
 import EmptyState from "@/components/EmptyState";
 import FollowButton from "@/components/FollowButton";
+import BlockButton from "@/components/BlockButton";
 import { createClient, getCurrentUser } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
 import type { ContextEntry, Profile } from "@/types/database";
@@ -41,18 +42,27 @@ export default async function ProfilePage({ params }: { params: { username: stri
     bookmarkedIds = new Set((saves ?? []).map((s) => s.entry_id));
   }
 
-  const [{ count: followerCount }, { count: followingCount }, { data: viewerFollow }] = await Promise.all([
-    supabase.from("user_follows").select("follower_id", { count: "exact", head: true }).eq("following_id", profile.id),
-    supabase.from("user_follows").select("following_id", { count: "exact", head: true }).eq("follower_id", profile.id),
-    user
-      ? supabase
-          .from("user_follows")
-          .select("follower_id")
-          .eq("follower_id", user.id)
-          .eq("following_id", profile.id)
-          .maybeSingle()
-      : Promise.resolve({ data: null }),
-  ]);
+  const [{ count: followerCount }, { count: followingCount }, { data: viewerFollow }, { data: viewerBlock }] =
+    await Promise.all([
+      supabase.from("user_follows").select("follower_id", { count: "exact", head: true }).eq("following_id", profile.id),
+      supabase.from("user_follows").select("following_id", { count: "exact", head: true }).eq("follower_id", profile.id),
+      user
+        ? supabase
+            .from("user_follows")
+            .select("follower_id")
+            .eq("follower_id", user.id)
+            .eq("following_id", profile.id)
+            .maybeSingle()
+        : Promise.resolve({ data: null }),
+      user
+        ? supabase
+            .from("user_blocks")
+            .select("blocker_id")
+            .eq("blocker_id", user.id)
+            .eq("blocked_id", profile.id)
+            .maybeSingle()
+        : Promise.resolve({ data: null }),
+    ]);
 
   const joined = new Date((profile as Profile).created_at).toLocaleDateString(undefined, {
     month: "long",
@@ -78,11 +88,18 @@ export default async function ProfilePage({ params }: { params: { username: stri
                   {t("profile.editProfile")}
                 </a>
               ) : (
-                <FollowButton
-                  profileId={profile.id}
-                  currentUserId={user?.id ?? null}
-                  initialFollowing={!!viewerFollow}
-                />
+                <>
+                  <FollowButton
+                    profileId={profile.id}
+                    currentUserId={user?.id ?? null}
+                    initialFollowing={!!viewerFollow}
+                  />
+                  <BlockButton
+                    profileId={profile.id}
+                    currentUserId={user?.id ?? null}
+                    initialBlocked={!!viewerBlock}
+                  />
+                </>
               )}
             </div>
             {profile.bio && <p className="mt-1.5 text-sm text-ink-text">{profile.bio}</p>}

@@ -10,6 +10,7 @@ import SearchBar from "@/components/SearchBar";
 import BoardControls, { type SortOption } from "@/components/BoardControls";
 import { EntryListSkeleton } from "@/components/Skeletons";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { useBlockedIds } from "@/lib/use-blocked-ids";
 
 export default function EntryBoard({
   userId,
@@ -25,6 +26,7 @@ export default function EntryBoard({
   const [searchResults, setSearchResults] = useState<ContextEntry[] | null>(null);
   const [sortBy, setSortBy] = useState<SortOption>("new");
   const [formalityFilter, setFormalityFilter] = useState<FormalityLevel | "all">("all");
+  const blockedIds = useBlockedIds(userId);
 
   const loadEntries = useCallback(async () => {
     setError(null);
@@ -72,6 +74,9 @@ export default function EntryBoard({
   useEffect(() => {
     loadEntries();
   }, [loadEntries]);
+
+  const visibleEntries = entries.filter((e) => !blockedIds.has(e.user_id));
+  const visibleSearchResults = searchResults?.filter((e) => !blockedIds.has(e.user_id)) ?? null;
 
   // Real-time sync: any user's new post, upvote, or edit refreshes everyone's board.
   useEffect(() => {
@@ -132,12 +137,12 @@ export default function EntryBoard({
             {t("board.retry")}
           </button>
         </div>
-      ) : searchResults !== null ? (
-        searchResults.length === 0 ? (
+      ) : visibleSearchResults !== null ? (
+        visibleSearchResults.length === 0 ? (
           <EmptyState title={t("board.searchEmptyTitle")} description={t("board.searchEmptyDescription")} variant="obake" />
         ) : (
           <div className="space-y-4">
-            {searchResults.map((entry) => (
+            {visibleSearchResults.map((entry) => (
               <EntryCard
                 key={entry.id}
                 entry={entry}
@@ -147,7 +152,7 @@ export default function EntryBoard({
             ))}
           </div>
         )
-      ) : entries.length === 0 ? (
+      ) : visibleEntries.length === 0 ? (
         formalityFilter !== "all" ? (
           <EmptyState title={t("board.filterEmptyTitle")} description={t("board.filterEmptyDescription")} variant="obake" />
         ) : (
@@ -155,7 +160,7 @@ export default function EntryBoard({
         )
       ) : (
         <div className="space-y-4">
-          {entries.map((entry) => (
+          {visibleEntries.map((entry) => (
             <EntryCard key={entry.id} entry={entry} currentUserId={userId} />
           ))}
         </div>
