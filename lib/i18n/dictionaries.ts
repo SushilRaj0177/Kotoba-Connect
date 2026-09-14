@@ -154,8 +154,11 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "profile.following": "Following",
     "profile.follow": "Follow",
     "profile.unfollow": "Following",
+    "profile.block": "Block",
+    "profile.unblock": "Unblock",
 
     "settings.title": "Settings",
+    "settings.blockedUsers": "Blocked users",
     "settings.noEmail": "No email on file",
     "settings.profileTitle": "Profile",
     "settings.usernameLabel": "Username",
@@ -356,8 +359,11 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "profile.following": "フォロー中",
     "profile.follow": "フォロー",
     "profile.unfollow": "フォロー中",
+    "profile.block": "ブロック",
+    "profile.unblock": "ブロック解除",
 
     "settings.title": "設定",
+    "settings.blockedUsers": "ブロックしたユーザー",
     "settings.noEmail": "メールアドレス未登録",
     "settings.profileTitle": "プロフィール",
     "settings.usernameLabel": "ユーザー名",

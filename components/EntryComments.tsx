@@ -8,6 +8,7 @@ import ReportButton from "@/components/ReportButton";
 import { spamSignal } from "@/lib/moderation";
 import { errorMessage } from "@/lib/errors";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { useBlockedIds } from "@/lib/use-blocked-ids";
 
 export default function EntryComments({ entryId, userId }: { entryId: string; userId: string | null }) {
   const { t } = useLocale();
@@ -16,6 +17,8 @@ export default function EntryComments({ entryId, userId }: { entryId: string; us
   const [body, setBody] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const blockedIds = useBlockedIds(userId);
+  const visibleComments = comments.filter((c) => !blockedIds.has(c.user_id));
 
   useEffect(() => {
     const supabase = createClient();
@@ -86,16 +89,16 @@ export default function EntryComments({ entryId, userId }: { entryId: string; us
   return (
     <div className="rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm sm:p-5">
       <h2 className="mb-3 text-sm font-semibold text-ink-text-header">
-        {t("comments.title")} {comments.length > 0 && `(${comments.length})`}
+        {t("comments.title")} {visibleComments.length > 0 && `(${visibleComments.length})`}
       </h2>
 
       {loading ? (
         <p className="text-sm text-ink-text-muted">…</p>
-      ) : comments.length === 0 ? (
+      ) : visibleComments.length === 0 ? (
         <p className="text-sm text-ink-text-muted">{t("comments.empty")}</p>
       ) : (
         <ul className="mb-4 space-y-3">
-          {comments.map((c) => (
+          {visibleComments.map((c) => (
             <li key={c.id} className="rounded-2xl bg-ink-bg-input p-3">
               <div className="flex items-center justify-between">
                 <UserHandle username={c.profiles?.username ?? "unknown"} href={`/u/${c.profiles?.username ?? ""}`} size="sm" />
