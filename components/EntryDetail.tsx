@@ -10,6 +10,7 @@ import EmptyState from "@/components/EmptyState";
 import ReportButton from "@/components/ReportButton";
 import AiNuanceCallout from "@/components/AiNuanceCallout";
 import Avatar from "@/components/Avatar";
+import UserHandle from "@/components/UserHandle";
 import BookmarkButton from "@/components/BookmarkButton";
 import DeleteEntryButton from "@/components/DeleteEntryButton";
 import { spamSignal } from "@/lib/moderation";
@@ -113,7 +114,7 @@ export default function EntryDetail({
         <Avatar username={username} size={40} />
         <div className="min-w-0 flex-1">
           <div className="mb-1 flex flex-wrap items-baseline gap-2">
-            <Link href={`/u/${username}`} className="text-sm font-semibold text-ink-text-header hover:underline">
+            <Link href={`/u/${username}`} className="font-display text-sm font-bold text-ink-text-header hover:underline">
               @{username}
             </Link>
             <FormalityBadge level={entry.formality_level} />
@@ -168,17 +169,14 @@ export default function EntryDetail({
         ) : (
           <ul className="mb-4 space-y-3">
             {activeAnnotations.map((a) => (
-              <li key={a.id} className="flex gap-2.5 rounded-2xl bg-ink-bg-input p-3">
-                <Avatar username={a.profiles?.username ?? "unknown"} size={28} />
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm text-ink-text">{a.nuance_note}</p>
-                  {a.cultural_context && (
-                    <p className="mt-1 text-xs text-ink-text-muted">{a.cultural_context}</p>
-                  )}
-                  <div className="mt-1 flex items-center gap-2 text-xs text-ink-text-muted">
-                    <span>@{a.profiles?.username ?? "unknown"}</span>
-                    <ReportButton targetType="annotation" targetId={a.id} userId={userId} />
-                  </div>
+              <li key={a.id} className="rounded-2xl bg-ink-bg-input p-3">
+                <UserHandle username={a.profiles?.username ?? "unknown"} href={`/u/${a.profiles?.username ?? ""}`} size="sm" />
+                <p className="mt-2 text-sm text-ink-text">{a.nuance_note}</p>
+                {a.cultural_context && (
+                  <p className="mt-1 text-xs text-ink-text-muted">{a.cultural_context}</p>
+                )}
+                <div className="mt-1.5">
+                  <ReportButton targetType="annotation" targetId={a.id} userId={userId} />
                 </div>
               </li>
             ))}

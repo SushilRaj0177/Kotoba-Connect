@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import LanguageToggle from "@/components/i18n/LanguageToggle";
 import ThemeToggle from "@/components/theme/ThemeToggle";
+import Mascot from "@/components/Mascot";
 
 const initialState: AuthState = { error: null };
 
@@ -114,11 +115,13 @@ export default function LoginPage() {
         <LanguageToggle />
       </div>
 
-      <div className="w-full max-w-sm rounded-2xl bg-ink-bg-secondary p-8 border-2 border-ink-border">
-        <div className="mb-6 text-center">
-          <span className="font-jp text-4xl font-black text-ink-accent">言葉</span>
+      <div className="w-full max-w-sm overflow-hidden rounded-2xl bg-ink-bg-secondary border-2 border-ink-border">
+        <div className="bg-seigaiha px-8 pb-7 pt-8 text-center">
+          <Mascot size={56} className="mx-auto mb-2" />
+          <span className="font-display text-4xl font-black text-ink-accent">言葉</span>
           <p className="mt-1 text-sm text-ink-text-muted">{t("login.title")}</p>
         </div>
+        <div className="px-8 pb-8">
 
         {state.pendingConfirmation && state.email ? (
           <ConfirmationPending email={state.email} />
@@ -229,6 +232,7 @@ export default function LoginPage() {
             </form>
           </>
         )}
+        </div>
       </div>
     </main>
   );

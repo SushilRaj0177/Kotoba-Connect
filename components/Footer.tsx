@@ -7,7 +7,7 @@ export default function Footer() {
   return (
     <footer className="mt-12 border-t border-ink-border bg-ink-bg-secondary py-6 text-center text-xs text-ink-text-muted">
       <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-center gap-x-4 gap-y-1 px-4">
-        <span className="font-jp">言葉 Kotoba Engine</span>
+        <span className="font-display font-bold">言葉 Kotoba Engine</span>
         <Link href="/terms" className="hover:text-ink-text hover:underline">
           {t("footer.terms")}
         </Link>

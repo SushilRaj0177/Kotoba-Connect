@@ -33,22 +33,22 @@ export default async function LeaderboardPage() {
         {!profiles?.length ? (
           <EmptyState title={t("leaderboard.empty")} description="" />
         ) : (
-          <ol className="space-y-2">
+          <ol className="space-y-2.5">
             {profiles.map((p, i) => (
               <li key={p.id}>
                 <Link
                   href={`/u/${p.username}`}
-                  className="flex items-center gap-3 rounded-2xl bg-ink-bg-secondary p-3 border-2 border-ink-border transition hover:border-ink-accent/40"
+                  className="flex items-center gap-3 rounded-2xl bg-ink-bg-secondary p-3.5 border-2 border-ink-border transition hover:border-ink-accent/40"
                 >
                   <span
-                    className={`w-6 flex-none text-center text-sm font-extrabold ${
+                    className={`w-7 flex-none text-center font-display text-base font-extrabold ${
                       RANK_COLORS[i] ?? "text-ink-text-muted"
                     }`}
                   >
                     {i + 1}
                   </span>
-                  <Avatar username={p.username} size={36} />
-                  <span className="min-w-0 flex-1 truncate text-sm font-semibold text-ink-text-header">
+                  <Avatar username={p.username} size={40} />
+                  <span className="min-w-0 flex-1 truncate font-display text-base font-bold text-ink-text-header">
                     @{p.username}
                   </span>
                   <span className="flex-none text-xs text-ink-text-muted">

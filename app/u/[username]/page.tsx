@@ -52,10 +52,10 @@ export default async function ProfilePage({ params }: { params: { username: stri
       <Navbar title={`@${profile.username}`} />
       <main className="mx-auto max-w-3xl px-4 py-6 sm:px-6">
         <div className="mb-6 flex items-start gap-4 rounded-2xl bg-ink-bg-secondary p-5 border-2 border-ink-border">
-          <Avatar username={profile.username} size={64} />
+          <Avatar username={profile.username} size={72} />
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <h1 className="font-display text-xl font-bold text-ink-text-header">
+              <h1 className="font-display text-2xl font-bold text-ink-text-header">
                 @{profile.username}
               </h1>
               {user?.id === profile.id && (

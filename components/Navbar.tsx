@@ -4,7 +4,7 @@ import { signOut } from "@/app/auth/actions";
 import { getServerTranslator } from "@/lib/i18n/server";
 import LanguageToggle from "@/components/i18n/LanguageToggle";
 import ThemeToggle from "@/components/theme/ThemeToggle";
-import Avatar from "@/components/Avatar";
+import UserHandle from "@/components/UserHandle";
 import NotificationBell from "@/components/NotificationBell";
 
 export default async function Navbar({ title }: { title?: string } = {}) {
@@ -28,9 +28,9 @@ export default async function Navbar({ title }: { title?: string } = {}) {
 
   return (
     <header className="sticky top-0 z-10 bg-ink-bg/90 border-b-2 border-ink-border backdrop-blur">
-      <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
+      <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3.5 sm:px-6">
         <Link href="/" className="flex-none md:hidden">
-          <span className="font-jp text-2xl font-black text-ink-accent">言葉</span>
+          <span className="font-display text-2xl font-black text-ink-accent">言葉</span>
         </Link>
 
         {/* Balances the toggles/auth cluster on the right — every reference
@@ -53,14 +53,9 @@ export default async function Navbar({ title }: { title?: string } = {}) {
           {user ? (
             <div className="flex items-center gap-2">
               <NotificationBell userId={user.id} />
-              <Link
-                href={`/u/${username ?? ""}`}
-                className="hidden items-center gap-1.5 sm:flex"
-                title={t("nav.profile")}
-              >
-                <Avatar username={username ?? "user"} size={24} />
-                <span className="text-sm text-ink-text-muted hover:text-ink-text">@{username ?? "user"}</span>
-              </Link>
+              <div className="hidden sm:block">
+                <UserHandle username={username ?? "user"} href={`/u/${username ?? ""}`} size="sm" />
+              </div>
               <form action={signOut}>
                 <button
                   type="submit"
