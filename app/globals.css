@@ -79,6 +79,15 @@
   color-scheme: dark;
 }
 
+html {
+  /* +20% layout scale. `zoom` (not `transform: scale` or a font-size
+     hack) scales the whole render — layout, px-based widths, everything —
+     consistently, the same way browser zoom would. SideRail is `fixed`
+     (not `sticky`) precisely so this can't reintroduce the mobile
+     scroll/distortion bug sticky+zoom caused earlier. */
+  zoom: 1.2;
+}
+
 /* Custom cozy cursor — a familiar rounded arrow (not a dot/circle, so it
    still reads as "a cursor" at a glance) in a soft cream with a dark
    outline, noticeably bigger than a default system arrow. A filled
