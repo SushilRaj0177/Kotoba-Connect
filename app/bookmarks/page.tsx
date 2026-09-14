@@ -15,7 +15,7 @@ export default async function BookmarksPage() {
 
   const { data: bookmarks } = await supabase
     .from("bookmarks")
-    .select("entry_id, context_entries(*, profiles!context_entries_user_id_fkey(username, avatar_url))")
+    .select("entry_id, context_entries(*, profiles!context_entries_user_id_fkey(username, display_name, avatar_url))")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 

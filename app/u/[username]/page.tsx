@@ -25,7 +25,7 @@ export default async function ProfilePage({ params }: { params: { username: stri
 
   const { data: entries } = await supabase
     .from("context_entries")
-    .select("*, profiles!context_entries_user_id_fkey(username, avatar_url)")
+    .select("*, profiles!context_entries_user_id_fkey(username, display_name, avatar_url)")
     .eq("user_id", profile.id)
     .order("created_at", { ascending: false })
     .limit(50);
@@ -81,24 +81,29 @@ export default async function ProfilePage({ params }: { params: { username: stri
 
   return (
     <>
-      <Navbar title={`@${profile.username}`} />
+      <Navbar title={profile.display_name?.trim() || `@${profile.username}`} />
       <main className="mx-auto max-w-3xl px-4 py-6 sm:px-6">
-        <div className="mb-6 flex items-start gap-4 rounded-2xl bg-ink-bg-secondary p-5 border border-ink-border/70 shadow-sm">
-          <Avatar username={profile.username} size={72} />
-          <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-2">
-              <h1 className="font-display text-2xl font-bold text-ink-text-header">
-                @{profile.username}
+        <div className="mb-6 rounded-2xl bg-ink-bg-secondary p-5 border border-ink-border/70 shadow-sm sm:p-6">
+          <div className="flex items-start gap-4">
+            <Avatar username={profile.username} avatarUrl={profile.avatar_url} size={72} />
+            <div className="min-w-0 flex-1 pt-0.5">
+              <h1 className="truncate font-display text-xl font-bold text-ink-text-header sm:text-2xl">
+                {profile.display_name?.trim() || `@${profile.username}`}
               </h1>
+              {profile.display_name?.trim() && (
+                <p className="truncate text-sm text-ink-text-muted">@{profile.username}</p>
+              )}
+            </div>
+            <div className="flex-none">
               {user?.id === profile.id ? (
                 <a
                   href="/settings"
-                  className="rounded-full bg-ink-bg-input px-3 py-1 text-xs font-semibold text-ink-text transition hover:bg-ink-bg-hover"
+                  className="rounded-full bg-ink-bg-input px-3 py-1.5 text-xs font-semibold text-ink-text transition hover:bg-ink-bg-hover"
                 >
                   {t("profile.editProfile")}
                 </a>
               ) : (
-                <>
+                <div className="flex items-center gap-1.5">
                   <FollowButton
                     profileId={profile.id}
                     currentUserId={user?.id ?? null}
@@ -109,54 +114,56 @@ export default async function ProfilePage({ params }: { params: { username: stri
                     currentUserId={user?.id ?? null}
                     initialBlocked={!!viewerBlock}
                   />
-                </>
+                </div>
               )}
             </div>
-            {profile.bio && <p className="mt-1.5 text-sm text-ink-text">{profile.bio}</p>}
-            {profile.website && (
-              <a
-                href={profile.website}
-                target="_blank"
-                rel="noreferrer"
-                className="mt-1 inline-block text-sm text-ink-text-link hover:underline"
-              >
-                {profile.website.replace(/^https?:\/\//, "")}
-              </a>
-            )}
-            <div className="mt-3 flex flex-wrap gap-4 text-sm text-ink-text-muted">
-              <span>
-                <strong className="text-ink-text-header">{entries?.length ?? 0}</strong>{" "}
-                {t("profile.entriesPosted")}
-              </span>
-              <span>
-                <strong className="text-ink-text-header">{profile.reputation_score}</strong>{" "}
-                {t("profile.reputation")}
-              </span>
-              <span>
-                <strong className="text-ink-text-header">{followerCount ?? 0}</strong>{" "}
-                {t("profile.followers")}
-              </span>
-              <span>
-                <strong className="text-ink-text-header">{followingCount ?? 0}</strong>{" "}
-                {t("profile.following")}
-              </span>
-              {effectiveStreak > 0 && (
-                <span title={`${t("profile.longestStreak")}: ${typedProfile.longest_streak}`}>
-                  🔥 <strong className="text-ink-text-header">{effectiveStreak}</strong>{" "}
-                  {t("profile.streak")}
-                </span>
-              )}
-              <span>
-                {t("profile.memberSince")} {joined}
-              </span>
-            </div>
-            <ProfileBadges
-              entryCount={entries?.length ?? 0}
-              reputation={profile.reputation_score}
-              longestStreak={typedProfile.longest_streak}
-              followerCount={followerCount ?? 0}
-            />
           </div>
+
+          {(profile.bio || profile.website) && (
+            <div className="mt-3 space-y-1">
+              {profile.bio && <p className="text-sm leading-relaxed text-ink-text">{profile.bio}</p>}
+              {profile.website && (
+                <a
+                  href={profile.website}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-block text-sm text-ink-text-link hover:underline"
+                >
+                  {profile.website.replace(/^https?:\/\//, "")}
+                </a>
+              )}
+            </div>
+          )}
+
+          <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-1.5 border-t border-ink-border pt-3.5 text-sm">
+            <span className="text-ink-text-muted">
+              <strong className="text-ink-text-header">{entries?.length ?? 0}</strong> {t("profile.entriesPosted")}
+            </span>
+            <span className="text-ink-text-muted">
+              <strong className="text-ink-text-header">{profile.reputation_score}</strong> {t("profile.reputation")}
+            </span>
+            <span className="text-ink-text-muted">
+              <strong className="text-ink-text-header">{followerCount ?? 0}</strong> {t("profile.followers")}
+            </span>
+            <span className="text-ink-text-muted">
+              <strong className="text-ink-text-header">{followingCount ?? 0}</strong> {t("profile.following")}
+            </span>
+            {effectiveStreak > 0 && (
+              <span className="text-ink-text-muted" title={`${t("profile.longestStreak")}: ${typedProfile.longest_streak}`}>
+                🔥 <strong className="text-ink-text-header">{effectiveStreak}</strong> {t("profile.streak")}
+              </span>
+            )}
+          </div>
+          <p className="mt-1.5 text-xs text-ink-text-muted">
+            {t("profile.memberSince")} {joined}
+          </p>
+
+          <ProfileBadges
+            entryCount={entries?.length ?? 0}
+            reputation={profile.reputation_score}
+            longestStreak={typedProfile.longest_streak}
+            followerCount={followerCount ?? 0}
+          />
         </div>
 
         {!entries?.length ? (

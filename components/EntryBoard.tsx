@@ -34,7 +34,7 @@ export default function EntryBoard({
 
     let query = supabase
       .from("context_entries")
-      .select("*, profiles!context_entries_user_id_fkey(username, avatar_url)")
+      .select("*, profiles!context_entries_user_id_fkey(username, display_name, avatar_url)")
       .order(sortBy === "popular" ? "upvotes_count" : "created_at", { ascending: false })
       .limit(50);
 

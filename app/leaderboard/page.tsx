@@ -11,7 +11,7 @@ export default async function LeaderboardPage() {
 
   const { data: profiles } = await supabase
     .from("profiles")
-    .select("id, username, avatar_url, reputation_score")
+    .select("id, username, display_name, avatar_url, reputation_score")
     .order("reputation_score", { ascending: false })
     .limit(50);
 
@@ -44,9 +44,9 @@ export default async function LeaderboardPage() {
                   >
                     {i + 1}
                   </span>
-                  <Avatar username={p.username} size={40} />
+                  <Avatar username={p.username} avatarUrl={p.avatar_url} size={40} />
                   <span className="min-w-0 flex-1 truncate font-display text-base font-bold text-ink-text-header">
-                    @{p.username}
+                    {p.display_name?.trim() || `@${p.username}`}
                   </span>
                   <span className="flex-none text-xs text-ink-text-muted">
                     {counts.get(p.id) ?? 0} {t("leaderboard.entries")}

@@ -1,29 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { useClientAuth } from "@/components/auth/ClientAuthProvider";
 
 // A bottom tab bar for phone widths — SideRail is `hidden md:flex`, so
 // without this there was no way to reach Leaderboard/Bookmarks/Settings
 // at all on a phone (only Home, via the wordmark). Mirrors the same
-// links as SideRail and uses the same client-side auth-fetch pattern
-// (not a server-rendered check) so it can't go stale after sign-in either.
+// links as SideRail and shares its ClientAuthProvider subscription (not a
+// server-rendered check) so it can't go stale after sign-in either.
 export default function MobileNav() {
   const { t } = useLocale();
   const pathname = usePathname();
-  const [userId, setUserId] = useState<string | null>(null);
-
-  useEffect(() => {
-    const supabase = createClient();
-    supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
-      setUserId(session?.user?.id ?? null);
-    });
-    return () => sub.subscription.unsubscribe();
-  }, []);
+  const { userId } = useClientAuth();
 
   const items = [
     {

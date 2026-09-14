@@ -10,7 +10,17 @@ import { useLocale } from "@/components/i18n/LocaleProvider";
 // app (X, Discord, Slack) reduces the account cluster in the top bar to
 // just the avatar, with the handle and account actions living in a
 // dropdown behind it instead of sitting in the chrome at all times.
-export default function AccountMenu({ username, isAdmin }: { username: string; isAdmin: boolean }) {
+export default function AccountMenu({
+  username,
+  displayName,
+  avatarUrl,
+  isAdmin,
+}: {
+  username: string;
+  displayName?: string | null;
+  avatarUrl?: string | null;
+  isAdmin: boolean;
+}) {
   const { t } = useLocale();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -32,15 +42,15 @@ export default function AccountMenu({ username, isAdmin }: { username: string; i
         className="flex items-center rounded-full transition hover:ring-2 hover:ring-ink-accent/40"
         aria-label={t("nav.profile")}
       >
-        <Avatar username={username} size={32} />
+        <Avatar username={username} avatarUrl={avatarUrl} size={32} />
       </button>
 
       {open && (
         <div className="absolute right-0 top-full z-20 mt-2 w-52 overflow-hidden rounded-2xl bg-ink-bg-secondary border border-ink-border/70 shadow-xl">
           <div className="flex items-center gap-2.5 border-b border-ink-border p-3">
-            <Avatar username={username} size={32} />
+            <Avatar username={username} avatarUrl={avatarUrl} size={32} />
             <span className="min-w-0 flex-1 truncate font-display text-sm font-bold text-ink-text-header">
-              @{username}
+              {displayName?.trim() || `@${username}`}
             </span>
           </div>
           <div className="p-1.5">

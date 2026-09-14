@@ -1,5 +1,5 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { cache } from "react";
 
 // See lib/supabase/client.ts for why this client isn't parameterized with
@@ -29,16 +29,29 @@ export function createClient() {
   );
 }
 
-// auth.getUser() is a real network round-trip to Supabase's auth server
-// (it verifies the JWT server-side, unlike the cookie-only getSession()),
-// and Navbar, the page itself, RightRail, etc. each used to call it
-// independently — 2-4 redundant round-trips stacked serially on every
-// single page load, which is exactly the kind of thing that makes
-// "switching pages" feel slow. React's cache() memoizes this per
-// request, so no matter how many components call getCurrentUser() during
-// one render, the actual network call happens once.
+// auth.getUser() is a real network round-trip to Supabase's auth server —
+// middleware (lib/supabase/middleware.ts) already makes exactly this call
+// on every request to refresh/validate the session, and used to be
+// immediately followed by a second, identical round-trip here on every
+// single navigation. Middleware now forwards the verified id via the
+// x-kotoba-user-id request header, so when it's present we can trust the
+// session cookie (already validated this request) and read it locally via
+// getSession() — no network call — instead of re-verifying from scratch.
+// React's cache() still memoizes this per request on top of that, so no
+// matter how many components call getCurrentUser(), the work happens once.
 export const getCurrentUser = cache(async () => {
   const supabase = createClient();
+  const verifiedId = headers().get("x-kotoba-user-id");
+
+  if (verifiedId === "") return null;
+  if (verifiedId) {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    if (session?.user?.id === verifiedId) return session.user;
+  }
+
+  // Fallback for any render path middleware didn't cover.
   const {
     data: { user },
   } = await supabase.auth.getUser();

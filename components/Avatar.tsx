@@ -1,5 +1,8 @@
+import { parseAvatarPreset } from "@/lib/avatar-presets";
+
 // Deterministic colored avatar: same username always gets the same color
-// and initial, no image upload needed.
+// and initial, no image upload needed. Used as the fallback whenever a
+// profile hasn't picked a preset icon (see AvatarPicker.tsx).
 const PALETTE = [
   "#e8542f",
   "#d97706",
@@ -20,7 +23,29 @@ function colorFor(username: string): string {
   return PALETTE[Math.abs(hash) % PALETTE.length];
 }
 
-export default function Avatar({ username, size = 32 }: { username: string; size?: number }) {
+export default function Avatar({
+  username,
+  avatarUrl,
+  size = 32,
+}: {
+  username: string;
+  avatarUrl?: string | null;
+  size?: number;
+}) {
+  const preset = parseAvatarPreset(avatarUrl);
+
+  if (preset) {
+    return (
+      <span
+        aria-hidden="true"
+        style={{ width: size, height: size, backgroundColor: preset.bg, fontSize: size * 0.58 }}
+        className="flex flex-none items-center justify-center rounded-full"
+      >
+        {preset.emoji}
+      </span>
+    );
+  }
+
   const initial = username.trim().charAt(0).toUpperCase() || "?";
   return (
     <span

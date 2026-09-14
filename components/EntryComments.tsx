@@ -27,7 +27,7 @@ export default function EntryComments({ entryId, userId }: { entryId: string; us
       setLoading(true);
       const { data } = await supabase
         .from("entry_comments")
-        .select("*, profiles(username, avatar_url)")
+        .select("*, profiles(username, display_name, avatar_url)")
         .eq("entry_id", entryId)
         .order("created_at", { ascending: true });
       setComments((data ?? []) as EntryComment[]);
@@ -101,7 +101,13 @@ export default function EntryComments({ entryId, userId }: { entryId: string; us
           {visibleComments.map((c) => (
             <li key={c.id} className="rounded-2xl bg-ink-bg-input p-3">
               <div className="flex items-center justify-between">
-                <UserHandle username={c.profiles?.username ?? "unknown"} href={`/u/${c.profiles?.username ?? ""}`} size="sm" />
+                <UserHandle
+                  username={c.profiles?.username ?? "unknown"}
+                  displayName={c.profiles?.display_name}
+                  avatarUrl={c.profiles?.avatar_url}
+                  href={`/u/${c.profiles?.username ?? ""}`}
+                  size="sm"
+                />
                 <span className="text-xs text-ink-text-muted">
                   {new Date(c.created_at).toLocaleDateString()}
                 </span>

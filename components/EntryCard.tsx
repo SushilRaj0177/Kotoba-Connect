@@ -47,6 +47,8 @@ export default function EntryCard({
   }
 
   const username = entry.profiles?.username ?? "unknown";
+  const displayName = entry.profiles?.display_name;
+  const avatarUrl = entry.profiles?.avatar_url;
   const timestamp = new Date(entry.created_at).toLocaleString(undefined, {
     month: "short",
     day: "numeric",
@@ -56,7 +58,7 @@ export default function EntryCard({
 
   return (
     <article className="flex gap-3 rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm">
-      <Avatar username={username} size={40} />
+      <Avatar username={username} avatarUrl={avatarUrl} size={40} />
 
       <div className="min-w-0 flex-1">
         <div className="mb-1 flex flex-wrap items-baseline gap-2">
@@ -64,7 +66,7 @@ export default function EntryCard({
             href={`/u/${username}`}
             className="font-display text-sm font-bold text-ink-text-header hover:underline"
           >
-            @{username}
+            {displayName?.trim() || `@${username}`}
           </Link>
           <span className="text-xs text-ink-text-muted">{timestamp}</span>
           <FormalityBadge level={entry.formality_level} />

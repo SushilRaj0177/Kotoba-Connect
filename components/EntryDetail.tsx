@@ -43,7 +43,7 @@ export default function EntryDetail({
       setLoading(true);
       const { data } = await supabase
         .from("token_annotations")
-        .select("*, profiles(username, avatar_url)")
+        .select("*, profiles(username, display_name, avatar_url)")
         .eq("entry_id", entry.id)
         .order("created_at", { ascending: true });
       setAnnotations((data ?? []) as TokenAnnotation[]);
@@ -108,15 +108,16 @@ export default function EntryDetail({
 
   const activeAnnotations = annotations.filter((a) => a.token_index === activeIndex);
   const username = entry.profiles?.username ?? "unknown";
+  const displayName = entry.profiles?.display_name;
 
   return (
     <div className="space-y-4">
       <div className="flex gap-3 rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm sm:p-5">
-        <Avatar username={username} size={40} />
+        <Avatar username={username} avatarUrl={entry.profiles?.avatar_url} size={40} />
         <div className="min-w-0 flex-1">
           <div className="mb-1 flex flex-wrap items-baseline gap-2">
             <Link href={`/u/${username}`} className="font-display text-sm font-bold text-ink-text-header hover:underline">
-              @{username}
+              {displayName?.trim() || `@${username}`}
             </Link>
             <FormalityBadge level={entry.formality_level} />
           </div>
@@ -171,7 +172,13 @@ export default function EntryDetail({
           <ul className="mb-4 space-y-3">
             {activeAnnotations.map((a) => (
               <li key={a.id} className="rounded-2xl bg-ink-bg-input p-3">
-                <UserHandle username={a.profiles?.username ?? "unknown"} href={`/u/${a.profiles?.username ?? ""}`} size="sm" />
+                <UserHandle
+                  username={a.profiles?.username ?? "unknown"}
+                  displayName={a.profiles?.display_name}
+                  avatarUrl={a.profiles?.avatar_url}
+                  href={`/u/${a.profiles?.username ?? ""}`}
+                  size="sm"
+                />
                 <p className="mt-2 text-sm text-ink-text">{a.nuance_note}</p>
                 {a.cultural_context && (
                   <p className="mt-1 text-xs text-ink-text-muted">{a.cultural_context}</p>

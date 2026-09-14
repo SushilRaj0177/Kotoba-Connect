@@ -23,7 +23,22 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  return response;
+  // Forward the already-validated user id to the Server Component render via
+  // a request header, so lib/supabase/server.ts's getCurrentUser() can skip
+  // a second full auth.getUser() network round-trip to Supabase for the same
+  // request — middleware already did that verification. This cuts one of
+  // the two serial Supabase Auth calls that used to happen on every single
+  // navigation (middleware, then the page/layout render). Cookies that
+  // Supabase's setAll may have queued (token refresh) are preserved by
+  // copying them onto the new response.
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-kotoba-user-id", user?.id ?? "");
+  const finalResponse = NextResponse.next({ request: { headers: requestHeaders } });
+  response.cookies.getAll().forEach((cookie) => finalResponse.cookies.set(cookie));
+
+  return finalResponse;
 }

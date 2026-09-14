@@ -1,51 +1,28 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/client";
 import RailIcon from "@/components/RailIcon";
 import Mascot from "@/components/Mascot";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { useClientAuth } from "@/components/auth/ClientAuthProvider";
 
-// A persistent left navigation rail. Fetches auth state client-side
-// (with an onAuthStateChange subscription) rather than relying on a
-// server-rendered check baked into the root layout — that server check
-// was going stale after sign-in/out because the root layout segment
-// persists across client-side navigations in the App Router and doesn't
-// always re-run, so Bookmarks/Settings could silently disappear even
-// while signed in. This is always correct regardless of navigation/cache
-// timing, matching how NotificationBell/AccountMenu already behave.
+// A persistent left navigation rail. Reads auth state from
+// ClientAuthProvider (a shared onAuthStateChange subscription) rather than
+// relying on a server-rendered check baked into the root layout — that
+// server check was going stale after sign-in/out because the root layout
+// segment persists across client-side navigations in the App Router and
+// doesn't always re-run, so Bookmarks/Settings could silently disappear
+// even while signed in. This is always correct regardless of
+// navigation/cache timing, matching how NotificationBell/AccountMenu
+// already behave.
 export default function SideRail() {
   const { t } = useLocale();
-  const [userId, setUserId] = useState<string | null | undefined>(undefined);
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  useEffect(() => {
-    const supabase = createClient();
-
-    async function loadProfile(uid: string | null) {
-      setUserId(uid);
-      if (!uid) {
-        setIsAdmin(false);
-        return;
-      }
-      const { data } = await supabase.from("profiles").select("is_admin").eq("id", uid).single();
-      setIsAdmin(!!data?.is_admin);
-    }
-
-    supabase.auth.getUser().then(({ data }) => loadProfile(data.user?.id ?? null));
-
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      loadProfile(session?.user?.id ?? null);
-    });
-
-    return () => sub.subscription.unsubscribe();
-  }, []);
+  const { userId, isAdmin } = useClientAuth();
 
   const user = !!userId;
 
   return (
-    <nav className="sticky top-0 hidden h-screen w-[72px] flex-none flex-col items-center gap-3 bg-ink-bg-secondary py-6 shadow-[1px_0_0_0_rgb(var(--c-border)/0.6)] md:flex">
+    <nav className="fixed inset-y-0 left-0 z-30 hidden w-[72px] flex-none flex-col items-center gap-3 overflow-y-auto bg-ink-bg-secondary py-6 shadow-[1px_0_0_0_rgb(var(--c-border)/0.6)] md:flex">
       <Link
         href="/"
         title={t("app.name")}
