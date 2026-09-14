@@ -156,7 +156,7 @@ export default function EntryBoard({
         formalityFilter !== "all" ? (
           <EmptyState title={t("board.filterEmptyTitle")} description={t("board.filterEmptyDescription")} variant="obake" />
         ) : (
-          <EmptyState title={t("board.emptyTitle")} description={t("board.emptyDescription")} />
+          <EmptyState title={t("board.emptyTitle")} description={t("board.emptyDescription")} variant="obake" />
         )
       ) : (
         <div className="space-y-4">

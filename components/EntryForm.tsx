@@ -4,19 +4,11 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { FormalityLevel, KuromojiToken } from "@/types/database";
 import TokenizedText from "@/components/TokenizedText";
+import FormalitySelect from "@/components/FormalitySelect";
 import { spamSignal } from "@/lib/moderation";
 import { errorMessage } from "@/lib/errors";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import Avatar from "@/components/Avatar";
-
-const FORMALITY_LEVELS: FormalityLevel[] = [
-  "Sonkeigo",
-  "Kenjougo",
-  "Teineigo",
-  "Casual",
-  "Slang",
-  "Dialect",
-];
 
 export default function EntryForm({
   userId,
@@ -193,18 +185,7 @@ export default function EntryForm({
           <label htmlFor="formality" className="mb-1 block text-xs font-medium text-ink-text-muted">
             {t("form.formalityLabel")}
           </label>
-          <select
-            id="formality"
-            value={formality}
-            onChange={(e) => setFormality(e.target.value as FormalityLevel)}
-            className="w-full rounded-lg border-none bg-ink-bg-input px-3 py-2 text-sm text-ink-text focus:outline-none focus:ring-2 focus:ring-ink-accent"
-          >
-            {FORMALITY_LEVELS.map((level) => (
-              <option key={level} value={level}>
-                {level}
-              </option>
-            ))}
-          </select>
+          <FormalitySelect id="formality" value={formality} onChange={setFormality} />
         </div>
         <div>
           <label htmlFor="tags" className="mb-1 block text-xs font-medium text-ink-text-muted">
