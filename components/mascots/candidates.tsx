@@ -1,20 +1,31 @@
+"use client";
+
+import { useRef } from "react";
+import { useMascotGaze } from "@/lib/use-mascot-gaze";
+
 // Mascot candidates alongside Kokeshi (components/Mascot.tsx). Obake was
 // kept and reworked after feedback that the first version felt
-// "incomplete and messy"; Daruma/Maneki/Shiba/Tsuru/Mochi/Tanuki/Sumo/
-// Ramen were dropped per direction to replace them with a fox and a cat
-// instead. All three here use the same sticker-outline-halo technique as
-// Kokeshi so they read as their own element on any background color.
+// "incomplete and messy", then promoted to full co-mascot status
+// alongside Kokeshi — equal billing across the site rather than one
+// dominant character with a sidekick. Daruma/Maneki/Shiba/Tsuru/Mochi/
+// Tanuki/Sumo/Ramen were dropped per direction to replace them with a
+// fox and a cat instead. All three here use the same sticker-outline-
+// halo technique as Kokeshi so they read as their own element on any
+// background color.
 type MascotProps = { size?: number; className?: string };
 const HALO = "#fdf8ef";
 const INK = "#2a2438";
 
-// "Obake" (お化け) — a round little ghost. Redesigned: an even 3-scallop
-// hem instead of the previous asymmetric wavy line, a soft accent-tinted
-// fill instead of flat white so it doesn't look like an unfinished
-// outline, and the same halo/shadow treatment as Kokeshi.
+// "Obake" (お化け) — a round little ghost, Kokeshi's co-mascot. Eyes
+// track the cursor the same way Kokeshi's do (lib/use-mascot-gaze.ts).
 export function Obake({ size = 96, className = "" }: MascotProps) {
+  const svgRef = useRef<SVGSVGElement>(null);
+  const eyeLRef = useRef<SVGCircleElement>(null);
+  const eyeRRef = useRef<SVGCircleElement>(null);
+  useMascotGaze(svgRef, [eyeLRef, eyeRRef], true);
+
   return (
-    <svg width={size} height={size} viewBox="0 0 100 100" className={className} aria-hidden="true">
+    <svg ref={svgRef} width={size} height={size} viewBox="0 0 100 100" className={className} aria-hidden="true">
       <ellipse cx="50" cy="90" rx="20" ry="4" fill="black" fillOpacity="0.14" />
       <g className="m-float">
         <path
@@ -41,8 +52,8 @@ export function Obake({ size = 96, className = "" }: MascotProps) {
           strokeWidth="1.6"
         />
         <g className="m-blink">
-          <circle cx="41" cy="42" r="3.2" fill={INK} />
-          <circle cx="59" cy="42" r="3.2" fill={INK} />
+          <circle ref={eyeLRef} cx="41" cy="42" r="3.2" fill={INK} />
+          <circle ref={eyeRRef} cx="59" cy="42" r="3.2" fill={INK} />
         </g>
         <path d="M45 52q5 4 10 0" stroke={INK} strokeWidth="2.4" strokeLinecap="round" fill="none" />
         <circle cx="33" cy="48" r="4" fill="rgb(var(--c-accent-2))" fillOpacity="0.5" />

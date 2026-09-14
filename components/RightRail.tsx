@@ -2,7 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
 import UserHandle from "@/components/UserHandle";
-import Mascot from "@/components/Mascot";
+import { Obake } from "@/components/mascots/candidates";
 
 // Real supplementary content, not decoration — every reference app keeps
 // this column populated (stats, trending, promos) so the page never reads
@@ -96,7 +96,7 @@ export default async function RightRail() {
       </div>
 
       <div className="bg-seigaiha relative overflow-hidden rounded-2xl bg-ink-accent p-4 text-white">
-        <Mascot size={44} mood="excited" className="float-right ml-3 mb-1" />
+        <Obake size={44} className="float-right ml-3 mb-1" />
         <h2 className="mb-1 font-display text-base font-bold">{t("rail.tipTitle")}</h2>
         <p className="text-sm leading-relaxed text-white/90">{t("rail.tipBody")}</p>
       </div>

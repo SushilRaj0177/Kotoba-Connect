@@ -116,7 +116,7 @@ export default function EntryBoard({
         </div>
       ) : searchResults !== null ? (
         searchResults.length === 0 ? (
-          <EmptyState title={t("board.searchEmptyTitle")} description={t("board.searchEmptyDescription")} />
+          <EmptyState title={t("board.searchEmptyTitle")} description={t("board.searchEmptyDescription")} variant="obake" />
         ) : (
           <div className="space-y-4">
             {searchResults.map((entry) => (

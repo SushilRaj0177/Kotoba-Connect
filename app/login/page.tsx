@@ -8,6 +8,7 @@ import { useLocale } from "@/components/i18n/LocaleProvider";
 import LanguageToggle from "@/components/i18n/LanguageToggle";
 import ThemeToggle from "@/components/theme/ThemeToggle";
 import Mascot from "@/components/Mascot";
+import { Obake } from "@/components/mascots/candidates";
 
 const initialState: AuthState = { error: null };
 
@@ -117,7 +118,10 @@ export default function LoginPage() {
 
       <div className="w-full max-w-sm overflow-hidden rounded-2xl bg-ink-bg-secondary border border-ink-border/70 shadow-sm">
         <div className="bg-seigaiha px-8 pb-7 pt-8 text-center">
-          <Mascot size={56} className="mx-auto mb-2" />
+          <div className="mb-2 flex items-end justify-center gap-1">
+            <Mascot size={56} />
+            <Obake size={38} className="mb-1" />
+          </div>
           <span className="font-display text-4xl font-black text-ink-accent">言葉</span>
           <p className="mt-1 text-sm text-ink-text-muted">{t("login.title")}</p>
         </div>

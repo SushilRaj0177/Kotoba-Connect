@@ -31,6 +31,7 @@ export default async function BookmarksPage() {
           <EmptyState
             title={t("bookmarks.emptyTitle")}
             description={t("bookmarks.emptyDescription")}
+            variant="obake"
           />
         ) : (
           <div className="space-y-3">
