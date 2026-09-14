@@ -1,5 +1,12 @@
 // Groq's API is OpenAI-compatible, so a plain fetch is enough — no SDK needed.
-const GROQ_MODEL = "llama-3.1-8b-instant";
+// gpt-oss-120b is Groq's flagship open-weight reasoning model — far more
+// capable than the small "instant" models for judgment calls like
+// classifying Japanese formality registers and explaining cultural nuance,
+// while still running on Groq's LPU inference for low latency.
+// reasoning_effort: "low" keeps it fast/concise for these latency-sensitive,
+// short-answer use cases rather than producing long reasoning traces.
+const GROQ_MODEL = "openai/gpt-oss-120b";
+const REASONING_EFFORT = "low";
 
 export interface PragmaticAnalysis {
   formality_suggestion: string;
@@ -38,6 +45,7 @@ Translation: ${translation}`;
         model: GROQ_MODEL,
         messages: [{ role: "user", content: prompt }],
         response_format: { type: "json_object" },
+        reasoning_effort: REASONING_EFFORT,
         temperature: 0.3,
         max_tokens: 300,
       }),
@@ -99,6 +107,7 @@ export async function chatWithBot(messages: { role: "user" | "assistant"; conten
       body: JSON.stringify({
         model: GROQ_MODEL,
         messages: [{ role: "system", content: BOT_SYSTEM_PROMPT }, ...messages.slice(-10)],
+        reasoning_effort: REASONING_EFFORT,
         temperature: 0.6,
         max_tokens: 220,
       }),
