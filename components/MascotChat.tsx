@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Mascot from "@/components/Mascot";
+import ChatMessageText from "@/components/ChatMessageText";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 
 interface ChatMessage {
@@ -80,7 +81,7 @@ export default function MascotChat() {
               <div className="flex items-start gap-2">
                 <Mascot size={26} mood="happy" />
                 <p className="max-w-[85%] rounded-2xl rounded-tl-sm bg-ink-bg-input px-3 py-2 text-sm text-ink-text">
-                  {t("bot.greeting")}
+                  <ChatMessageText text={t("bot.greeting")} />
                 </p>
               </div>
             )}
@@ -96,7 +97,7 @@ export default function MascotChat() {
                 <div key={i} className="flex items-start gap-2">
                   <Mascot size={26} mood="happy" />
                   <p className="max-w-[85%] rounded-2xl rounded-tl-sm bg-ink-bg-input px-3 py-2 text-sm text-ink-text">
-                    {m.content}
+                    <ChatMessageText text={m.content} />
                   </p>
                 </div>
               )
