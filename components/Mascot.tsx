@@ -1,8 +1,9 @@
-// The board's mascot — a hanko (印鑑, the traditional carved name-stamp
-// used across Japan in place of a signature) given a friendly face. It's
-// the one piece of imagery unique to this product: not cloned from any
-// reference app, and it ties directly into the "real Japanese language,
-// stamped with community context" idea the board is built around.
+// The board's mascot — a kokeshi (こけし), the traditional Japanese
+// wooden folk doll: a simple cylindrical body, a round head, a painted
+// face, no arms or legs. It's a genuinely cozy, handmade-feeling object
+// (often given as a keepsake) rather than a generic cartoon-blob
+// character, and its indigo-painted body matches the aizome accent color
+// used everywhere else instead of fighting it.
 //
 // Drawn flat as an SVG sticker (a soft offset shadow + a gloss highlight)
 // rather than attempting true 3D — a hand-rolled WebGL model would look
@@ -27,46 +28,58 @@ export default function Mascot({
       className={className}
       aria-hidden="true"
     >
-      <ellipse cx="50" cy="90" rx="26" ry="5" fill="black" fillOpacity="0.18" />
+      <ellipse cx="50" cy="93" rx="24" ry="4.5" fill="black" fillOpacity="0.16" />
 
-      {/* stubby arms */}
-      <rect x="6" y="52" width="16" height="11" rx="5.5" fill="rgb(var(--c-accent))" />
-      <rect x="78" y="52" width="16" height="11" rx="5.5" fill="rgb(var(--c-accent))" />
+      {/* body: a simple rounded cylinder, no arms or legs */}
+      <path
+        d="M28 46c0-3 1-5 2-6 4-4 8-5 20-5s16 1 20 5c1 1 2 3 2 6l3 34c1 7-4 13-11 13H36c-7 0-12-6-11-13z"
+        fill="rgb(var(--c-accent))"
+      />
+      <path
+        d="M28 46c0-3 1-5 2-6 4-4 8-5 20-5s16 1 20 5c1 1 2 3 2 6l3 34c1 7-4 13-11 13H36c-7 0-12-6-11-13z"
+        fill="url(#mascotShade)"
+      />
 
-      {/* body: the stamp face */}
-      <circle cx="50" cy="48" r="38" fill="rgb(var(--c-accent))" />
-      <circle cx="50" cy="48" r="38" fill="url(#mascotShade)" />
-      <circle cx="50" cy="48" r="31" fill="none" stroke="white" strokeOpacity="0.55" strokeWidth="3" />
+      {/* obi band + simple flower motif */}
+      <path d="M25 63h50l1.6 9H23.4z" fill="rgb(var(--c-accent-2))" />
+      <circle cx="50" cy="67.5" r="3.4" fill="rgb(var(--c-bg-secondary))" fillOpacity="0.9" />
 
-      {/* gloss highlight */}
-      <ellipse cx="35" cy="28" rx="13" ry="8" fill="white" fillOpacity="0.35" />
+      {/* gloss highlight on the body */}
+      <ellipse cx="38" cy="50" rx="7" ry="14" fill="white" fillOpacity="0.16" />
+
+      {/* head */}
+      <circle cx="50" cy="30" r="23" fill="#fbf3e3" />
+      <circle cx="50" cy="30" r="23" fill="none" stroke="rgb(var(--c-accent))" strokeWidth="2.5" />
+
+      {/* hair */}
+      <path d="M28 24a22 22 0 0 1 44 0c-6-3-14-4-22-4s-16 1-22 4z" fill="rgb(var(--c-accent-hover))" />
 
       {/* face */}
       {mood === "sleepy" ? (
         <>
-          <path d="M32 47q6-6 12 0" stroke="#221018" strokeWidth="3.2" strokeLinecap="round" fill="none" />
-          <path d="M56 47q6-6 12 0" stroke="#221018" strokeWidth="3.2" strokeLinecap="round" fill="none" />
+          <path d="M39 32q4-4 8 0" stroke="#2a2438" strokeWidth="2.6" strokeLinecap="round" fill="none" />
+          <path d="M53 32q4-4 8 0" stroke="#2a2438" strokeWidth="2.6" strokeLinecap="round" fill="none" />
         </>
       ) : (
         <>
-          <circle cx="38" cy="46" r="4.2" fill="#221018" />
-          <circle cx="62" cy="46" r="4.2" fill="#221018" />
+          <circle cx="43" cy="31" r="2.6" fill="#2a2438" />
+          <circle cx="61" cy="31" r="2.6" fill="#2a2438" />
         </>
       )}
-      <circle cx="30" cy="57" r="5" fill="#ffb3c6" fillOpacity="0.8" />
-      <circle cx="70" cy="57" r="5" fill="#ffb3c6" fillOpacity="0.8" />
+      <circle cx="36" cy="39" r="4" fill="#e8a0a0" fillOpacity="0.75" />
+      <circle cx="68" cy="39" r="4" fill="#e8a0a0" fillOpacity="0.75" />
       {mood === "excited" ? (
-        <path d="M39 60q11 10 22 0" stroke="#221018" strokeWidth="3.2" strokeLinecap="round" fill="none" />
+        <path d="M45 40q7 6 14 0" stroke="#2a2438" strokeWidth="2.6" strokeLinecap="round" fill="none" />
       ) : (
-        <path d="M40 60q10 6 20 0" stroke="#221018" strokeWidth="3.2" strokeLinecap="round" fill="none" />
+        <path d="M46 40q6 4 12 0" stroke="#2a2438" strokeWidth="2.6" strokeLinecap="round" fill="none" />
       )}
 
       <defs>
-        <radialGradient id="mascotShade" cx="0.35" cy="0.3" r="0.9">
-          <stop offset="0%" stopColor="white" stopOpacity="0.18" />
-          <stop offset="60%" stopColor="white" stopOpacity="0" />
-          <stop offset="100%" stopColor="black" stopOpacity="0.12" />
-        </radialGradient>
+        <linearGradient id="mascotShade" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="white" stopOpacity="0.12" />
+          <stop offset="55%" stopColor="white" stopOpacity="0" />
+          <stop offset="100%" stopColor="black" stopOpacity="0.14" />
+        </linearGradient>
       </defs>
     </svg>
   );
