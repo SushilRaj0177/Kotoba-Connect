@@ -166,6 +166,11 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "notif.upvoted": "liked your entry",
     "notif.annotated": "added a nuance note to your entry",
     "notif.markAllRead": "Mark all as read",
+
+    "bot.name": "Kotoba Bot",
+    "bot.subtitle": "Ask me anything about the board",
+    "bot.greeting": "Hey! I'm Kotoba Bot 👋 Ask me how something on the board works, or ask me a Japanese nuance question.",
+    "bot.placeholder": "Ask Kotoba Bot…",
   },
   ja: {
     "app.name": "言葉エンジン",
@@ -323,6 +328,11 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "notif.upvoted": "があなたの投稿にいいねしました",
     "notif.annotated": "があなたの投稿にニュアンスノートを追加しました",
     "notif.markAllRead": "すべて既読にする",
+
+    "bot.name": "言葉ボット",
+    "bot.subtitle": "ボードについて何でも聞いてください",
+    "bot.greeting": "こんにちは！言葉ボットです👋 ボードの使い方や、日本語のニュアンスについて質問してください。",
+    "bot.placeholder": "言葉ボットに質問…",
   },
 };
 

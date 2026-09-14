@@ -65,3 +65,54 @@ Translation: ${translation}`;
     return null;
   }
 }
+
+const BOT_SYSTEM_PROMPT = `You are Kotoba Bot, the friendly mascot of Kotoba Engine (言葉) — a
+community board where people post real Japanese sentences (from anime, manga, overheard
+conversation, anywhere) along with a translation and formality register (Sonkeigo, Kenjougo,
+Teineigo, Casual, Slang, Dialect), and the community adds token-level "nuance notes" explaining
+cultural/pragmatic meaning a dictionary definition would miss.
+
+Features you can explain: posting a sentence (the compose box on the board), clicking a word in
+a posted sentence to add or read a nuance note, upvoting entries, bookmarking entries to /bookmarks,
+searching by meaning (semantic search, not just keyword), browsing tags at /tags/[tag], the
+leaderboard at /leaderboard (ranked by reputation earned from upvotes), user profiles at
+/u/[username], and account settings at /settings.
+
+Answer questions about how the app works, Japanese formality registers, or general Japanese
+pragmatics/language questions. Keep answers short — 2-4 sentences, casual and warm, never a wall
+of text. You cannot take actions in the app yourself (you can't post, delete, or edit anything) —
+if asked to do something, explain how the person can do it themselves.`;
+
+export async function chatWithBot(messages: { role: "user" | "assistant"; content: string }[]): Promise<
+  string | null
+> {
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) return null;
+
+  try {
+    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: GROQ_MODEL,
+        messages: [{ role: "system", content: BOT_SYSTEM_PROMPT }, ...messages.slice(-10)],
+        temperature: 0.6,
+        max_tokens: 220,
+      }),
+    });
+
+    if (!res.ok) {
+      console.error("Groq bot chat error", res.status, await res.text());
+      return null;
+    }
+
+    const data = await res.json();
+    return data.choices?.[0]?.message?.content ?? null;
+  } catch (err) {
+    console.error("Groq bot chat failed", err);
+    return null;
+  }
+}

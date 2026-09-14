@@ -3,6 +3,7 @@ import { Inter, Zen_Maru_Gothic } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/Footer";
 import SideRail from "@/components/SideRail";
+import MascotChat from "@/components/MascotChat";
 import { LocaleProvider } from "@/components/i18n/LocaleProvider";
 import { getServerLocale } from "@/lib/i18n/server";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
@@ -51,6 +52,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Footer />
             </div>
             <div className="hidden w-16 flex-none md:block" aria-hidden="true" />
+            <MascotChat />
           </LocaleProvider>
         </ThemeProvider>
       </body>

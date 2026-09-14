@@ -34,7 +34,7 @@ export interface Bookmark {
   created_at: string;
 }
 
-export type NotificationType = "upvote" | "annotation";
+export type NotificationType = "upvote" | "annotation" | "system";
 
 export interface AppNotification {
   id: string;
@@ -43,6 +43,7 @@ export interface AppNotification {
   type: NotificationType;
   entry_id: string | null;
   annotation_id: string | null;
+  message: string | null;
   read: boolean;
   created_at: string;
   actor?: Pick<Profile, "username" | "avatar_url"> | null;
