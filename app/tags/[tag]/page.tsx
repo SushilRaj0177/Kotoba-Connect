@@ -40,7 +40,7 @@ export default async function TagPage({ params }: { params: { tag: string } }) {
         </h1>
 
         {!entries?.length ? (
-          <EmptyState title={t("tags.empty")} description="" />
+          <EmptyState title={t("tags.empty")} description="" variant="obake" />
         ) : (
           <div className="space-y-3">
             {entries.map((entry) => (

@@ -1,14 +1,23 @@
-// The board's mascot, "Kokeshi" — a kokeshi (こけし), the traditional Japanese
-// wooden folk doll: a simple cylindrical body, a round head, a painted
-// face, no arms or legs. It's a genuinely cozy, handmade-feeling object
-// (often given as a keepsake) rather than a generic cartoon-blob
+"use client";
+
+import { useRef } from "react";
+import { useMascotGaze } from "@/lib/use-mascot-gaze";
+
+// The board's co-mascot, "Kokeshi" — a kokeshi (こけし), the traditional
+// Japanese wooden folk doll: a simple cylindrical body, a round head, a
+// painted face, no arms or legs. It's a genuinely cozy, handmade-feeling
+// object (often given as a keepsake) rather than a generic cartoon-blob
 // character, and its indigo-painted body matches the aizome accent color
-// used everywhere else instead of fighting it.
+// used everywhere else instead of fighting it. Paired with Obake
+// (components/mascots/candidates.tsx) as an equal co-mascot rather than
+// one dominant character with a sidekick.
 //
 // Drawn flat as an SVG sticker (a soft offset shadow + a gloss highlight)
 // rather than attempting true 3D — a hand-rolled WebGL model would look
 // worse than a clean vector mark at every size this actually renders at,
-// from a 16px favicon to a 200px empty-state illustration.
+// from a 16px favicon to a 200px empty-state illustration. The eyes track
+// the cursor (see lib/use-mascot-gaze.ts) — one shared global listener
+// for every mascot on the page, not one per instance.
 export default function Mascot({
   size = 96,
   mood = "happy",
@@ -18,8 +27,14 @@ export default function Mascot({
   mood?: "happy" | "sleepy" | "excited";
   className?: string;
 }) {
+  const svgRef = useRef<SVGSVGElement>(null);
+  const eyeLRef = useRef<SVGCircleElement>(null);
+  const eyeRRef = useRef<SVGCircleElement>(null);
+  useMascotGaze(svgRef, [eyeLRef, eyeRRef], mood !== "sleepy");
+
   return (
     <svg
+      ref={svgRef}
       width={size}
       height={size}
       viewBox="0 0 100 100"
@@ -76,8 +91,8 @@ export default function Mascot({
         </>
       ) : (
         <>
-          <circle cx="43" cy="31" r="2.6" fill="#2a2438" />
-          <circle cx="61" cy="31" r="2.6" fill="#2a2438" />
+          <circle ref={eyeLRef} cx="43" cy="31" r="2.6" fill="#2a2438" />
+          <circle ref={eyeRRef} cx="61" cy="31" r="2.6" fill="#2a2438" />
         </>
       )}
       <circle cx="36" cy="39" r="4" fill="#e8a0a0" fillOpacity="0.75" />

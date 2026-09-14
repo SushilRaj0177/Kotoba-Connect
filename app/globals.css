@@ -87,6 +87,35 @@ html {
   zoom: 1.1;
 }
 
+/* Custom cozy cursor — a soft cream dot with a dark outline (readable on
+   any surface, light or dark) and a matcha-green center, noticeably
+   bigger than a default system arrow. A filled, brighter variant marks
+   anything clickable. Text inputs keep the normal caret — overriding
+   that would actively hurt usability, not just look different. */
+body {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='34'%3E%3Ccircle cx='17' cy='17' r='12.5' fill='%23fdf8ef' stroke='%232a2438' stroke-width='2'/%3E%3Ccircle cx='17' cy='17' r='4.5' fill='%23688c4a'/%3E%3C/svg%3E")
+    17 17, auto;
+}
+a,
+button,
+[role="button"],
+summary,
+select,
+label[for],
+.cursor-pointer {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='38' height='38'%3E%3Ccircle cx='19' cy='19' r='14.5' fill='%23688c4a' stroke='%23fdf8ef' stroke-width='2.5'/%3E%3Ccircle cx='19' cy='19' r='4' fill='%23fdf8ef'/%3E%3C/svg%3E")
+    19 19, pointer;
+}
+input,
+textarea,
+[contenteditable="true"] {
+  cursor: text;
+}
+button:disabled,
+[aria-disabled="true"] {
+  cursor: not-allowed;
+}
+
 body {
   @apply bg-ink-bg text-ink-text antialiased;
 }
