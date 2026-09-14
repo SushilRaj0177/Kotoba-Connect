@@ -29,10 +29,6 @@ export default async function BookmarksPage() {
     <>
       <Navbar title={t("bookmarks.title")} />
       <main className="mx-auto max-w-3xl px-4 py-6 sm:px-6">
-        <h1 className="mb-4 font-display text-xl font-bold text-ink-text-header">
-          {t("bookmarks.title")}
-        </h1>
-
         {!entries.length ? (
           <EmptyState
             title={t("bookmarks.emptyTitle")}

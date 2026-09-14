@@ -31,6 +31,19 @@ export default function Mascot({
       <ellipse cx="50" cy="93" rx="24" ry="4.5" fill="black" fillOpacity="0.16" />
 
       <g className="m-sway">
+      {/* Sticker-style outline halo, drawn behind everything, so the
+          character reads as its own cut-out element instead of blending
+          into whatever color surface it's placed on (a flat accent card,
+          a themed background, etc). */}
+      <path
+        d="M28 46c0-3 1-5 2-6 4-4 8-5 20-5s16 1 20 5c1 1 2 3 2 6l3 34c1 7-4 13-11 13H36c-7 0-12-6-11-13z"
+        fill="none"
+        stroke="#fdf8ef"
+        strokeWidth="5"
+        strokeLinejoin="round"
+      />
+      <circle cx="50" cy="30" r="23" fill="none" stroke="#fdf8ef" strokeWidth="5" />
+
       {/* body: a simple rounded cylinder, no arms or legs */}
       <path
         d="M28 46c0-3 1-5 2-6 4-4 8-5 20-5s16 1 20 5c1 1 2 3 2 6l3 34c1 7-4 13-11 13H36c-7 0-12-6-11-13z"
@@ -50,7 +63,7 @@ export default function Mascot({
 
       {/* head */}
       <circle cx="50" cy="30" r="23" fill="#fbf3e3" />
-      <circle cx="50" cy="30" r="23" fill="none" stroke="rgb(var(--c-accent))" strokeWidth="2.5" />
+      <circle cx="50" cy="30" r="23" fill="none" stroke="#2a2438" strokeOpacity="0.35" strokeWidth="1.8" />
 
       {/* hair */}
       <path d="M28 24a22 22 0 0 1 44 0c-6-3-14-4-22-4s-16 1-22 4z" fill="rgb(var(--c-accent-hover))" />

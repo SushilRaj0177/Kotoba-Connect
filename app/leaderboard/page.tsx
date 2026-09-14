@@ -25,9 +25,6 @@ export default async function LeaderboardPage() {
     <>
       <Navbar title={t("leaderboard.title")} />
       <main className="mx-auto max-w-2xl px-4 py-6 sm:px-6">
-        <h1 className="mb-1 font-display text-xl font-bold text-ink-text-header">
-          {t("leaderboard.title")}
-        </h1>
         <p className="mb-6 text-sm text-ink-text-muted">{t("leaderboard.subtitle")}</p>
 
         {!profiles?.length ? (

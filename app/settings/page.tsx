@@ -25,10 +25,7 @@ export default async function SettingsPage() {
     <>
       <Navbar title={t("settings.title")} />
       <main className="mx-auto max-w-lg px-4 py-6 sm:px-6">
-        <h1 className="mb-6 font-display text-xl font-bold text-ink-text-header">
-          {t("settings.title")}
-        </h1>
-        <SettingsForm profile={profile} />
+        <SettingsForm profile={profile} email={user.email ?? null} />
       </main>
     </>
   );

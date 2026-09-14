@@ -6,10 +6,15 @@ import { createClient } from "@/lib/supabase/client";
 import type { Profile } from "@/types/database";
 import { errorMessage } from "@/lib/errors";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import Avatar from "@/components/Avatar";
+import ThemeToggle from "@/components/theme/ThemeToggle";
+import LanguageToggle from "@/components/i18n/LanguageToggle";
 
-export default function SettingsForm({ profile }: { profile: Profile }) {
+export default function SettingsForm({ profile, email }: { profile: Profile; email: string | null }) {
   const { t } = useLocale();
   const router = useRouter();
+
+  const [username, setUsername] = useState(profile.username);
   const [bio, setBio] = useState(profile.bio ?? "");
   const [website, setWebsite] = useState(profile.website ?? "");
   const [saving, setSaving] = useState(false);
@@ -21,22 +26,40 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
   const [confirmText, setConfirmText] = useState("");
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
+  const joined = new Date(profile.created_at).toLocaleDateString(undefined, {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
     setSaved(false);
     setError(null);
 
+    const trimmedUsername = username.trim();
+    if (!/^[a-zA-Z0-9_]{3,20}$/.test(trimmedUsername)) {
+      setError(t("settings.usernameInvalid"));
+      setSaving(false);
+      return;
+    }
+
     const supabase = createClient();
     const { error: updateError } = await supabase
       .from("profiles")
-      .update({ bio: bio.trim() || null, website: website.trim() || null })
+      .update({ username: trimmedUsername, bio: bio.trim() || null, website: website.trim() || null })
       .eq("id", profile.id);
 
     if (updateError) {
-      setError(errorMessage(updateError, "Couldn't save. Try again."));
+      setError(
+        updateError.code === "23505"
+          ? t("settings.usernameTaken")
+          : errorMessage(updateError, "Couldn't save. Try again.")
+      );
     } else {
       setSaved(true);
+      router.refresh();
     }
     setSaving(false);
   }
@@ -60,11 +83,55 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
+      <div className="flex items-center gap-3 rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm sm:p-5">
+        <Avatar username={profile.username} size={48} />
+        <div className="min-w-0 flex-1">
+          <p className="truncate font-display text-base font-bold text-ink-text-header">
+            @{profile.username}
+          </p>
+          <p className="text-sm text-ink-text-muted">{email ?? t("settings.noEmail")}</p>
+        </div>
+        <div className="flex-none text-right text-xs text-ink-text-muted">
+          <p>
+            {t("profile.reputation")}: <span className="font-bold text-ink-accent">{profile.reputation_score}</span>
+          </p>
+          <p className="mt-0.5">
+            {t("profile.memberSince")} {joined}
+          </p>
+        </div>
+      </div>
+
+      <div className="rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm sm:p-5">
+        <h2 className="mb-3 font-display text-base font-bold text-ink-text-header">{t("settings.preferencesTitle")}</h2>
+        <div className="flex items-center justify-between py-1.5">
+          <span className="text-sm text-ink-text">{t("settings.themeLabel")}</span>
+          <ThemeToggle />
+        </div>
+        <div className="flex items-center justify-between py-1.5">
+          <span className="text-sm text-ink-text">{t("settings.languageLabel")}</span>
+          <LanguageToggle />
+        </div>
+      </div>
+
       <form
         onSubmit={handleSave}
         className="space-y-3 rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm sm:p-5"
       >
+        <h2 className="font-display text-base font-bold text-ink-text-header">{t("settings.profileTitle")}</h2>
+        <div>
+          <label htmlFor="username" className="mb-1 block text-xs font-medium text-ink-text-muted">
+            {t("settings.usernameLabel")}
+          </label>
+          <input
+            id="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            maxLength={20}
+            className="w-full rounded-lg border-none bg-ink-bg-input px-3 py-2 text-sm text-ink-text focus:outline-none focus:ring-2 focus:ring-ink-accent"
+          />
+          <p className="mt-1 text-xs text-ink-text-muted">{t("settings.usernameHint")}</p>
+        </div>
         <div>
           <label htmlFor="bio" className="mb-1 block text-xs font-medium text-ink-text-muted">
             {t("settings.bioLabel")}
@@ -103,7 +170,7 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
         </button>
       </form>
 
-      <div className="rounded-2xl border-2 border-ink-red/40 bg-ink-red/5 p-4 sm:p-5">
+      <div className="rounded-2xl border border-ink-red/40 bg-ink-red/5 p-4 sm:p-5">
         <h2 className="mb-1 text-sm font-semibold text-ink-red">{t("settings.dangerZone")}</h2>
         <p className="mb-3 text-sm text-ink-text-muted">{t("settings.deleteAccountBody")}</p>
 
