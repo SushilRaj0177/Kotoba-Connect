@@ -31,17 +31,26 @@ export default function ReportButton({
     setError(null);
 
     const supabase = createClient();
-    const { error: insertError } = await supabase.from("report_flags").insert({
-      reporter_id: userId,
-      target_type: targetType,
-      target_id: targetId,
-      reason: detail.trim() ? `${reason}: ${detail.trim()}` : reason,
-    });
+    const { data: inserted, error: insertError } = await supabase
+      .from("report_flags")
+      .insert({
+        reporter_id: userId,
+        target_type: targetType,
+        target_id: targetId,
+        reason: detail.trim() ? `${reason}: ${detail.trim()}` : reason,
+      })
+      .select("id")
+      .single();
 
     if (insertError) {
       setError(errorMessage(insertError, "Couldn't submit the report. Try again."));
     } else {
       setDone(true);
+      // Best-effort AI triage so the admin queue can surface likely-serious
+      // reports first — never blocks the report from succeeding.
+      if (inserted?.id) {
+        fetch(`/api/reports/${inserted.id}/triage`, { method: "POST" }).catch(() => {});
+      }
     }
     setSubmitting(false);
   }

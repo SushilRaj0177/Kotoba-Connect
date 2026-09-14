@@ -145,6 +145,75 @@ Translation: ${translation}`;
   }
 }
 
+export interface ReportTriage {
+  severity: "low" | "medium" | "high";
+  reasoning: string;
+}
+
+// Pre-screens a report so the admin queue can surface likely-serious
+// violations first instead of a flat FIFO list. Deliberately NOT a
+// profanity filter — this app catalogs rude/slang Japanese as linguistic
+// data on purpose (see README), so the prompt is explicit that rude
+// *content* alone isn't a violation. It's scoring how credible the report
+// itself looks (spam/harassment/hate speech/clearly-not-Japanese), which
+// is exactly what a human moderator already has to judge — this just
+// orders the queue, a human still makes every actual call.
+export async function triageReport(contentPreview: string, reportReason: string): Promise<ReportTriage | null> {
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) return null;
+
+  const prompt = `You triage user reports for a community board about Japanese language
+pragmatics, where rude/slang/informal Japanese is expected content, not a violation — this app
+intentionally does NOT filter profanity or slang; annotating rude registers is the product. Only
+flag things a human moderator would actually act on: spam/advertising, harassment or hate speech
+targeting a person, content that isn't Japanese/is low-effort junk, or a clearly false/misleading
+translation claimed as fact. Rudeness or crude language in the Japanese sentence itself is NOT
+grounds for a high severity score.
+
+Given the reported content and the reason it was reported, rate how likely this needs urgent
+admin attention. Respond with ONLY a JSON object: {"severity": one of ["low","medium","high"],
+"reasoning": a 1-sentence explanation}.
+
+Reported content: ${contentPreview}
+Report reason: ${reportReason}`;
+
+  try {
+    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: GROQ_MODEL,
+        messages: [{ role: "user", content: prompt }],
+        response_format: { type: "json_object" },
+        reasoning_effort: REASONING_EFFORT,
+        temperature: 0.2,
+        max_tokens: 150,
+      }),
+    });
+
+    if (!res.ok) {
+      console.error("Groq report-triage error", res.status, await res.text());
+      return null;
+    }
+
+    const data = await res.json();
+    const content = data.choices?.[0]?.message?.content;
+    if (!content) return null;
+
+    const parsed = JSON.parse(content);
+    if (!["low", "medium", "high"].includes(parsed.severity) || typeof parsed.reasoning !== "string") {
+      return null;
+    }
+    return { severity: parsed.severity, reasoning: parsed.reasoning };
+  } catch (err) {
+    console.error("Groq report triage failed", err);
+    return null;
+  }
+}
+
 const BOT_SYSTEM_PROMPT = `You are Kotoba Bot, the friendly mascot of Kotoba Engine (言葉) — a
 community board where people post real Japanese sentences (from anime, manga, overheard
 conversation, anywhere) along with a translation and formality register (Sonkeigo, Kenjougo,
