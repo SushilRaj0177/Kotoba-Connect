@@ -1,10 +1,32 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import EntryDetail from "@/components/EntryDetail";
 import { createClient, getCurrentUser } from "@/lib/supabase/server";
 import type { ContextEntry } from "@/types/database";
 import { getServerTranslator } from "@/lib/i18n/server";
+
+export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+  const supabase = createClient();
+  const { data: entry } = await supabase
+    .from("context_entries")
+    .select("raw_japanese, primary_translation")
+    .eq("id", params.id)
+    .single();
+
+  if (!entry) return { title: "Entry not found" };
+
+  const title = entry.raw_japanese;
+  const description = entry.primary_translation;
+
+  return {
+    title,
+    description,
+    openGraph: { title, description, type: "article" },
+    twitter: { card: "summary_large_image", title, description },
+  };
+}
 
 export default async function EntryPage({ params }: { params: { id: string } }) {
   const supabase = createClient();
