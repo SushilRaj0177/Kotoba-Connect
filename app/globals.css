@@ -3,67 +3,68 @@
 @tailwind utilities;
 
 /*
-  Cozy palette — warm neutrals (cream in light mode, warm espresso-charcoal
-  in dark, never stark white or pure black) with a hanko-ink terracotta as
-  the one accent, and a soft sage for links. This is the actual "cozy
-  chill" target: the earlier hot-pink-on-pure-black combo was left over
-  from an energetic/gamified direction and never really fit that brief.
+  Aizome (藍染, traditional Japanese indigo dye) palette — warm paper-cream
+  background with a deep indigo/periwinkle accent, instead of anything
+  brown or orange-adjacent. Indigo dyeing is a genuine, well-known
+  Japanese craft, so this ties to the product's actual subject matter
+  (unlike the interchangeable "warm SaaS orange" the last pass landed on)
+  while staying calm rather than energetic.
 */
 :root[data-theme="light"] {
-  --c-bg: 250 245 237;
+  --c-bg: 250 246 238;
   --c-bg-secondary: 255 252 247;
-  --c-bg-input: 243 235 223;
-  --c-bg-hover: 235 225 209;
-  --c-border: 227 215 198;
-  --c-text: 74 63 53;
-  --c-text-muted: 132 116 100;
-  --c-text-header: 41 33 27;
-  --c-accent: 205 83 51;
-  --c-accent-2: 214 138 69;
-  --c-accent-hover: 180 68 40;
-  --c-link: 91 138 120;
-  --c-green: 122 158 95;
-  --c-red: 200 76 66;
-  --c-red-hover: 176 60 51;
-  --c-yellow: 202 148 46;
+  --c-bg-input: 241 234 222;
+  --c-bg-hover: 231 222 206;
+  --c-border: 220 210 192;
+  --c-text: 58 55 70;
+  --c-text-muted: 116 110 128;
+  --c-text-header: 32 29 44;
+  --c-accent: 65 82 156;
+  --c-accent-2: 130 102 168;
+  --c-accent-hover: 50 65 132;
+  --c-link: 92 138 116;
+  --c-green: 108 150 94;
+  --c-red: 196 80 80;
+  --c-red-hover: 172 64 64;
+  --c-yellow: 196 150 60;
 }
 
 :root[data-theme="dark"] {
-  --c-bg: 23 19 16;
-  --c-bg-secondary: 33 27 23;
-  --c-bg-input: 42 35 30;
-  --c-bg-hover: 52 43 37;
-  --c-border: 61 51 44;
-  --c-text: 224 213 201;
-  --c-text-muted: 178 163 148;
-  --c-text-header: 248 241 233;
-  --c-accent: 224 107 71;
-  --c-accent-2: 232 156 92;
-  --c-accent-hover: 235 128 92;
-  --c-link: 138 186 165;
-  --c-green: 150 190 118;
-  --c-red: 224 113 100;
-  --c-red-hover: 232 135 123;
-  --c-yellow: 216 175 84;
+  --c-bg: 15 15 24;
+  --c-bg-secondary: 23 23 36;
+  --c-bg-input: 31 31 47;
+  --c-bg-hover: 39 39 57;
+  --c-border: 48 48 68;
+  --c-text: 213 211 226;
+  --c-text-muted: 160 156 182;
+  --c-text-header: 240 238 249;
+  --c-accent: 128 144 224;
+  --c-accent-2: 172 144 220;
+  --c-accent-hover: 152 166 234;
+  --c-link: 132 190 166;
+  --c-green: 140 195 130;
+  --c-red: 224 112 112;
+  --c-red-hover: 232 136 136;
+  --c-yellow: 220 190 100;
 }
 
 :root {
-  --c-bg: 250 245 237;
+  --c-bg: 250 246 238;
   --c-bg-secondary: 255 252 247;
-  --c-bg-input: 243 235 223;
-  --c-bg-hover: 235 225 209;
-  --c-border: 227 215 198;
-  --c-text: 74 63 53;
-  --c-text-muted: 132 116 100;
-  --c-text-header: 41 33 27;
-  --c-accent: 205 83 51;
-  --c-accent-2: 214 138 69;
-  --c-accent-hover: 180 68 40;
-  --c-link: 91 138 120;
-  --c-green: 122 158 95;
-  --c-red: 200 76 66;
-  --c-red-hover: 176 60 51;
-  --c-yellow: 202 148 46;
+  --c-bg-input: 241 234 222;
+  --c-bg-hover: 231 222 206;
+  --c-border: 220 210 192;
+  --c-text: 58 55 70;
+  --c-text-muted: 116 110 128;
+  --c-text-header: 32 29 44;
+  --c-accent: 65 82 156;
+  --c-accent-2: 130 102 168;
+  --c-accent-hover: 50 65 132;
+  --c-link: 92 138 116;
+  --c-green: 108 150 94;
+  --c-red: 196 80 80;
+  --c-red-hover: 172 64 64;
+  --c-yellow: 196 150 60;
 
   /* --font-sans / --font-display come from next/font (see app/layout.tsx). */
   --font-jp: "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
