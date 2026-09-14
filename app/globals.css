@@ -3,68 +3,67 @@
 @tailwind utilities;
 
 /*
-  Aizome (藍染, traditional Japanese indigo dye) palette — warm paper-cream
-  background with a deep indigo/periwinkle accent, instead of anything
-  brown or orange-adjacent. Indigo dyeing is a genuine, well-known
-  Japanese craft, so this ties to the product's actual subject matter
-  (unlike the interchangeable "warm SaaS orange" the last pass landed on)
-  while staying calm rather than energetic.
+  Matcha palette — a genuine Japanese-tea-house color family (matcha
+  green + a warm gold), on rice-paper cream / deep forest-night dark.
+  Three straight rejections (hot pink, terracotta, indigo/periwinkle)
+  means: stop landing on adjacent hues and jump to a color family that
+  hasn't been tried, with its own clear cultural anchor.
 */
 :root[data-theme="light"] {
-  --c-bg: 250 246 238;
-  --c-bg-secondary: 255 252 247;
-  --c-bg-input: 241 234 222;
-  --c-bg-hover: 231 222 206;
-  --c-border: 220 210 192;
-  --c-text: 58 55 70;
-  --c-text-muted: 116 110 128;
-  --c-text-header: 32 29 44;
-  --c-accent: 65 82 156;
-  --c-accent-2: 130 102 168;
-  --c-accent-hover: 50 65 132;
-  --c-link: 92 138 116;
-  --c-green: 108 150 94;
-  --c-red: 196 80 80;
-  --c-red-hover: 172 64 64;
-  --c-yellow: 196 150 60;
+  --c-bg: 251 248 240;
+  --c-bg-secondary: 255 253 248;
+  --c-bg-input: 240 236 222;
+  --c-bg-hover: 229 224 205;
+  --c-border: 216 210 189;
+  --c-text: 51 58 45;
+  --c-text-muted: 104 111 91;
+  --c-text-header: 28 34 24;
+  --c-accent: 104 140 74;
+  --c-accent-2: 199 159 64;
+  --c-accent-hover: 85 118 58;
+  --c-link: 179 110 74;
+  --c-green: 96 150 80;
+  --c-red: 200 84 74;
+  --c-red-hover: 176 66 58;
+  --c-yellow: 210 170 60;
 }
 
 :root[data-theme="dark"] {
-  --c-bg: 15 15 24;
-  --c-bg-secondary: 23 23 36;
-  --c-bg-input: 31 31 47;
-  --c-bg-hover: 39 39 57;
-  --c-border: 48 48 68;
-  --c-text: 213 211 226;
-  --c-text-muted: 160 156 182;
-  --c-text-header: 240 238 249;
-  --c-accent: 128 144 224;
-  --c-accent-2: 172 144 220;
-  --c-accent-hover: 152 166 234;
-  --c-link: 132 190 166;
-  --c-green: 140 195 130;
-  --c-red: 224 112 112;
-  --c-red-hover: 232 136 136;
-  --c-yellow: 220 190 100;
+  --c-bg: 15 19 13;
+  --c-bg-secondary: 23 28 19;
+  --c-bg-input: 31 37 26;
+  --c-bg-hover: 40 47 33;
+  --c-border: 50 58 42;
+  --c-text: 213 219 202;
+  --c-text-muted: 156 166 140;
+  --c-text-header: 237 241 227;
+  --c-accent: 150 194 106;
+  --c-accent-2: 216 180 98;
+  --c-accent-hover: 170 210 128;
+  --c-link: 216 150 112;
+  --c-green: 148 192 108;
+  --c-red: 224 118 108;
+  --c-red-hover: 232 138 128;
+  --c-yellow: 224 190 110;
 }
 
 :root {
-  --c-bg: 250 246 238;
-  --c-bg-secondary: 255 252 247;
-  --c-bg-input: 241 234 222;
-  --c-bg-hover: 231 222 206;
-  --c-border: 220 210 192;
-  --c-text: 58 55 70;
-  --c-text-muted: 116 110 128;
-  --c-text-header: 32 29 44;
-  --c-accent: 65 82 156;
-  --c-accent-2: 130 102 168;
-  --c-accent-hover: 50 65 132;
-  --c-link: 92 138 116;
-  --c-green: 108 150 94;
-  --c-red: 196 80 80;
-  --c-red-hover: 172 64 64;
-  --c-yellow: 196 150 60;
+  --c-bg: 251 248 240;
+  --c-bg-secondary: 255 253 248;
+  --c-bg-input: 240 236 222;
+  --c-bg-hover: 229 224 205;
+  --c-border: 216 210 189;
+  --c-text: 51 58 45;
+  --c-text-muted: 104 111 91;
+  --c-text-header: 28 34 24;
+  --c-accent: 104 140 74;
+  --c-accent-2: 199 159 64;
+  --c-accent-hover: 85 118 58;
+  --c-link: 179 110 74;
+  --c-green: 96 150 80;
+  --c-red: 200 84 74;
+  --c-red-hover: 176 66 58;
+  --c-yellow: 210 170 60;
 
   /* --font-sans / --font-display come from next/font (see app/layout.tsx). */
   --font-jp: "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
@@ -75,8 +74,35 @@
   color-scheme: dark;
 }
 
+html {
+  /* Matches what browser zoom at 110% actually does — the CSS `zoom`
+     property scales the whole render (layout included), unlike a
+     transform or a font-size hack, which only scale some of it and
+     throw off px-based max-widths elsewhere in the app. */
+  zoom: 1.1;
+}
+
 body {
   @apply bg-ink-bg text-ink-text antialiased;
+}
+
+/* A faint paper-grain texture — washi (和紙) has visible fiber texture
+   unlike smooth printer paper, so a flat color field read as generic.
+   Static per-pixel noise via SVG turbulence, layered under everything,
+   low enough opacity that it's felt more than seen. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+:root[data-theme="dark"] body::before {
+  mix-blend-mode: overlay;
+  opacity: 0.05;
 }
 
 /* Seigaiha (青海波) — the traditional Japanese overlapping-wave motif,
