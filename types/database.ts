@@ -34,7 +34,7 @@ export interface Bookmark {
   created_at: string;
 }
 
-export type NotificationType = "upvote" | "annotation" | "comment" | "system";
+export type NotificationType = "upvote" | "annotation" | "comment" | "follow" | "system";
 
 export interface AppNotification {
   id: string;

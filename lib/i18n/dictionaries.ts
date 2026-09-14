@@ -150,6 +150,10 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "profile.noEntriesDescription": "This user hasn't posted anything yet.",
     "profile.editProfile": "Edit profile",
     "profile.notFound": "User not found.",
+    "profile.followers": "Followers",
+    "profile.following": "Following",
+    "profile.follow": "Follow",
+    "profile.unfollow": "Following",
 
     "settings.title": "Settings",
     "settings.noEmail": "No email on file",
@@ -199,6 +203,7 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "notif.upvoted": "liked your entry",
     "notif.annotated": "added a nuance note to your entry",
     "notif.commented": "commented on your entry",
+    "notif.followed": "followed you",
     "notif.markAllRead": "Mark all as read",
 
     "bot.name": "Kotoba Bot",
@@ -347,6 +352,10 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "profile.noEntriesDescription": "このユーザーはまだ何も投稿していません。",
     "profile.editProfile": "プロフィールを編集",
     "profile.notFound": "ユーザーが見つかりません。",
+    "profile.followers": "フォロワー",
+    "profile.following": "フォロー中",
+    "profile.follow": "フォロー",
+    "profile.unfollow": "フォロー中",
 
     "settings.title": "設定",
     "settings.noEmail": "メールアドレス未登録",
@@ -395,6 +404,7 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "notif.upvoted": "があなたの投稿にいいねしました",
     "notif.annotated": "があなたの投稿にニュアンスノートを追加しました",
     "notif.commented": "があなたの投稿にコメントしました",
+    "notif.followed": "があなたをフォローしました",
     "notif.markAllRead": "すべて既読にする",
 
     "bot.name": "言葉ボット",
