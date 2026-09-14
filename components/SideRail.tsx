@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
 import RailIcon from "@/components/RailIcon";
+import Mascot from "@/components/Mascot";
 
 // A persistent left navigation rail — this is the single biggest signal
 // that distinguishes "an application" from "a page": every reference app
@@ -30,9 +31,9 @@ export default async function SideRail() {
       <Link
         href="/"
         title={t("app.name")}
-        className="mb-5 flex h-12 w-12 flex-none items-center justify-center rounded-full bg-ink-accent font-display text-lg font-black text-white shadow-[0_4px_16px_-4px_rgb(var(--c-accent)/0.7)] transition hover:scale-105 hover:shadow-[0_6px_20px_-4px_rgb(var(--c-accent)/0.8)]"
+        className="mb-5 flex h-12 w-12 flex-none items-center justify-center rounded-full bg-ink-bg-input shadow-[0_4px_16px_-4px_rgb(var(--c-accent)/0.5)] transition hover:scale-105 hover:shadow-[0_6px_20px_-4px_rgb(var(--c-accent)/0.6)]"
       >
-        言
+        <Mascot size={34} />
       </Link>
 
       <RailIcon href="/" title={t("nav.home")}>
