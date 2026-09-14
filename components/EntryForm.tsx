@@ -13,10 +13,12 @@ import Avatar from "@/components/Avatar";
 export default function EntryForm({
   userId,
   username,
+  avatarUrl,
   onCreated,
 }: {
   userId: string;
   username?: string | null;
+  avatarUrl?: string | null;
   onCreated?: () => void;
 }) {
   const { t } = useLocale();
@@ -137,7 +139,7 @@ export default function EntryForm({
       className="rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm sm:p-5"
     >
       <div className="mb-4 flex items-center gap-2.5">
-        <Avatar username={username ?? "user"} size={36} />
+        <Avatar username={username ?? "user"} avatarUrl={avatarUrl} size={36} />
         <h2 className="font-display text-base font-bold text-ink-text-header">{t("form.heading")}</h2>
       </div>
 

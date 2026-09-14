@@ -17,7 +17,7 @@ export default async function RightRail() {
       supabase.from("profiles").select("id", { count: "exact", head: true }),
       supabase
         .from("profiles")
-        .select("username, reputation_score")
+        .select("username, display_name, avatar_url, reputation_score")
         .order("reputation_score", { ascending: false })
         .limit(3),
       supabase.from("context_entries").select("tags").order("created_at", { ascending: false }).limit(200),
@@ -58,6 +58,8 @@ export default async function RightRail() {
               <li key={p.username}>
                 <UserHandle
                   username={p.username}
+                  displayName={p.display_name}
+                  avatarUrl={p.avatar_url}
                   href={`/u/${p.username}`}
                   size="sm"
                   className="w-full"
