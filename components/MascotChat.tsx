@@ -56,9 +56,9 @@ export default function MascotChat() {
   }
 
   return (
-    <div className="fixed bottom-[calc(4.5rem+env(safe-area-inset-bottom)+0.75rem)] right-5 z-30 md:bottom-5">
+    <div className="fixed bottom-[calc(4.5rem+env(safe-area-inset-bottom)+0.75rem)] right-5 z-30 flex flex-col items-end md:bottom-5">
       {open && (
-        <div className="mb-3 flex h-[28rem] w-80 flex-col overflow-hidden rounded-2xl bg-ink-bg-secondary border border-ink-border/70 shadow-2xl">
+        <div className="mb-3 flex h-[28rem] w-80 max-w-[calc(100vw-2.5rem)] flex-col overflow-hidden rounded-2xl bg-ink-bg-secondary border border-ink-border/70 shadow-2xl">
           <div className="flex items-center gap-2.5 border-b border-ink-border p-3">
             <Mascot size={30} mood="happy" />
             <div className="min-w-0 flex-1">
