@@ -15,9 +15,11 @@ import { useBlockedIds } from "@/lib/use-blocked-ids";
 export default function EntryBoard({
   userId,
   username,
+  avatarUrl,
 }: {
   userId: string | null;
   username: string | null;
+  avatarUrl?: string | null;
 }) {
   const { t } = useLocale();
   const [entries, setEntries] = useState<ContextEntry[]>([]);
@@ -103,7 +105,7 @@ export default function EntryBoard({
   return (
     <div className="space-y-5">
       {userId ? (
-        <EntryForm userId={userId} username={username} onCreated={loadEntries} />
+        <EntryForm userId={userId} username={username} avatarUrl={avatarUrl} onCreated={loadEntries} />
       ) : (
         <div className="rounded-2xl bg-ink-bg-secondary p-4 text-center text-sm text-ink-text-muted border border-ink-border/70 shadow-sm">
           <a href="/login" className="font-semibold text-ink-text-link hover:underline">

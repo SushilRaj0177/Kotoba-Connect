@@ -9,6 +9,7 @@ export default async function HomePage() {
   const user = await getCurrentUser();
   const profile = user ? await getCurrentProfile() : null;
   const username = profile?.username ?? null;
+  const avatarUrl = profile?.avatar_url ?? null;
 
   return (
     <>
@@ -19,7 +20,7 @@ export default async function HomePage() {
             <h1 className="font-display text-3xl font-black text-ink-text-header">{t("home.title")}</h1>
             <p className="mt-1 text-base text-ink-text-muted">{t("home.subtitle")}</p>
           </div>
-          <EntryBoard userId={user?.id ?? null} username={username} />
+          <EntryBoard userId={user?.id ?? null} username={username} avatarUrl={avatarUrl} />
         </div>
         <RightRail />
       </main>
