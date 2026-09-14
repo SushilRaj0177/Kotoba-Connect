@@ -236,6 +236,7 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
 
     "bot.name": "Kotoba Bot",
     "bot.subtitle": "Ask me anything about the board",
+    "bot.aboutEntry": "Asking about:",
     "bot.greeting": "Hey! I'm Kotoba Bot 👋 Ask me how something on the board works, or ask me a Japanese nuance question.",
     "bot.placeholder": "Ask Kotoba Bot…",
   },
@@ -465,6 +466,7 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
 
     "bot.name": "言葉ボット",
     "bot.subtitle": "ボードについて何でも聞いてください",
+    "bot.aboutEntry": "この投稿について:",
     "bot.greeting": "こんにちは！言葉ボットです👋 ボードの使い方や、日本語のニュアンスについて質問してください。",
     "bot.placeholder": "言葉ボットに質問…",
   },

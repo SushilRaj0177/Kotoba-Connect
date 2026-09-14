@@ -17,6 +17,7 @@ import DeleteEntryButton from "@/components/DeleteEntryButton";
 import { spamSignal } from "@/lib/moderation";
 import { errorMessage } from "@/lib/errors";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { useEntryChatContext } from "@/components/EntryChatContext";
 
 export default function EntryDetail({
   entry,
@@ -35,6 +36,17 @@ export default function EntryDetail({
   const [culturalContext, setCulturalContext] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { setEntry: setChatEntry } = useEntryChatContext();
+
+  useEffect(() => {
+    setChatEntry({
+      raw_japanese: entry.raw_japanese,
+      primary_translation: entry.primary_translation,
+      nuance_summary: entry.ai_nuance_summary,
+    });
+    return () => setChatEntry(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [entry.id]);
 
   useEffect(() => {
     const supabase = createClient();

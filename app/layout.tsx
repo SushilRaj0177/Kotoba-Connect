@@ -11,6 +11,7 @@ import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { getServerTheme } from "@/lib/theme";
 import { SITE_URL } from "@/lib/site";
 import { ClientAuthProvider } from "@/components/auth/ClientAuthProvider";
+import { EntryChatProvider } from "@/components/EntryChatContext";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -62,18 +63,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeProvider initialTheme={theme}>
           <LocaleProvider initialLocale={locale}>
             <ClientAuthProvider>
-              {/* The rail is fixed to the real left edge (so it can't be
-                  dragged along when the page scrolls) and a matching-width
-                  spacer takes its place in flow so content doesn't render
-                  underneath it. */}
-              <SideRail />
-              <div className="hidden w-[72px] flex-none md:block" aria-hidden="true" />
-              <div className="flex min-h-screen flex-1 flex-col pb-16 md:pb-0">
-                <div className="flex-1">{children}</div>
-                <Footer />
-              </div>
-              <MobileNav />
-              <MascotChat />
+              <EntryChatProvider>
+                {/* The rail is fixed to the real left edge (so it can't be
+                    dragged along when the page scrolls) and a matching-width
+                    spacer takes its place in flow so content doesn't render
+                    underneath it. */}
+                <SideRail />
+                <div className="hidden w-[72px] flex-none md:block" aria-hidden="true" />
+                <div className="flex min-h-screen flex-1 flex-col pb-16 md:pb-0">
+                  <div className="flex-1">{children}</div>
+                  <Footer />
+                </div>
+                <MobileNav />
+                <MascotChat />
+              </EntryChatProvider>
             </ClientAuthProvider>
           </LocaleProvider>
         </ThemeProvider>
