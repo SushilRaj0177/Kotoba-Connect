@@ -31,6 +31,13 @@ export default function EntryForm({
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [suggestedTags, setSuggestedTags] = useState<string[]>([]);
+  const [translationDraft, setTranslationDraft] = useState<string | null>(null);
+  const [duplicates, setDuplicates] = useState<
+    { id: string; raw_japanese: string; primary_translation: string }[]
+  >([]);
+  const [duplicatesDismissed, setDuplicatesDismissed] = useState(false);
+
   async function handleTokenize() {
     const text = rawJapanese.trim();
     if (!text) return;
@@ -50,6 +57,42 @@ export default function EntryForm({
     } finally {
       setTokenizing(false);
     }
+  }
+
+  // Fires alongside tokenization on blur — best-effort AI assist (tag
+  // suggestions, a translation draft, a "similar entries exist" nudge).
+  // Never blocks or surfaces errors; the compose flow works identically
+  // without it.
+  async function handleAssist() {
+    const text = rawJapanese.trim();
+    if (!text) return;
+    setSuggestedTags([]);
+    setTranslationDraft(null);
+    setDuplicates([]);
+    setDuplicatesDismissed(false);
+    try {
+      const res = await fetch("/api/entries/assist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ rawJapanese: text, hasTranslation: !!translation.trim() }),
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      setSuggestedTags(data.suggestedTags ?? []);
+      setTranslationDraft(data.translationDraft ?? null);
+      setDuplicates(data.duplicates ?? []);
+    } catch {
+      // Silent — this is a nice-to-have, not a required step.
+    }
+  }
+
+  function addSuggestedTag(tag: string) {
+    const current = tagsInput
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean);
+    if (current.includes(tag)) return;
+    setTagsInput([...current, tag].join(", "));
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -125,6 +168,10 @@ export default function EntryForm({
       setTranslation("");
       setTagsInput("");
       setTokens([]);
+      setSuggestedTags([]);
+      setTranslationDraft(null);
+      setDuplicates([]);
+      setDuplicatesDismissed(false);
       onCreated?.();
     } catch (err) {
       setError(errorMessage(err, t("form.errorGeneric")));
@@ -154,7 +201,10 @@ export default function EntryForm({
             setRawJapanese(e.target.value);
             setTokens([]);
           }}
-          onBlur={handleTokenize}
+          onBlur={() => {
+            handleTokenize();
+            handleAssist();
+          }}
           rows={2}
           maxLength={500}
           placeholder="例：お先に失礼します"
@@ -164,6 +214,30 @@ export default function EntryForm({
         {!!tokens.length && (
           <div className="mt-2 rounded-lg bg-ink-bg-input p-2">
             <TokenizedText tokens={tokens} />
+          </div>
+        )}
+        {!!duplicates.length && !duplicatesDismissed && (
+          <div className="mt-2 rounded-lg bg-ink-yellow/15 p-2.5 text-xs">
+            <div className="flex items-start justify-between gap-2">
+              <p className="font-semibold text-ink-text-header">{t("form.duplicatesTitle")}</p>
+              <button
+                type="button"
+                onClick={() => setDuplicatesDismissed(true)}
+                className="flex-none text-ink-text-muted hover:text-ink-text"
+                aria-label={t("card.cancel")}
+              >
+                ✕
+              </button>
+            </div>
+            <ul className="mt-1 space-y-1">
+              {duplicates.map((d) => (
+                <li key={d.id}>
+                  <a href={`/entries/${d.id}`} target="_blank" rel="noreferrer" className="text-ink-text-link hover:underline">
+                    {d.raw_japanese} — {d.primary_translation}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
         )}
       </div>
@@ -180,6 +254,18 @@ export default function EntryForm({
           placeholder={t("form.translationPlaceholder")}
           className="w-full rounded-lg border-none bg-ink-bg-input px-3 py-2 text-sm text-ink-text placeholder:text-ink-text-muted focus:outline-none focus:ring-2 focus:ring-ink-accent"
         />
+        {translationDraft && !translation.trim() && (
+          <button
+            type="button"
+            onClick={() => {
+              setTranslation(translationDraft);
+              setTranslationDraft(null);
+            }}
+            className="mt-1.5 w-full rounded-lg bg-ink-accent/10 px-3 py-2 text-left text-xs text-ink-text transition hover:bg-ink-accent/20"
+          >
+            <span className="font-semibold text-ink-accent">{t("form.aiDraftLabel")}</span> {translationDraft}
+          </button>
+        )}
       </div>
 
       <div className="mb-3 grid grid-cols-2 gap-3">
@@ -200,6 +286,20 @@ export default function EntryForm({
             placeholder={t("form.tagsPlaceholder")}
             className="w-full rounded-lg border-none bg-ink-bg-input px-3 py-2 text-sm text-ink-text placeholder:text-ink-text-muted focus:outline-none focus:ring-2 focus:ring-ink-accent"
           />
+          {!!suggestedTags.length && (
+            <div className="mt-1.5 flex flex-wrap gap-1">
+              {suggestedTags.map((tag) => (
+                <button
+                  key={tag}
+                  type="button"
+                  onClick={() => addSuggestedTag(tag)}
+                  className="rounded-full bg-ink-accent/10 px-2 py-0.5 text-xs text-ink-accent transition hover:bg-ink-accent/20"
+                >
+                  + {tag}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

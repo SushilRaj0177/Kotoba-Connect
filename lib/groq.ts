@@ -13,8 +13,79 @@ export interface PragmaticAnalysis {
   nuance_summary: string;
 }
 
+export interface EntryAssist {
+  suggested_tags: string[];
+  translation_draft: string | null;
+}
+
 export function groqEnabled(): boolean {
   return !!process.env.GROQ_API_KEY;
+}
+
+// Compose-time assist: suggests a few tags and, when the user hasn't
+// written a translation yet, a draft one — reusing the same call pattern
+// as analyzePragmatics (one JSON-mode request) rather than two separate
+// round-trips. The user always reviews/edits before posting; this only
+// removes blank-page friction, it never posts anything itself.
+export async function suggestEntryAssist(
+  rawJapanese: string,
+  hasTranslation: boolean
+): Promise<EntryAssist | null> {
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) return null;
+
+  const prompt = `You are helping someone post a Japanese sentence to a community board about
+pragmatics/cultural nuance. Given the Japanese sentence below, suggest up to 4 short, lowercase
+topic tags (e.g. "anime", "workplace", "family", "internet-slang") that describe its context —
+not its formality register, that's tracked separately.${
+    hasTranslation
+      ? ""
+      : ` Also draft a natural English translation.`
+  }
+
+Respond with ONLY a JSON object: {"suggested_tags": string[], "translation_draft": ${
+    hasTranslation ? "null" : "a natural English translation string"
+  }}.
+
+Japanese: ${rawJapanese}`;
+
+  try {
+    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: GROQ_MODEL,
+        messages: [{ role: "user", content: prompt }],
+        response_format: { type: "json_object" },
+        reasoning_effort: REASONING_EFFORT,
+        temperature: 0.4,
+        max_tokens: 250,
+      }),
+    });
+
+    if (!res.ok) {
+      console.error("Groq entry-assist error", res.status, await res.text());
+      return null;
+    }
+
+    const data = await res.json();
+    const content = data.choices?.[0]?.message?.content;
+    if (!content) return null;
+
+    const parsed = JSON.parse(content);
+    const tags = Array.isArray(parsed.suggested_tags)
+      ? parsed.suggested_tags.filter((t: unknown) => typeof t === "string").slice(0, 4)
+      : [];
+    const draft = typeof parsed.translation_draft === "string" ? parsed.translation_draft : null;
+
+    return { suggested_tags: tags, translation_draft: draft };
+  } catch (err) {
+    console.error("Groq entry-assist failed", err);
+    return null;
+  }
 }
 
 export async function analyzePragmatics(
