@@ -79,13 +79,17 @@
   color-scheme: dark;
 }
 
-html {
-  /* +20% layout scale. `zoom` (not `transform: scale` or a font-size
-     hack) scales the whole render — layout, px-based widths, everything —
-     consistently, the same way browser zoom would. SideRail is `fixed`
-     (not `sticky`) precisely so this can't reintroduce the mobile
-     scroll/distortion bug sticky+zoom caused earlier. */
-  zoom: 1.2;
+/* +20% layout scale, desktop/tablet only. `zoom` (not `transform: scale`
+   or a font-size hack) scales the whole render — layout, px-based widths,
+   everything — consistently, the same way browser zoom would. Scoped out
+   of mobile widths because `width=device-width` in the viewport meta tag
+   is computed *after* zoom on mobile browsers, so applying it there
+   shrinks the effective layout viewport and makes the page load already
+   pinched in, forcing the user to manually zoom back out. */
+@media (min-width: 768px) {
+  html {
+    zoom: 1.2;
+  }
 }
 
 /* Custom cozy cursor — a familiar rounded arrow (not a dot/circle, so it
