@@ -38,7 +38,7 @@ export default async function LeaderboardPage() {
               <li key={p.id}>
                 <Link
                   href={`/u/${p.username}`}
-                  className="flex items-center gap-3 rounded-2xl bg-ink-bg-secondary p-3.5 border-2 border-ink-border transition hover:border-ink-accent/40"
+                  className="flex items-center gap-3 rounded-2xl bg-ink-bg-secondary p-3.5 border border-ink-border/70 shadow-sm transition hover:border-ink-accent/40"
                 >
                   <span
                     className={`w-7 flex-none text-center font-display text-base font-extrabold ${

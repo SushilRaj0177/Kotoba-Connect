@@ -3,65 +3,67 @@
 @tailwind utilities;
 
 /*
-  Bright, energetic, gamified palette — vivid accents on a light neutral
-  background, bold contrast. Dark theme keeps the same accent hues popping
-  on a deep navy background instead of inverting to something muddy.
+  Cozy palette — warm neutrals (cream in light mode, warm espresso-charcoal
+  in dark, never stark white or pure black) with a hanko-ink terracotta as
+  the one accent, and a soft sage for links. This is the actual "cozy
+  chill" target: the earlier hot-pink-on-pure-black combo was left over
+  from an energetic/gamified direction and never really fit that brief.
 */
 :root[data-theme="light"] {
-  --c-bg: 248 249 251;
-  --c-bg-secondary: 255 255 255;
-  --c-bg-input: 243 244 248;
-  --c-bg-hover: 235 237 242;
-  --c-border: 226 229 235;
-  --c-text: 63 66 74;
-  --c-text-muted: 105 109 120;
-  --c-text-header: 29 31 36;
-  --c-accent: 255 61 127;
-  --c-accent-2: 255 138 61;
-  --c-accent-hover: 230 43 109;
-  --c-link: 14 165 233;
-  --c-green: 34 197 94;
-  --c-red: 255 75 75;
-  --c-red-hover: 235 55 55;
-  --c-yellow: 250 176 5;
+  --c-bg: 250 245 237;
+  --c-bg-secondary: 255 252 247;
+  --c-bg-input: 243 235 223;
+  --c-bg-hover: 235 225 209;
+  --c-border: 227 215 198;
+  --c-text: 74 63 53;
+  --c-text-muted: 132 116 100;
+  --c-text-header: 41 33 27;
+  --c-accent: 205 83 51;
+  --c-accent-2: 214 138 69;
+  --c-accent-hover: 180 68 40;
+  --c-link: 91 138 120;
+  --c-green: 122 158 95;
+  --c-red: 200 76 66;
+  --c-red-hover: 176 60 51;
+  --c-yellow: 202 148 46;
 }
 
 :root[data-theme="dark"] {
-  --c-bg: 0 0 0;
-  --c-bg-secondary: 15 15 17;
-  --c-bg-input: 24 24 27;
-  --c-bg-hover: 32 32 36;
-  --c-border: 40 40 45;
-  --c-text: 219 219 230;
-  --c-text-muted: 182 183 198;
-  --c-text-header: 246 246 250;
-  --c-accent: 255 90 150;
-  --c-accent-2: 255 158 89;
-  --c-accent-hover: 255 115 168;
-  --c-link: 56 189 248;
-  --c-green: 74 222 128;
-  --c-red: 248 113 113;
-  --c-red-hover: 252 138 138;
-  --c-yellow: 250 204 21;
+  --c-bg: 23 19 16;
+  --c-bg-secondary: 33 27 23;
+  --c-bg-input: 42 35 30;
+  --c-bg-hover: 52 43 37;
+  --c-border: 61 51 44;
+  --c-text: 224 213 201;
+  --c-text-muted: 178 163 148;
+  --c-text-header: 248 241 233;
+  --c-accent: 224 107 71;
+  --c-accent-2: 232 156 92;
+  --c-accent-hover: 235 128 92;
+  --c-link: 138 186 165;
+  --c-green: 150 190 118;
+  --c-red: 224 113 100;
+  --c-red-hover: 232 135 123;
+  --c-yellow: 216 175 84;
 }
 
 :root {
-  --c-bg: 248 249 251;
-  --c-bg-secondary: 255 255 255;
-  --c-bg-input: 243 244 248;
-  --c-bg-hover: 235 237 242;
-  --c-border: 226 229 235;
-  --c-text: 63 66 74;
-  --c-text-muted: 105 109 120;
-  --c-text-header: 29 31 36;
-  --c-accent: 255 61 127;
-  --c-accent-2: 255 138 61;
-  --c-accent-hover: 230 43 109;
-  --c-link: 14 165 233;
-  --c-green: 34 197 94;
-  --c-red: 255 75 75;
-  --c-red-hover: 235 55 55;
-  --c-yellow: 250 176 5;
+  --c-bg: 250 245 237;
+  --c-bg-secondary: 255 252 247;
+  --c-bg-input: 243 235 223;
+  --c-bg-hover: 235 225 209;
+  --c-border: 227 215 198;
+  --c-text: 74 63 53;
+  --c-text-muted: 132 116 100;
+  --c-text-header: 41 33 27;
+  --c-accent: 205 83 51;
+  --c-accent-2: 214 138 69;
+  --c-accent-hover: 180 68 40;
+  --c-link: 91 138 120;
+  --c-green: 122 158 95;
+  --c-red: 200 76 66;
+  --c-red-hover: 176 60 51;
+  --c-yellow: 202 148 46;
 
   /* --font-sans / --font-display come from next/font (see app/layout.tsx). */
   --font-jp: "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
