@@ -69,6 +69,15 @@ export default async function ProfilePage({ params }: { params: { username: stri
     year: "numeric",
   });
 
+  // current_streak only recomputes on the next post, so a lapsed streak
+  // would otherwise keep showing its old count forever — fall back to 0
+  // once more than a day has passed since the last post.
+  const typedProfile = profile as Profile;
+  const daysSinceLastPost = typedProfile.last_post_date
+    ? Math.floor((Date.now() - new Date(`${typedProfile.last_post_date}T00:00:00Z`).getTime()) / 86400000)
+    : Infinity;
+  const effectiveStreak = daysSinceLastPost <= 1 ? typedProfile.current_streak : 0;
+
   return (
     <>
       <Navbar title={`@${profile.username}`} />
@@ -130,6 +139,12 @@ export default async function ProfilePage({ params }: { params: { username: stri
                 <strong className="text-ink-text-header">{followingCount ?? 0}</strong>{" "}
                 {t("profile.following")}
               </span>
+              {effectiveStreak > 0 && (
+                <span title={`${t("profile.longestStreak")}: ${typedProfile.longest_streak}`}>
+                  🔥 <strong className="text-ink-text-header">{effectiveStreak}</strong>{" "}
+                  {t("profile.streak")}
+                </span>
+              )}
               <span>
                 {t("profile.memberSince")} {joined}
               </span>

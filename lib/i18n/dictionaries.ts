@@ -144,6 +144,8 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "rail.viewAll": "View all",
 
     "profile.memberSince": "Member since",
+    "profile.streak": "day streak",
+    "profile.longestStreak": "Best",
     "profile.reputation": "Reputation",
     "profile.entriesPosted": "Entries",
     "profile.noEntriesTitle": "No entries yet",
@@ -349,6 +351,8 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "rail.viewAll": "すべて見る",
 
     "profile.memberSince": "登録日",
+    "profile.streak": "日連続",
+    "profile.longestStreak": "最長",
     "profile.reputation": "評判値",
     "profile.entriesPosted": "投稿数",
     "profile.noEntriesTitle": "まだ投稿がありません",
