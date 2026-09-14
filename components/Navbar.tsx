@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { getCurrentUser, getCurrentProfile } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
 import LanguageToggle from "@/components/i18n/LanguageToggle";
 import ThemeToggle from "@/components/theme/ThemeToggle";
@@ -8,23 +8,11 @@ import NotificationBell from "@/components/NotificationBell";
 import Mascot from "@/components/Mascot";
 
 export default async function Navbar({ title }: { title?: string } = {}) {
-  const supabase = createClient();
   const { t } = getServerTranslator();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  let username: string | null = null;
-  let isAdmin = false;
-  if (user) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("username, is_admin")
-      .eq("id", user.id)
-      .single();
-    username = profile?.username ?? null;
-    isAdmin = !!profile?.is_admin;
-  }
+  const user = await getCurrentUser();
+  const profile = user ? await getCurrentProfile() : null;
+  const username = profile?.username ?? null;
+  const isAdmin = !!profile?.is_admin;
 
   return (
     <header className="sticky top-0 z-10 bg-ink-bg/90 shadow-[0_1px_0_0_rgb(var(--c-border)/0.6)] backdrop-blur">

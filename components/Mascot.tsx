@@ -39,10 +39,10 @@ export default function Mascot({
         d="M28 46c0-3 1-5 2-6 4-4 8-5 20-5s16 1 20 5c1 1 2 3 2 6l3 34c1 7-4 13-11 13H36c-7 0-12-6-11-13z"
         fill="none"
         stroke="#fdf8ef"
-        strokeWidth="5"
+        strokeWidth="2.5"
         strokeLinejoin="round"
       />
-      <circle cx="50" cy="30" r="23" fill="none" stroke="#fdf8ef" strokeWidth="5" />
+      <circle cx="50" cy="30" r="23" fill="none" stroke="#fdf8ef" strokeWidth="2.5" />
 
       {/* body: a simple rounded cylinder, no arms or legs */}
       <path

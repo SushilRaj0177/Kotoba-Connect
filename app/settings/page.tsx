@@ -1,23 +1,16 @@
 import { redirect } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import SettingsForm from "@/components/SettingsForm";
-import { createClient } from "@/lib/supabase/server";
+import { getCurrentUser, getCurrentProfile } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
 
 export default async function SettingsPage() {
-  const supabase = createClient();
   const { t } = getServerTranslator();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
 
   if (!user) redirect("/login");
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", user.id)
-    .single();
+  const profile = await getCurrentProfile();
 
   if (!profile) redirect("/login");
 

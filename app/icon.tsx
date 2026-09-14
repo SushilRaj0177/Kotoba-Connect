@@ -1,6 +1,11 @@
 import { ImageResponse } from "next/og";
 
-export const size = { width: 180, height: 180 };
+// 512px so the same generated image works both as the small browser-tab
+// favicon (browsers downscale fine) and as the large PWA install icon
+// declared in manifest.ts — Chrome's install-eligibility check wants at
+// least a 192px icon, and claiming a size we didn't actually generate
+// would have looked worse than just generating it at that size.
+export const size = { width: 512, height: 512 };
 export const contentType = "image/png";
 
 // A pure-shape mark, not text — the previous version relied on the

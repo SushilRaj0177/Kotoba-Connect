@@ -2,16 +2,14 @@ import { redirect } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import EntryCard from "@/components/EntryCard";
 import EmptyState from "@/components/EmptyState";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getCurrentUser } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
 import type { ContextEntry } from "@/types/database";
 
 export default async function BookmarksPage() {
   const supabase = createClient();
   const { t } = getServerTranslator();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
 
   if (!user) redirect("/login");
 

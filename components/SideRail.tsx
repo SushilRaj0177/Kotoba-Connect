@@ -49,9 +49,9 @@ export default function SideRail() {
       <Link
         href="/"
         title={t("app.name")}
-        className="mb-2 flex h-12 w-12 flex-none items-center justify-center rounded-2xl bg-ink-accent transition hover:scale-105"
+        className="mb-2 flex h-12 w-12 flex-none items-center justify-center rounded-2xl transition hover:scale-105 hover:bg-ink-bg-hover"
       >
-        <Mascot size={30} />
+        <Mascot size={40} />
       </Link>
 
       <RailIcon href="/" title={t("nav.home")}>

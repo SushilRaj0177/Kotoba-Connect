@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 
 export type AuthState = {
@@ -74,6 +75,23 @@ export async function resendConfirmation(email: string): Promise<AuthState> {
   if (error) {
     return { error: error.message };
   }
+  return { error: null, pendingConfirmation: true, email };
+}
+
+export async function requestPasswordReset(_prev: AuthState, formData: FormData): Promise<AuthState> {
+  const email = String(formData.get("email") || "").trim();
+  if (!email) {
+    return { error: "Enter your email address." };
+  }
+
+  const origin = `https://${headers().get("host")}`;
+  const supabase = createClient();
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${origin}/auth/callback?next=/reset-password`,
+  });
+
+  // Always report success (never reveal whether an email is registered).
+  if (error) console.error("resetPasswordForEmail failed", error);
   return { error: null, pendingConfirmation: true, email };
 }
 
