@@ -235,11 +235,33 @@ types/database.ts                   Shared TypeScript types
 
 ## Roadmap
 
-- OCR ingestion pipeline for manga/street-signage photos
 - Full-text fallback search alongside semantic search
 - Media embeds in posts
 - Onboarding tour for first-time users
 - Client-side Sentry tracing (run the Sentry wizard once a real project exists)
+
+### Further AI integration (queued, not yet built)
+
+Now that `GROQ_API_KEY` is configured in production, these are worth building next —
+roughly in order of value-to-effort:
+
+- **OCR ingestion pipeline for manga/street-signage photos** — Groq hosts vision models
+  (e.g. Llama 4 Scout) that could read Japanese text straight from an uploaded photo, feeding
+  it into the existing tokenizer pipeline instead of requiring manual typing
+- **Entry-context-aware chat bot** — MascotChat is currently generic; passing the current
+  entry's Japanese text + nuance summary as context when a user opens the bot from an entry
+  detail page would let it answer "what does this specific sentence really imply" directly
+- **AI-suggested tags** — same call pattern as the existing formality classifier
+  (`analyzePragmatics` in `lib/groq.ts`), suggesting 2-3 relevant tags from the sentence content
+  so posting has less manual busywork
+- **AI-assisted translation draft** — offer a suggested English translation as a starting
+  point when a user posts Japanese text, which they then edit/confirm rather than write from
+  scratch
+- **Duplicate/similar-entry nudge at post time** — reuse the OpenAI embeddings already
+  generated per entry (`match_entries` RPC) to warn "a similar entry already exists" before
+  someone posts a near-duplicate
+- **Moderation triage** — have Groq pre-screen reported content for likely severity before it
+  reaches the admin queue, so admins see the worst violations first instead of a flat FIFO list
 
 ---
 
