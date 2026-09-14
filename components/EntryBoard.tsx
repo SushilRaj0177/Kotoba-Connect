@@ -87,11 +87,11 @@ export default function EntryBoard({
   }, [loadEntries]);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       {userId ? (
         <EntryForm userId={userId} username={username} onCreated={loadEntries} />
       ) : (
-        <div className="rounded-2xl bg-ink-bg-secondary p-4 text-center text-sm text-ink-text-muted border-2 border-ink-border">
+        <div className="rounded-2xl bg-ink-bg-secondary p-4 text-center text-sm text-ink-text-muted border border-ink-border/70 shadow-sm">
           <a href="/login" className="font-semibold text-ink-text-link hover:underline">
             {t("board.signInPrompt")}
           </a>{" "}
@@ -118,7 +118,7 @@ export default function EntryBoard({
         searchResults.length === 0 ? (
           <EmptyState title={t("board.searchEmptyTitle")} description={t("board.searchEmptyDescription")} />
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-4">
             {searchResults.map((entry) => (
               <EntryCard
                 key={entry.id}
@@ -132,7 +132,7 @@ export default function EntryBoard({
       ) : entries.length === 0 ? (
         <EmptyState title={t("board.emptyTitle")} description={t("board.emptyDescription")} />
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {entries.map((entry) => (
             <EntryCard key={entry.id} entry={entry} currentUserId={userId} />
           ))}

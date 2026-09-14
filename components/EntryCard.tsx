@@ -55,7 +55,7 @@ export default function EntryCard({
   });
 
   return (
-    <article className="flex gap-3 rounded-2xl bg-ink-bg-secondary p-4 border-2 border-ink-border">
+    <article className="flex gap-3 rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm">
       <Avatar username={username} size={40} />
 
       <div className="min-w-0 flex-1">

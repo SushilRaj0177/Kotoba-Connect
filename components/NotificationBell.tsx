@@ -76,7 +76,7 @@ export default function NotificationBell({ userId }: { userId: string }) {
       {open && (
         <>
           <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 top-full z-20 mt-2 max-h-96 w-80 overflow-y-auto rounded-2xl bg-ink-bg-secondary border-2 border-ink-border shadow-xl">
+          <div className="absolute right-0 top-full z-20 mt-2 max-h-96 w-80 overflow-y-auto rounded-2xl bg-ink-bg-secondary border border-ink-border/70 shadow-xl">
             <div className="flex items-center justify-between border-b border-ink-border p-3">
               <span className="text-sm font-semibold text-ink-text-header">{t("notif.title")}</span>
               {unreadCount > 0 && (

@@ -30,8 +30,8 @@ export default async function RightRail() {
   const topTags = [...tagCounts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8);
 
   return (
-    <aside className="hidden w-72 flex-none space-y-4 lg:block">
-      <div className="rounded-2xl bg-ink-bg-secondary p-4 border-2 border-ink-border">
+    <aside className="hidden w-72 flex-none space-y-5 lg:block">
+      <div className="rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm">
         <h2 className="mb-3 font-display text-base font-bold text-ink-text-header">{t("rail.communityTitle")}</h2>
         <dl className="space-y-2">
           <div className="flex items-center justify-between">
@@ -46,7 +46,7 @@ export default async function RightRail() {
       </div>
 
       {!!topProfiles?.length && (
-        <div className="rounded-2xl bg-ink-bg-secondary p-4 border-2 border-ink-border">
+        <div className="rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm">
           <div className="mb-3 flex items-center justify-between">
             <h2 className="font-display text-base font-bold text-ink-text-header">{t("rail.topContributorsTitle")}</h2>
             <Link href="/leaderboard" className="text-xs font-semibold text-ink-text-link hover:underline">
@@ -74,7 +74,7 @@ export default async function RightRail() {
       )}
 
       {!!topTags.length && (
-        <div className="rounded-2xl bg-ink-bg-secondary p-4 border-2 border-ink-border">
+        <div className="rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm">
           <h2 className="mb-3 font-display text-base font-bold text-ink-text-header">{t("rail.trendingTagsTitle")}</h2>
           <div className="flex flex-wrap gap-1.5">
             {topTags.map(([tag, count]) => (
@@ -90,7 +90,7 @@ export default async function RightRail() {
         </div>
       )}
 
-      <div className="rounded-2xl bg-ink-bg-secondary p-4 border-2 border-ink-border">
+      <div className="rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm">
         <h2 className="mb-2 font-display text-base font-bold text-ink-text-header">{t("rail.aboutTitle")}</h2>
         <p className="text-sm leading-relaxed text-ink-text-muted">{t("rail.aboutBody")}</p>
       </div>

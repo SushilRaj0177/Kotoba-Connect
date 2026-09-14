@@ -1,10 +1,9 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { signOut } from "@/app/auth/actions";
 import { getServerTranslator } from "@/lib/i18n/server";
 import LanguageToggle from "@/components/i18n/LanguageToggle";
 import ThemeToggle from "@/components/theme/ThemeToggle";
-import UserHandle from "@/components/UserHandle";
+import AccountMenu from "@/components/AccountMenu";
 import NotificationBell from "@/components/NotificationBell";
 
 export default async function Navbar({ title }: { title?: string } = {}) {
@@ -42,28 +41,10 @@ export default async function Navbar({ title }: { title?: string } = {}) {
         <div className="ml-auto flex items-center gap-2.5">
           <ThemeToggle />
           <LanguageToggle />
-          {isAdmin && (
-            <Link
-              href="/admin"
-              className="hidden text-sm font-medium text-ink-text-muted transition hover:text-ink-text sm:inline md:hidden"
-            >
-              {t("nav.moderation")}
-            </Link>
-          )}
           {user ? (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2.5">
               <NotificationBell userId={user.id} />
-              <div className="hidden sm:block">
-                <UserHandle username={username ?? "user"} href={`/u/${username ?? ""}`} size="sm" />
-              </div>
-              <form action={signOut}>
-                <button
-                  type="submit"
-                  className="rounded-full bg-ink-bg-input px-3 py-1.5 text-sm font-medium text-ink-text transition hover:bg-ink-bg-hover"
-                >
-                  {t("nav.signOut")}
-                </button>
-              </form>
+              <AccountMenu username={username ?? "user"} isAdmin={isAdmin} />
             </div>
           ) : (
             <Link

@@ -110,7 +110,7 @@ export default function EntryDetail({
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-3 rounded-2xl bg-ink-bg-secondary p-4 border-2 border-ink-border sm:p-5">
+      <div className="flex gap-3 rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm sm:p-5">
         <Avatar username={username} size={40} />
         <div className="min-w-0 flex-1">
           <div className="mb-1 flex flex-wrap items-baseline gap-2">
@@ -153,7 +153,7 @@ export default function EntryDetail({
         </div>
       </div>
 
-      <div className="rounded-2xl bg-ink-bg-secondary p-4 border-2 border-ink-border sm:p-5">
+      <div className="rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm sm:p-5">
         <h2 className="mb-3 text-sm font-semibold text-ink-text-header">
           {activeIndex !== null
             ? `${t("detail.notesOn")} "${entry.furigana_parsed[activeIndex]?.surface_form}"`

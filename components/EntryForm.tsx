@@ -142,7 +142,7 @@ export default function EntryForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-2xl bg-ink-bg-secondary p-4 border-2 border-ink-border sm:p-5"
+      className="rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm sm:p-5"
     >
       <div className="mb-4 flex items-center gap-2.5">
         <Avatar username={username ?? "user"} size={36} />

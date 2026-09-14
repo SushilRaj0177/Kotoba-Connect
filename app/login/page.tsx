@@ -115,7 +115,7 @@ export default function LoginPage() {
         <LanguageToggle />
       </div>
 
-      <div className="w-full max-w-sm overflow-hidden rounded-2xl bg-ink-bg-secondary border-2 border-ink-border">
+      <div className="w-full max-w-sm overflow-hidden rounded-2xl bg-ink-bg-secondary border border-ink-border/70 shadow-sm">
         <div className="bg-seigaiha px-8 pb-7 pt-8 text-center">
           <Mascot size={56} className="mx-auto mb-2" />
           <span className="font-display text-4xl font-black text-ink-accent">言葉</span>

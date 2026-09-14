@@ -63,7 +63,7 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
     <div className="space-y-6">
       <form
         onSubmit={handleSave}
-        className="space-y-3 rounded-2xl bg-ink-bg-secondary p-4 border-2 border-ink-border sm:p-5"
+        className="space-y-3 rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm sm:p-5"
       >
         <div>
           <label htmlFor="bio" className="mb-1 block text-xs font-medium text-ink-text-muted">

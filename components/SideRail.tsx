@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
+import RailIcon from "@/components/RailIcon";
 
 // A persistent left navigation rail — this is the single biggest signal
 // that distinguishes "an application" from "a page": every reference app
@@ -25,11 +26,11 @@ export default async function SideRail() {
   }
 
   return (
-    <nav className="sticky top-0 hidden h-screen w-16 flex-none flex-col items-center gap-1 border-r-2 border-ink-border bg-ink-bg-secondary py-4 md:flex">
+    <nav className="bg-seigaiha sticky top-0 hidden h-screen w-16 flex-none flex-col items-center gap-1.5 bg-ink-bg-secondary py-5 shadow-[1px_0_0_0_rgb(var(--c-border)/0.6)] md:flex">
       <Link
         href="/"
         title={t("app.name")}
-        className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-ink-accent font-display text-lg font-black text-white"
+        className="mb-5 flex h-12 w-12 flex-none items-center justify-center rounded-full bg-ink-accent font-display text-lg font-black text-white shadow-[0_4px_16px_-4px_rgb(var(--c-accent)/0.7)] transition hover:scale-105 hover:shadow-[0_6px_20px_-4px_rgb(var(--c-accent)/0.8)]"
       >
         言
       </Link>
@@ -56,6 +57,8 @@ export default async function SideRail() {
         </RailIcon>
       )}
 
+      {(user || isAdmin) && <span className="my-1 h-px w-7 flex-none bg-ink-border" aria-hidden="true" />}
+
       {user && (
         <RailIcon href="/settings" title={t("nav.settings")}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -74,17 +77,5 @@ export default async function SideRail() {
         </RailIcon>
       )}
     </nav>
-  );
-}
-
-function RailIcon({ href, title, children }: { href: string; title: string; children: React.ReactNode }) {
-  return (
-    <Link
-      href={href}
-      title={title}
-      className="flex h-11 w-11 items-center justify-center rounded-2xl text-ink-text-muted transition hover:bg-ink-bg-hover hover:text-ink-accent"
-    >
-      {children}
-    </Link>
   );
 }
