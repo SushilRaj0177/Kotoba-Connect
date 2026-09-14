@@ -3,16 +3,14 @@ import Navbar from "@/components/Navbar";
 import Avatar from "@/components/Avatar";
 import EntryCard from "@/components/EntryCard";
 import EmptyState from "@/components/EmptyState";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getCurrentUser } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
 import type { ContextEntry, Profile } from "@/types/database";
 
 export default async function ProfilePage({ params }: { params: { username: string } }) {
   const supabase = createClient();
   const { t } = getServerTranslator();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
 
   const { data: profile } = await supabase
     .from("profiles")

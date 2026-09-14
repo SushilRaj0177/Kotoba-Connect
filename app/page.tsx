@@ -1,25 +1,14 @@
 import Navbar from "@/components/Navbar";
 import EntryBoard from "@/components/EntryBoard";
 import RightRail from "@/components/RightRail";
-import { createClient } from "@/lib/supabase/server";
+import { getCurrentUser, getCurrentProfile } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
 
 export default async function HomePage() {
-  const supabase = createClient();
   const { t } = getServerTranslator();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  let username: string | null = null;
-  if (user) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("username")
-      .eq("id", user.id)
-      .single();
-    username = profile?.username ?? null;
-  }
+  const user = await getCurrentUser();
+  const profile = user ? await getCurrentProfile() : null;
+  const username = profile?.username ?? null;
 
   return (
     <>

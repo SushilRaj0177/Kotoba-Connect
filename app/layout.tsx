@@ -3,6 +3,7 @@ import { Inter, Zen_Maru_Gothic } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/Footer";
 import SideRail from "@/components/SideRail";
+import MobileNav from "@/components/MobileNav";
 import MascotChat from "@/components/MascotChat";
 import { LocaleProvider } from "@/components/i18n/LocaleProvider";
 import { getServerLocale } from "@/lib/i18n/server";
@@ -47,11 +48,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 mx-auto centering land on true center instead of drifting
                 left by the rail's width. */}
             <SideRail />
-            <div className="flex min-h-screen flex-1 flex-col">
+            <div className="flex min-h-screen flex-1 flex-col pb-16 md:pb-0">
               <div className="flex-1">{children}</div>
               <Footer />
             </div>
             <div className="hidden w-16 flex-none md:block" aria-hidden="true" />
+            <MobileNav />
             <MascotChat />
           </LocaleProvider>
         </ThemeProvider>

@@ -7,8 +7,6 @@ import type { Profile } from "@/types/database";
 import { errorMessage } from "@/lib/errors";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import Avatar from "@/components/Avatar";
-import ThemeToggle from "@/components/theme/ThemeToggle";
-import LanguageToggle from "@/components/i18n/LanguageToggle";
 
 export default function SettingsForm({ profile, email }: { profile: Profile; email: string | null }) {
   const { t } = useLocale();
@@ -20,6 +18,12 @@ export default function SettingsForm({ profile, email }: { profile: Profile; ema
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordSaving, setPasswordSaving] = useState(false);
+  const [passwordSaved, setPasswordSaved] = useState(false);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
 
   const [deleting, setDeleting] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -64,6 +68,34 @@ export default function SettingsForm({ profile, email }: { profile: Profile; ema
     setSaving(false);
   }
 
+  async function handlePasswordChange(e: React.FormEvent) {
+    e.preventDefault();
+    setPasswordSaved(false);
+    setPasswordError(null);
+
+    if (newPassword.length < 8) {
+      setPasswordError(t("settings.passwordTooShort"));
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordError(t("settings.passwordMismatch"));
+      return;
+    }
+
+    setPasswordSaving(true);
+    const supabase = createClient();
+    const { error: pwError } = await supabase.auth.updateUser({ password: newPassword });
+
+    if (pwError) {
+      setPasswordError(errorMessage(pwError, "Couldn't change your password. Try again."));
+    } else {
+      setPasswordSaved(true);
+      setNewPassword("");
+      setConfirmPassword("");
+    }
+    setPasswordSaving(false);
+  }
+
   async function handleDelete() {
     if (confirmText !== "DELETE") return;
     setDeleting(true);
@@ -99,18 +131,6 @@ export default function SettingsForm({ profile, email }: { profile: Profile; ema
           <p className="mt-0.5">
             {t("profile.memberSince")} {joined}
           </p>
-        </div>
-      </div>
-
-      <div className="rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm sm:p-5">
-        <h2 className="mb-3 font-display text-base font-bold text-ink-text-header">{t("settings.preferencesTitle")}</h2>
-        <div className="flex items-center justify-between py-1.5">
-          <span className="text-sm text-ink-text">{t("settings.themeLabel")}</span>
-          <ThemeToggle />
-        </div>
-        <div className="flex items-center justify-between py-1.5">
-          <span className="text-sm text-ink-text">{t("settings.languageLabel")}</span>
-          <LanguageToggle />
         </div>
       </div>
 
@@ -167,6 +187,48 @@ export default function SettingsForm({ profile, email }: { profile: Profile; ema
           className="btn-chunky rounded-2xl bg-ink-accent px-6 py-3 text-sm font-bold text-white disabled:opacity-60"
         >
           {saving ? t("settings.saving") : t("settings.save")}
+        </button>
+      </form>
+
+      <form
+        onSubmit={handlePasswordChange}
+        className="space-y-3 rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm sm:p-5"
+      >
+        <h2 className="font-display text-base font-bold text-ink-text-header">{t("settings.passwordTitle")}</h2>
+        <div>
+          <label htmlFor="newPassword" className="mb-1 block text-xs font-medium text-ink-text-muted">
+            {t("settings.newPasswordLabel")}
+          </label>
+          <input
+            id="newPassword"
+            type="password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            autoComplete="new-password"
+            className="w-full rounded-lg border-none bg-ink-bg-input px-3 py-2 text-sm text-ink-text focus:outline-none focus:ring-2 focus:ring-ink-accent"
+          />
+        </div>
+        <div>
+          <label htmlFor="confirmPassword" className="mb-1 block text-xs font-medium text-ink-text-muted">
+            {t("settings.confirmPasswordLabel")}
+          </label>
+          <input
+            id="confirmPassword"
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            autoComplete="new-password"
+            className="w-full rounded-lg border-none bg-ink-bg-input px-3 py-2 text-sm text-ink-text focus:outline-none focus:ring-2 focus:ring-ink-accent"
+          />
+        </div>
+        {passwordError && <p className="text-sm text-ink-red">{passwordError}</p>}
+        {passwordSaved && !passwordError && <p className="text-sm text-ink-green">{t("settings.passwordSaved")}</p>}
+        <button
+          type="submit"
+          disabled={passwordSaving || !newPassword}
+          className="rounded-2xl bg-ink-bg-input px-6 py-3 text-sm font-bold text-ink-text transition hover:bg-ink-bg-hover disabled:opacity-60"
+        >
+          {passwordSaving ? t("settings.saving") : t("settings.changePassword")}
         </button>
       </form>
 

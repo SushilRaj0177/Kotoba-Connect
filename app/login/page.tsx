@@ -203,6 +203,11 @@ export default function LoginPage() {
                   placeholder="••••••••"
                   className="w-full rounded-lg border-none bg-ink-bg-input px-3 py-2 text-sm text-ink-text placeholder:text-ink-text-muted focus:outline-none focus:ring-2 focus:ring-ink-accent"
                 />
+                {mode === "signIn" && (
+                  <a href="/forgot-password" className="mt-1 inline-block text-xs text-ink-text-link hover:underline">
+                    {t("login.forgotPassword")}
+                  </a>
+                )}
               </div>
 
               {state.error && (

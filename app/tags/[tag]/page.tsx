@@ -1,7 +1,7 @@
 import Navbar from "@/components/Navbar";
 import EntryCard from "@/components/EntryCard";
 import EmptyState from "@/components/EmptyState";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getCurrentUser } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
 import type { ContextEntry } from "@/types/database";
 
@@ -9,9 +9,7 @@ export default async function TagPage({ params }: { params: { tag: string } }) {
   const supabase = createClient();
   const { t } = getServerTranslator();
   const tag = decodeURIComponent(params.tag);
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
 
   const { data: entries } = await supabase
     .from("context_entries")

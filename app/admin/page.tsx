@@ -1,21 +1,14 @@
 import { redirect } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import AdminQueue from "@/components/AdminQueue";
-import { createClient } from "@/lib/supabase/server";
+import { getCurrentUser, getCurrentProfile } from "@/lib/supabase/server";
 
 export default async function AdminPage() {
-  const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
 
   if (!user) redirect("/login");
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("is_admin")
-    .eq("id", user.id)
-    .single();
+  const profile = await getCurrentProfile();
 
   if (!profile?.is_admin) redirect("/");
 

@@ -21,7 +21,7 @@ export function Obake({ size = 96, className = "" }: MascotProps) {
           d="M50 14c17 0 29 13 29 30v32c0 3-3 4-5 2l-4-4-6 6a3 3 0 0 1-4 0l-4-4-4 4a3 3 0 0 1-4 0l-4-4-6 6c-2 2-5 1-5-2V44c0-17 12-30 29-30z"
           fill="none"
           stroke={HALO}
-          strokeWidth="5"
+          strokeWidth="2.5"
           strokeLinejoin="round"
         />
         <path
@@ -52,94 +52,79 @@ export function Obake({ size = 96, className = "" }: MascotProps) {
   );
 }
 
-// "Kitsune" — a fox, ears up and tail swishing. Fur in the primary
-// accent color, cream muzzle/chest patch, dark ear tips.
+// "Kitsune" — a fox. Redone after feedback that the first pass looked
+// bad: ears now overlap the head silhouette directly (no floating gap),
+// a proper round snout, big sparkly eyes, and a visible swishing tail.
 export function Kitsune({ size = 96, className = "" }: MascotProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 100 100" className={className} aria-hidden="true">
       <ellipse cx="50" cy="93" rx="24" ry="4.5" fill="black" fillOpacity="0.16" />
 
-      <g className="m-wave" style={{ transformOrigin: "78px 62px" }}>
-        <path d="M78 62q20-4 16 18-14 2-16-18z" fill="rgb(var(--c-accent))" stroke={HALO} strokeWidth="4" strokeLinejoin="round" />
-        <path d="M78 62q20-4 16 18-14 2-16-18z" fill="none" stroke={INK} strokeOpacity="0.25" strokeWidth="1.4" />
-        <path d="M88 68q6 4 4 10" fill="#fdf8ef" />
+      {/* tail, swishing behind */}
+      <g className="m-wave" style={{ transformOrigin: "82px 70px" }}>
+        <path d="M80 60q22-6 16 22-16 4-22-10-4-8 6-12z" fill="rgb(var(--c-accent))" />
+        <path d="M80 60q22-6 16 22-16 4-22-10-4-8 6-12z" fill="none" stroke={HALO} strokeWidth="2.5" strokeLinejoin="round" />
+        <path d="M84 78q6 4 4 10" fill="#fdf8ef" />
       </g>
 
-      <path
-        d="M32 50c-6-2-10-16-4-22 4 6 8 10 14 12zM68 50c6-2 10-16 4-22-4 6-8 10-14 12z"
-        fill="rgb(var(--c-accent))"
-        stroke={HALO}
-        strokeWidth="4"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M32 50c-6-2-10-16-4-22 4 6 8 10 14 12zM68 50c6-2 10-16 4-22-4 6-8 10-14 12z"
-        fill="none"
-        stroke={INK}
-        strokeOpacity="0.25"
-        strokeWidth="1.4"
-      />
-      <path d="M32 44c-3-2-5-8-3-12 2 4 4 6 7 8zM68 44c3-2 5-8 3-12-2 4-4 6-7 8z" fill="#fdf8ef" />
+      {/* ears: base points sit inside the head circle so there's no gap */}
+      <path d="M28 38 14 8 46 28z" fill="rgb(var(--c-accent))" stroke={HALO} strokeWidth="2.5" strokeLinejoin="round" />
+      <path d="M72 38 86 8 54 28z" fill="rgb(var(--c-accent))" stroke={HALO} strokeWidth="2.5" strokeLinejoin="round" />
+      <path d="M30 32 21 14 39 26z" fill="#fdf8ef" />
+      <path d="M70 32 79 14 61 26z" fill="#fdf8ef" />
 
-      <circle cx="50" cy="56" r="30" fill="none" stroke={HALO} strokeWidth="5" />
-      <circle cx="50" cy="56" r="30" fill="rgb(var(--c-accent))" />
-      <circle cx="50" cy="56" r="30" fill="none" stroke={INK} strokeOpacity="0.25" strokeWidth="1.6" />
+      {/* head */}
+      <circle cx="50" cy="55" r="30" fill="none" stroke={HALO} strokeWidth="2.5" />
+      <circle cx="50" cy="55" r="30" fill="rgb(var(--c-accent))" />
+      <circle cx="50" cy="55" r="30" fill="none" stroke={INK} strokeOpacity="0.2" strokeWidth="1.4" />
 
-      <path d="M50 52c10 0 17 6 17 15-8 3-13 4-17 4s-9-1-17-4c0-9 7-15 17-15z" fill="#fdf8ef" />
-      <circle cx="42" cy="54" r="2.8" fill={INK} />
-      <circle cx="58" cy="54" r="2.8" fill={INK} />
-      <path d="M47 62q3 2 6 0" stroke={INK} strokeWidth="2" strokeLinecap="round" fill="none" />
-      <circle cx="50" cy="59" r="2.2" fill={INK} />
-      <circle cx="33" cy="64" r="3.6" fill="#f2879a" fillOpacity="0.6" />
-      <circle cx="67" cy="64" r="3.6" fill="#f2879a" fillOpacity="0.6" />
+      {/* snout */}
+      <ellipse cx="50" cy="66" rx="15" ry="11" fill="#fdf8ef" />
+
+      {/* face */}
+      <circle cx="40" cy="52" r="4" fill={INK} />
+      <circle cx="60" cy="52" r="4" fill={INK} />
+      <circle cx="41.3" cy="50.3" r="1.3" fill="white" />
+      <circle cx="61.3" cy="50.3" r="1.3" fill="white" />
+      <path d="M47 63 L53 63 L50 67Z" fill={INK} />
+      <path d="M45 68q5 4 10 0" stroke={INK} strokeWidth="2" strokeLinecap="round" fill="none" />
+      <circle cx="30" cy="62" r="4.2" fill="#f2879a" fillOpacity="0.65" />
+      <circle cx="70" cy="62" r="4.2" fill="#f2879a" fillOpacity="0.65" />
     </svg>
   );
 }
 
-// "Neko" — a cat, tail curled, ears twitching. Fur in the secondary
-// (gold) accent so it visually pairs with Kitsune without matching it.
+// "Neko" — a cat. Redone alongside Kitsune for the same reasons: fused
+// ears, bigger sparkly eyes, and whiskers placed as short marks beside
+// the cheeks instead of long arcs that read as eyebrows.
 export function Neko({ size = 96, className = "" }: MascotProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 100 100" className={className} aria-hidden="true">
       <ellipse cx="50" cy="93" rx="24" ry="4.5" fill="black" fillOpacity="0.16" />
 
-      <g className="m-wave" style={{ transformOrigin: "76px 78px" }}>
-        <path d="M74 78q16 2 14-14-12 0-14 14z" fill="rgb(var(--c-accent-2))" stroke={HALO} strokeWidth="4" strokeLinejoin="round" />
-        <path d="M74 78q16 2 14-14-12 0-14 14z" fill="none" stroke={INK} strokeOpacity="0.25" strokeWidth="1.4" />
+      <g className="m-wave" style={{ transformOrigin: "80px 72px" }}>
+        <path d="M78 62q20 0 18 22-14 8-22-6-6-10 4-16z" fill="rgb(var(--c-accent-2))" />
+        <path d="M78 62q20 0 18 22-14 8-22-6-6-10 4-16z" fill="none" stroke={HALO} strokeWidth="2.5" strokeLinejoin="round" />
       </g>
 
-      <path
-        d="M30 78c-8 0-14-30-6-42 6 10 12 16 20 20zM70 78c8 0 14-30 6-42-6 10-12 16-20 20z"
-        fill="rgb(var(--c-accent-2))"
-        stroke={HALO}
-        strokeWidth="5"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M30 78c-8 0-14-30-6-42 6 10 12 16 20 20zM70 78c8 0 14-30 6-42-6 10-12 16-20 20z"
-        fill="none"
-        stroke={INK}
-        strokeOpacity="0.25"
-        strokeWidth="1.6"
-      />
+      <path d="M26 40 16 10 46 30z" fill="rgb(var(--c-accent-2))" stroke={HALO} strokeWidth="2.5" strokeLinejoin="round" />
+      <path d="M74 40 84 10 54 30z" fill="rgb(var(--c-accent-2))" stroke={HALO} strokeWidth="2.5" strokeLinejoin="round" />
+      <path d="M28 33 22 16 38 28z" fill="#f2c9c9" />
+      <path d="M72 33 78 16 62 28z" fill="#f2c9c9" />
 
-      <g className="m-twitch">
-        <path d="M26 36 18 16l16 12z" fill="rgb(var(--c-accent-2))" stroke={HALO} strokeWidth="3" strokeLinejoin="round" />
-        <path d="M28 32 23 20l10 8z" fill="#fdf8ef" />
-      </g>
-      <path d="M74 36 82 16 66 28z" fill="rgb(var(--c-accent-2))" stroke={HALO} strokeWidth="3" strokeLinejoin="round" />
-      <path d="M72 32 77 20l-10 8z" fill="#fdf8ef" />
+      <circle cx="50" cy="55" r="30" fill="none" stroke={HALO} strokeWidth="2.5" />
+      <circle cx="50" cy="55" r="30" fill="rgb(var(--c-accent-2))" />
+      <circle cx="50" cy="55" r="30" fill="none" stroke={INK} strokeOpacity="0.2" strokeWidth="1.4" />
 
-      <circle cx="50" cy="52" r="28" fill="none" stroke={HALO} strokeWidth="5" />
-      <circle cx="50" cy="52" r="28" fill="rgb(var(--c-accent-2))" />
-      <circle cx="50" cy="52" r="28" fill="none" stroke={INK} strokeOpacity="0.25" strokeWidth="1.6" />
-
-      <path d="M40 54q-8-2-12 2M60 54q8-2 12 2M40 58q-8 1-12 4M60 58q8 1 12 4" stroke={INK} strokeOpacity="0.4" strokeWidth="1.2" strokeLinecap="round" />
-      <path d="M38 47q4-4 8 0M54 47q4-4 8 0" stroke={INK} strokeWidth="2.4" strokeLinecap="round" fill="none" />
-      <path d="M46 58q4 3 8 0" stroke={INK} strokeWidth="2" strokeLinecap="round" fill="none" />
-      <circle cx="50" cy="55" r="2" fill="#f2879a" />
-      <circle cx="34" cy="60" r="3.6" fill="#f2879a" fillOpacity="0.6" />
-      <circle cx="66" cy="60" r="3.6" fill="#f2879a" fillOpacity="0.6" />
+      <circle cx="40" cy="54" r="4.4" fill={INK} />
+      <circle cx="60" cy="54" r="4.4" fill={INK} />
+      <circle cx="41.4" cy="52.2" r="1.4" fill="white" />
+      <circle cx="61.4" cy="52.2" r="1.4" fill="white" />
+      <path d="M32 60h-9M31 65h-8M68 60h9M69 65h8" stroke={INK} strokeOpacity="0.55" strokeWidth="1.4" strokeLinecap="round" />
+      <path d="M48 63q2 2 4 0" stroke="#f2879a" strokeWidth="2.4" strokeLinecap="round" fill="none" />
+      <path d="M43 68q7 5 14 0" stroke={INK} strokeWidth="2" strokeLinecap="round" fill="none" />
+      <circle cx="32" cy="63" r="4.2" fill="#f2879a" fillOpacity="0.65" />
+      <circle cx="68" cy="63" r="4.2" fill="#f2879a" fillOpacity="0.65" />
     </svg>
   );
 }

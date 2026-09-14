@@ -2,16 +2,14 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import EntryDetail from "@/components/EntryDetail";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getCurrentUser } from "@/lib/supabase/server";
 import type { ContextEntry } from "@/types/database";
 import { getServerTranslator } from "@/lib/i18n/server";
 
 export default async function EntryPage({ params }: { params: { id: string } }) {
   const supabase = createClient();
   const { t } = getServerTranslator();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
 
   const { data: entry } = await supabase
     .from("context_entries")
