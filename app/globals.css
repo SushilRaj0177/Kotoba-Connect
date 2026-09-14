@@ -29,14 +29,19 @@
 }
 
 :root[data-theme="dark"] {
-  --c-bg: 15 19 13;
-  --c-bg-secondary: 23 28 19;
-  --c-bg-input: 31 37 26;
-  --c-bg-hover: 40 47 33;
-  --c-border: 50 58 42;
-  --c-text: 213 219 202;
-  --c-text-muted: 156 166 140;
-  --c-text-header: 237 241 227;
+  /* Near-neutral dark surfaces (just a whisper of green, not a cast over
+     the whole screen) — the matcha green lives in the accent, links, and
+     mascot, not the background. The previous version tinted every
+     surface green, which read as "everything is green" instead of "a
+     calm dark UI with a green accent". */
+  --c-bg: 17 18 16;
+  --c-bg-secondary: 25 27 24;
+  --c-bg-input: 33 35 31;
+  --c-bg-hover: 42 44 39;
+  --c-border: 52 55 48;
+  --c-text: 214 216 208;
+  --c-text-muted: 158 163 150;
+  --c-text-header: 239 240 234;
   --c-accent: 150 194 106;
   --c-accent-2: 216 180 98;
   --c-accent-hover: 170 210 128;
@@ -181,3 +186,64 @@ body::before {
 .skeleton {
   animation: pulse-soft 1.4s ease-in-out infinite;
 }
+
+/* Mascot idle-motion library — every mascot design gets a real loop
+   (never a static image) via one of these, applied to a <g> wrapping the
+   part that should move. */
+@keyframes m-sway {
+  0%, 100% { transform: rotate(-4deg); }
+  50% { transform: rotate(4deg); }
+}
+@keyframes m-wobble {
+  0%, 100% { transform: rotate(-7deg); }
+  50% { transform: rotate(7deg); }
+}
+@keyframes m-wave {
+  0%, 100% { transform: rotate(-18deg); }
+  50% { transform: rotate(10deg); }
+}
+@keyframes m-twitch {
+  0%, 92%, 100% { transform: rotate(0deg); }
+  95% { transform: rotate(-10deg); }
+}
+@keyframes m-flap {
+  0%, 100% { transform: scaleY(1) rotate(0deg); }
+  50% { transform: scaleY(0.82) rotate(-6deg); }
+}
+@keyframes m-squish {
+  0%, 100% { transform: scale(1, 1); }
+  50% { transform: scale(1.06, 0.9); }
+}
+@keyframes m-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+@keyframes m-stomp {
+  0%, 40%, 100% { transform: scaleY(1) translateY(0); }
+  48% { transform: scaleY(0.85) translateY(3px); }
+  56% { transform: scaleY(1.05) translateY(-2px); }
+}
+@keyframes m-steam {
+  0% { transform: translateY(0); opacity: 0.7; }
+  100% { transform: translateY(-8px); opacity: 0; }
+}
+@keyframes m-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+@keyframes m-blink {
+  0%, 90%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.1); }
+}
+.m-sway { transform-origin: 50% 95%; animation: m-sway 3.2s ease-in-out infinite; }
+.m-wobble { transform-origin: 50% 98%; animation: m-wobble 2.4s ease-in-out infinite; }
+.m-wave { transform-origin: 85% 90%; animation: m-wave 1.6s ease-in-out infinite; }
+.m-twitch { transform-origin: 50% 100%; animation: m-twitch 4s ease-in-out infinite; }
+.m-flap-l { transform-origin: 100% 50%; animation: m-flap 1.4s ease-in-out infinite; }
+.m-flap-r { transform-origin: 0% 50%; animation: m-flap 1.4s ease-in-out infinite 0.1s; }
+.m-squish { transform-origin: 50% 100%; animation: m-squish 2.2s ease-in-out infinite; }
+.m-bounce { animation: m-bounce 1.8s ease-in-out infinite; }
+.m-stomp { transform-origin: 50% 100%; animation: m-stomp 2.6s ease-in-out infinite; }
+.m-steam { animation: m-steam 2.4s ease-in infinite; }
+.m-float { animation: m-float 2.8s ease-in-out infinite; }
+.m-blink { transform-origin: center; animation: m-blink 3.6s ease-in-out infinite; }
