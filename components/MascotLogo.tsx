@@ -56,7 +56,7 @@ export default function MascotLogo({ size = 40 }: { size?: number }) {
   return (
     <span className="relative flex h-12 w-12 flex-none items-center justify-center overflow-hidden">
       <span className={motionClass}>
-        {active === "kokeshi" ? <Mascot size={size} /> : <Obake size={Math.round(size * 0.8)} />}
+        {active === "kokeshi" ? <Mascot size={size} /> : <Obake size={Math.round(size * 1.08)} />}
       </span>
     </span>
   );
