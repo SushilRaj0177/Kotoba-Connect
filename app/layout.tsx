@@ -9,6 +9,7 @@ import { LocaleProvider } from "@/components/i18n/LocaleProvider";
 import { getServerLocale } from "@/lib/i18n/server";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { getServerTheme } from "@/lib/theme";
+import { SITE_URL } from "@/lib/site";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -27,10 +28,27 @@ const zenMaru = Zen_Maru_Gothic({
   variable: "--font-display",
 });
 
+const title = "Kotoba Engine 言葉 — Japanese Pragmatics Board";
+const description =
+  "A community board for annotating the pragmatic, cultural nuance behind real Japanese text — beyond dictionary definitions.";
+
 export const metadata: Metadata = {
-  title: "Kotoba Engine 言葉 — Japanese Pragmatics Board",
-  description:
-    "A community board for annotating the pragmatic, cultural nuance behind real Japanese text — beyond dictionary definitions.",
+  metadataBase: new URL(SITE_URL),
+  title: { default: title, template: "%s — Kotoba Engine 言葉" },
+  description,
+  openGraph: {
+    title,
+    description,
+    url: SITE_URL,
+    siteName: "Kotoba Engine",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
