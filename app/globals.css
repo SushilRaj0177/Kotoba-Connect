@@ -79,22 +79,16 @@
   color-scheme: dark;
 }
 
-html {
-  /* Matches what browser zoom at 110% actually does — the CSS `zoom`
-     property scales the whole render (layout included), unlike a
-     transform or a font-size hack, which only scale some of it and
-     throw off px-based max-widths elsewhere in the app. */
-  zoom: 1.1;
-}
-
-/* Custom cozy cursor — a soft cream dot with a dark outline (readable on
-   any surface, light or dark) and a matcha-green center, noticeably
-   bigger than a default system arrow. A filled, brighter variant marks
-   anything clickable. Text inputs keep the normal caret — overriding
-   that would actively hurt usability, not just look different. */
+/* Custom cozy cursor — a familiar rounded arrow (not a dot/circle, so it
+   still reads as "a cursor" at a glance) in a soft cream with a dark
+   outline, noticeably bigger than a default system arrow. A filled
+   matcha-green variant marks anything clickable. Rounded line joins keep
+   it feeling soft/cozy rather than a sharp system pointer. Text inputs
+   keep the normal caret — overriding that would actively hurt usability,
+   not just look different. */
 body {
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='34'%3E%3Ccircle cx='17' cy='17' r='12.5' fill='%23fdf8ef' stroke='%232a2438' stroke-width='2'/%3E%3Ccircle cx='17' cy='17' r='4.5' fill='%23688c4a'/%3E%3C/svg%3E")
-    17 17, auto;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='34' viewBox='0 0 32 32'%3E%3Cpath d='M7 4 L7 24 L12 19.5 L15.3 27 L19 25.3 L15.8 18 L23 18 Z' fill='%23fdf8ef' stroke='%232a2438' stroke-width='2' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/svg%3E")
+    7 4, auto;
 }
 a,
 button,
@@ -103,8 +97,8 @@ summary,
 select,
 label[for],
 .cursor-pointer {
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='38' height='38'%3E%3Ccircle cx='19' cy='19' r='14.5' fill='%23688c4a' stroke='%23fdf8ef' stroke-width='2.5'/%3E%3Ccircle cx='19' cy='19' r='4' fill='%23fdf8ef'/%3E%3C/svg%3E")
-    19 19, pointer;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='38' height='38' viewBox='0 0 32 32'%3E%3Cpath d='M7 4 L7 24 L12 19.5 L15.3 27 L19 25.3 L15.8 18 L23 18 Z' fill='%23688c4a' stroke='%23fdf8ef' stroke-width='2' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/svg%3E")
+    7 4, pointer;
 }
 input,
 textarea,

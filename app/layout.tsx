@@ -10,6 +10,7 @@ import { getServerLocale } from "@/lib/i18n/server";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { getServerTheme } from "@/lib/theme";
 import { SITE_URL } from "@/lib/site";
+import { ClientAuthProvider } from "@/components/auth/ClientAuthProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -60,19 +61,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="flex min-h-screen bg-ink-bg">
         <ThemeProvider initialTheme={theme}>
           <LocaleProvider initialLocale={locale}>
-            {/* The rail stays flush against the real left edge, like every
-                reference app — no dead margin before it. A matching-width
-                spacer on the right is what makes the content column's own
-                mx-auto centering land on true center instead of drifting
-                left by the rail's width. */}
-            <SideRail />
-            <div className="flex min-h-screen flex-1 flex-col pb-16 md:pb-0">
-              <div className="flex-1">{children}</div>
-              <Footer />
-            </div>
-            <div className="hidden w-16 flex-none md:block" aria-hidden="true" />
-            <MobileNav />
-            <MascotChat />
+            <ClientAuthProvider>
+              {/* The rail is fixed to the real left edge (so it can't be
+                  dragged along when the page scrolls) and a matching-width
+                  spacer takes its place in flow so content doesn't render
+                  underneath it. */}
+              <SideRail />
+              <div className="hidden w-[72px] flex-none md:block" aria-hidden="true" />
+              <div className="flex min-h-screen flex-1 flex-col pb-16 md:pb-0">
+                <div className="flex-1">{children}</div>
+                <Footer />
+              </div>
+              <MobileNav />
+              <MascotChat />
+            </ClientAuthProvider>
           </LocaleProvider>
         </ThemeProvider>
       </body>

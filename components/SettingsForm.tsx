@@ -7,11 +7,15 @@ import type { Profile } from "@/types/database";
 import { errorMessage } from "@/lib/errors";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import Avatar from "@/components/Avatar";
+import AvatarPicker from "@/components/AvatarPicker";
 
 export default function SettingsForm({ profile, email }: { profile: Profile; email: string | null }) {
   const { t } = useLocale();
   const router = useRouter();
 
+  const [displayName, setDisplayName] = useState(profile.display_name ?? "");
+  const [avatarUrl, setAvatarUrl] = useState(profile.avatar_url);
+  const [avatarPickerOpen, setAvatarPickerOpen] = useState(false);
   const [username, setUsername] = useState(profile.username);
   const [bio, setBio] = useState(profile.bio ?? "");
   const [website, setWebsite] = useState(profile.website ?? "");
@@ -52,7 +56,13 @@ export default function SettingsForm({ profile, email }: { profile: Profile; ema
     const supabase = createClient();
     const { error: updateError } = await supabase
       .from("profiles")
-      .update({ username: trimmedUsername, bio: bio.trim() || null, website: website.trim() || null })
+      .update({
+        username: trimmedUsername,
+        display_name: displayName.trim() || null,
+        avatar_url: avatarUrl,
+        bio: bio.trim() || null,
+        website: website.trim() || null,
+      })
       .eq("id", profile.id);
 
     if (updateError) {
@@ -116,15 +126,15 @@ export default function SettingsForm({ profile, email }: { profile: Profile; ema
 
   return (
     <div className="space-y-5">
-      <div className="flex items-center gap-3 rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm sm:p-5">
-        <Avatar username={profile.username} size={48} />
+      <div className="flex flex-col gap-3 rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm sm:flex-row sm:items-center sm:gap-4 sm:p-5">
+        <Avatar username={profile.username} avatarUrl={avatarUrl} size={48} />
         <div className="min-w-0 flex-1">
           <p className="truncate font-display text-base font-bold text-ink-text-header">
-            @{profile.username}
+            {displayName.trim() || `@${profile.username}`}
           </p>
-          <p className="text-sm text-ink-text-muted">{email ?? t("settings.noEmail")}</p>
+          <p className="truncate text-sm text-ink-text-muted">{email ?? t("settings.noEmail")}</p>
         </div>
-        <div className="flex-none text-right text-xs text-ink-text-muted">
+        <div className="flex-none text-xs text-ink-text-muted sm:text-right">
           <p>
             {t("profile.reputation")}: <span className="font-bold text-ink-accent">{profile.reputation_score}</span>
           </p>
@@ -139,6 +149,40 @@ export default function SettingsForm({ profile, email }: { profile: Profile; ema
         className="space-y-3 rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm sm:p-5"
       >
         <h2 className="font-display text-base font-bold text-ink-text-header">{t("settings.profileTitle")}</h2>
+
+        <div>
+          <span className="mb-1.5 block text-xs font-medium text-ink-text-muted">{t("settings.avatarLabel")}</span>
+          <div className="flex items-center gap-3">
+            <Avatar username={profile.username} avatarUrl={avatarUrl} size={56} />
+            <button
+              type="button"
+              onClick={() => setAvatarPickerOpen((o) => !o)}
+              className="rounded-full bg-ink-bg-input px-3.5 py-1.5 text-xs font-semibold text-ink-text transition hover:bg-ink-bg-hover"
+            >
+              {avatarPickerOpen ? t("settings.avatarClose") : t("settings.avatarChoose")}
+            </button>
+          </div>
+          {avatarPickerOpen && (
+            <div className="mt-3">
+              <AvatarPicker value={avatarUrl} onChange={(token) => setAvatarUrl(token)} />
+            </div>
+          )}
+        </div>
+
+        <div>
+          <label htmlFor="displayName" className="mb-1 block text-xs font-medium text-ink-text-muted">
+            {t("settings.displayNameLabel")}
+          </label>
+          <input
+            id="displayName"
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
+            maxLength={50}
+            placeholder={profile.username}
+            className="w-full rounded-lg border-none bg-ink-bg-input px-3 py-2 text-sm text-ink-text placeholder:text-ink-text-muted focus:outline-none focus:ring-2 focus:ring-ink-accent"
+          />
+          <p className="mt-1 text-xs text-ink-text-muted">{t("settings.displayNameHint")}</p>
+        </div>
         <div>
           <label htmlFor="username" className="mb-1 block text-xs font-medium text-ink-text-muted">
             {t("settings.usernameLabel")}

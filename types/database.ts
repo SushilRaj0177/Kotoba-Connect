@@ -20,6 +20,7 @@ export interface KuromojiToken {
 export interface Profile {
   id: string;
   username: string;
+  display_name: string | null;
   avatar_url: string | null;
   bio: string | null;
   website: string | null;
@@ -49,7 +50,7 @@ export interface AppNotification {
   message: string | null;
   read: boolean;
   created_at: string;
-  actor?: Pick<Profile, "username" | "avatar_url"> | null;
+  actor?: Pick<Profile, "username" | "display_name" | "avatar_url"> | null;
   entry?: Pick<ContextEntry, "raw_japanese"> | null;
 }
 
@@ -83,7 +84,7 @@ export interface ContextEntry {
   ai_nuance_summary: string | null;
   ai_processed: boolean;
   embedding?: number[] | null;
-  profiles?: Pick<Profile, "username" | "avatar_url">;
+  profiles?: Pick<Profile, "username" | "display_name" | "avatar_url">;
   has_voted?: boolean;
   is_bookmarked?: boolean;
   similarity?: number;
@@ -98,7 +99,7 @@ export interface TokenAnnotation {
   cultural_context: string | null;
   upvotes_count: number;
   created_at: string;
-  profiles?: Pick<Profile, "username" | "avatar_url">;
+  profiles?: Pick<Profile, "username" | "display_name" | "avatar_url">;
 }
 
 export interface EntryComment {
@@ -107,7 +108,7 @@ export interface EntryComment {
   user_id: string;
   body: string;
   created_at: string;
-  profiles?: Pick<Profile, "username" | "avatar_url">;
+  profiles?: Pick<Profile, "username" | "display_name" | "avatar_url">;
 }
 
 export interface Database {

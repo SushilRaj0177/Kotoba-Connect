@@ -8,27 +8,36 @@ const SIZES = {
 } as const;
 
 // A single consistent "who posted/ranked/notified this" treatment — a
-// pill chip pairing the avatar with the handle — used everywhere a bare
+// pill chip pairing the avatar with the name — used everywhere a bare
 // "@username" text string used to sit loose against the background.
+// Shows the display name when a profile has set one (most people don't
+// want their raw handle plastered everywhere), falling back to
+// "@username" only when no display name exists — the handle still
+// underlies the profile link either way.
 export default function UserHandle({
   username,
+  displayName,
+  avatarUrl,
   size = "md",
   href,
   trailing,
   className = "",
 }: {
   username: string;
+  displayName?: string | null;
+  avatarUrl?: string | null;
   size?: keyof typeof SIZES;
   href?: string;
   trailing?: React.ReactNode;
   className?: string;
 }) {
   const s = SIZES[size];
+  const label = displayName?.trim() || `@${username}`;
   const content = (
     <>
-      <Avatar username={username} size={s.avatar} />
+      <Avatar username={username} avatarUrl={avatarUrl} size={s.avatar} />
       <span className={`min-w-0 truncate font-display font-semibold text-ink-text-header ${s.text}`}>
-        @{username}
+        {label}
       </span>
       {trailing}
     </>

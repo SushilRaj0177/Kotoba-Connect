@@ -18,7 +18,7 @@ export default function NotificationBell({ userId }: { userId: string }) {
     const supabase = createClient();
     const { data } = await supabase
       .from("notifications")
-      .select("*, actor:profiles!notifications_actor_id_fkey(username, avatar_url)")
+      .select("*, actor:profiles!notifications_actor_id_fkey(username, display_name, avatar_url)")
       .eq("user_id", userId)
       .order("created_at", { ascending: false })
       .limit(30);
@@ -115,7 +115,7 @@ export default function NotificationBell({ userId }: { userId: string }) {
                       {n.type === "system" ? (
                         <Mascot size={28} mood="happy" />
                       ) : (
-                        <Avatar username={n.actor?.username ?? "?"} size={28} />
+                        <Avatar username={n.actor?.username ?? "?"} avatarUrl={n.actor?.avatar_url} size={28} />
                       )}
                       <span className="min-w-0 flex-1 text-ink-text">
                         {n.type === "system" ? (
@@ -125,7 +125,7 @@ export default function NotificationBell({ userId }: { userId: string }) {
                         ) : (
                           <>
                             <strong className="font-display text-ink-text-header">
-                              @{n.actor?.username ?? "someone"}
+                              {n.actor?.display_name?.trim() || `@${n.actor?.username ?? "someone"}`}
                             </strong>{" "}
                             {n.type === "upvote"
                               ? t("notif.upvoted")

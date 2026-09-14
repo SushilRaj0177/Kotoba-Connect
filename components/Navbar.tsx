@@ -38,7 +38,12 @@ export default async function Navbar({ title }: { title?: string } = {}) {
           {user ? (
             <div className="flex items-center gap-2.5">
               <NotificationBell userId={user.id} />
-              <AccountMenu username={username ?? "user"} isAdmin={isAdmin} />
+              <AccountMenu
+                username={username ?? "user"}
+                displayName={profile?.display_name}
+                avatarUrl={profile?.avatar_url}
+                isAdmin={isAdmin}
+              />
             </div>
           ) : (
             <Link

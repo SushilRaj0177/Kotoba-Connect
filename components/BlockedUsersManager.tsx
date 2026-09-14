@@ -7,7 +7,7 @@ import { useLocale } from "@/components/i18n/LocaleProvider";
 
 interface BlockedUser {
   blocked_id: string;
-  profiles: { username: string; avatar_url: string | null } | null;
+  profiles: { username: string; display_name: string | null; avatar_url: string | null } | null;
 }
 
 export default function BlockedUsersManager({ userId }: { userId: string }) {
@@ -19,7 +19,7 @@ export default function BlockedUsersManager({ userId }: { userId: string }) {
     const supabase = createClient();
     const { data } = await supabase
       .from("user_blocks")
-      .select("blocked_id, profiles!user_blocks_blocked_id_fkey(username, avatar_url)")
+      .select("blocked_id, profiles!user_blocks_blocked_id_fkey(username, display_name, avatar_url)")
       .eq("blocker_id", userId)
       .order("created_at", { ascending: false });
     setBlocked((data ?? []) as unknown as BlockedUser[]);
@@ -47,6 +47,8 @@ export default function BlockedUsersManager({ userId }: { userId: string }) {
           <li key={b.blocked_id} className="flex items-center justify-between">
             <UserHandle
               username={b.profiles?.username ?? "unknown"}
+              displayName={b.profiles?.display_name}
+              avatarUrl={b.profiles?.avatar_url}
               href={`/u/${b.profiles?.username ?? ""}`}
               size="sm"
             />
