@@ -34,7 +34,7 @@ export interface Bookmark {
   created_at: string;
 }
 
-export type NotificationType = "upvote" | "annotation" | "system";
+export type NotificationType = "upvote" | "annotation" | "comment" | "system";
 
 export interface AppNotification {
   id: string;
@@ -51,7 +51,7 @@ export interface AppNotification {
 }
 
 export type ReportStatus = "pending" | "resolved" | "dismissed";
-export type ReportTargetType = "entry" | "annotation";
+export type ReportTargetType = "entry" | "annotation" | "comment";
 
 export interface ReportFlag {
   id: string;
@@ -94,6 +94,15 @@ export interface TokenAnnotation {
   nuance_note: string;
   cultural_context: string | null;
   upvotes_count: number;
+  created_at: string;
+  profiles?: Pick<Profile, "username" | "avatar_url">;
+}
+
+export interface EntryComment {
+  id: string;
+  entry_id: string;
+  user_id: string;
+  body: string;
   created_at: string;
   profiles?: Pick<Profile, "username" | "avatar_url">;
 }

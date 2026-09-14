@@ -11,7 +11,7 @@ export default function ReportButton({
   targetId,
   userId,
 }: {
-  targetType: "entry" | "annotation";
+  targetType: "entry" | "annotation" | "comment";
   targetId: string;
   userId: string | null;
 }) {

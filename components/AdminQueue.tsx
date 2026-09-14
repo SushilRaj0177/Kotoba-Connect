@@ -26,18 +26,23 @@ export default function AdminQueue() {
     const annotationIds = (flags ?? [])
       .filter((f) => f.target_type === "annotation")
       .map((f) => f.target_id);
+    const commentIds = (flags ?? []).filter((f) => f.target_type === "comment").map((f) => f.target_id);
 
-    const [{ data: entries }, { data: annotations }] = await Promise.all([
+    const [{ data: entries }, { data: annotations }, { data: comments }] = await Promise.all([
       entryIds.length
         ? supabase.from("context_entries").select("id, raw_japanese, primary_translation").in("id", entryIds)
         : Promise.resolve({ data: [] }),
       annotationIds.length
         ? supabase.from("token_annotations").select("id, nuance_note").in("id", annotationIds)
         : Promise.resolve({ data: [] }),
+      commentIds.length
+        ? supabase.from("entry_comments").select("id, body").in("id", commentIds)
+        : Promise.resolve({ data: [] }),
     ]);
 
     const entryMap = new Map((entries ?? []).map((e: any) => [e.id, `${e.raw_japanese} — ${e.primary_translation}`]));
     const annotationMap = new Map((annotations ?? []).map((a: any) => [a.id, a.nuance_note]));
+    const commentMap = new Map((comments ?? []).map((c: any) => [c.id, c.body]));
 
     setReports(
       (flags ?? []).map((f) => ({
@@ -45,7 +50,9 @@ export default function AdminQueue() {
         preview:
           f.target_type === "entry"
             ? entryMap.get(f.target_id) ?? "(entry deleted)"
-            : annotationMap.get(f.target_id) ?? "(annotation deleted)",
+            : f.target_type === "annotation"
+              ? annotationMap.get(f.target_id) ?? "(annotation deleted)"
+              : commentMap.get(f.target_id) ?? "(comment deleted)",
       }))
     );
     setLoading(false);
@@ -82,7 +89,12 @@ export default function AdminQueue() {
   async function deleteAndResolve(report: ReportWithPreview) {
     setActingOn(report.id);
     const supabase = createClient();
-    const table = report.target_type === "entry" ? "context_entries" : "token_annotations";
+    const table =
+      report.target_type === "entry"
+        ? "context_entries"
+        : report.target_type === "annotation"
+          ? "token_annotations"
+          : "entry_comments";
 
     const { data: content } = await supabase.from(table).select("user_id").eq("id", report.target_id).single();
 
@@ -97,7 +109,9 @@ export default function AdminQueue() {
         user_id: content.user_id,
         actor_id: null,
         type: "system",
-        message: `Your ${report.target_type === "entry" ? "post" : "annotation"} was removed for violating community guidelines. Check the Terms page if you have questions.`,
+        message: `Your ${
+          report.target_type === "entry" ? "post" : report.target_type === "annotation" ? "annotation" : "comment"
+        } was removed for violating community guidelines. Check the Terms page if you have questions.`,
       });
     }
     setActingOn(null);
