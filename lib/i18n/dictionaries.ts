@@ -37,6 +37,11 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "board.searchPlaceholder": "Search by meaning — e.g. 'polite way to refuse'",
     "board.searchButton": "Search",
     "board.searching": "Searching…",
+    "board.sortNew": "New",
+    "board.sortPopular": "Popular",
+    "board.filterAll": "All registers",
+    "board.filterEmptyTitle": "No entries match",
+    "board.filterEmptyDescription": "Nothing posted at this formality level yet — try a different filter.",
 
     "form.heading": "Add a Japanese sentence",
     "form.rawLabel": "Raw Japanese text",
@@ -221,6 +226,11 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "board.searchPlaceholder": "意味で検索 — 例：「丁寧な断り方」",
     "board.searchButton": "検索",
     "board.searching": "検索中…",
+    "board.sortNew": "新着",
+    "board.sortPopular": "人気",
+    "board.filterAll": "すべての敬語レベル",
+    "board.filterEmptyTitle": "該当するエントリーがありません",
+    "board.filterEmptyDescription": "この敬語レベルの投稿はまだありません — 別のフィルターを試してください。",
 
     "form.heading": "日本語の文を追加",
     "form.rawLabel": "生の日本語テキスト",
