@@ -25,6 +25,9 @@ export interface Profile {
   website: string | null;
   reputation_score: number;
   is_admin: boolean;
+  current_streak: number;
+  longest_streak: number;
+  last_post_date: string | null;
   created_at: string;
 }
 
