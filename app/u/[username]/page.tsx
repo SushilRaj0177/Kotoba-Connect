@@ -5,6 +5,7 @@ import EntryCard from "@/components/EntryCard";
 import EmptyState from "@/components/EmptyState";
 import FollowButton from "@/components/FollowButton";
 import BlockButton from "@/components/BlockButton";
+import ProfileBadges from "@/components/ProfileBadges";
 import { createClient, getCurrentUser } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
 import type { ContextEntry, Profile } from "@/types/database";
@@ -149,6 +150,12 @@ export default async function ProfilePage({ params }: { params: { username: stri
                 {t("profile.memberSince")} {joined}
               </span>
             </div>
+            <ProfileBadges
+              entryCount={entries?.length ?? 0}
+              reputation={profile.reputation_score}
+              longestStreak={typedProfile.longest_streak}
+              followerCount={followerCount ?? 0}
+            />
           </div>
         </div>
 
