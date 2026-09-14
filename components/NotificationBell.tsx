@@ -98,7 +98,15 @@ export default function NotificationBell({ userId }: { userId: string }) {
                 {notifications.map((n) => (
                   <li key={n.id}>
                     <Link
-                      href={n.entry_id ? `/entries/${n.entry_id}` : "#"}
+                      href={
+                        n.type === "follow"
+                          ? n.actor?.username
+                            ? `/u/${n.actor.username}`
+                            : "#"
+                          : n.entry_id
+                            ? `/entries/${n.entry_id}`
+                            : "#"
+                      }
                       onClick={() => setOpen(false)}
                       className={`flex items-start gap-2.5 border-b border-ink-border p-3 text-sm transition hover:bg-ink-bg-hover ${
                         n.read ? "opacity-60" : ""
@@ -123,7 +131,9 @@ export default function NotificationBell({ userId }: { userId: string }) {
                               ? t("notif.upvoted")
                               : n.type === "annotation"
                                 ? t("notif.annotated")
-                                : t("notif.commented")}
+                                : n.type === "comment"
+                                  ? t("notif.commented")
+                                  : t("notif.followed")}
                           </>
                         )}
                       </span>

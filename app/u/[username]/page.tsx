@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar";
 import Avatar from "@/components/Avatar";
 import EntryCard from "@/components/EntryCard";
 import EmptyState from "@/components/EmptyState";
+import FollowButton from "@/components/FollowButton";
 import { createClient, getCurrentUser } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
 import type { ContextEntry, Profile } from "@/types/database";
@@ -40,6 +41,19 @@ export default async function ProfilePage({ params }: { params: { username: stri
     bookmarkedIds = new Set((saves ?? []).map((s) => s.entry_id));
   }
 
+  const [{ count: followerCount }, { count: followingCount }, { data: viewerFollow }] = await Promise.all([
+    supabase.from("user_follows").select("follower_id", { count: "exact", head: true }).eq("following_id", profile.id),
+    supabase.from("user_follows").select("following_id", { count: "exact", head: true }).eq("follower_id", profile.id),
+    user
+      ? supabase
+          .from("user_follows")
+          .select("follower_id")
+          .eq("follower_id", user.id)
+          .eq("following_id", profile.id)
+          .maybeSingle()
+      : Promise.resolve({ data: null }),
+  ]);
+
   const joined = new Date((profile as Profile).created_at).toLocaleDateString(undefined, {
     month: "long",
     year: "numeric",
@@ -56,13 +70,19 @@ export default async function ProfilePage({ params }: { params: { username: stri
               <h1 className="font-display text-2xl font-bold text-ink-text-header">
                 @{profile.username}
               </h1>
-              {user?.id === profile.id && (
+              {user?.id === profile.id ? (
                 <a
                   href="/settings"
                   className="rounded-full bg-ink-bg-input px-3 py-1 text-xs font-semibold text-ink-text transition hover:bg-ink-bg-hover"
                 >
                   {t("profile.editProfile")}
                 </a>
+              ) : (
+                <FollowButton
+                  profileId={profile.id}
+                  currentUserId={user?.id ?? null}
+                  initialFollowing={!!viewerFollow}
+                />
               )}
             </div>
             {profile.bio && <p className="mt-1.5 text-sm text-ink-text">{profile.bio}</p>}
@@ -84,6 +104,14 @@ export default async function ProfilePage({ params }: { params: { username: stri
               <span>
                 <strong className="text-ink-text-header">{profile.reputation_score}</strong>{" "}
                 {t("profile.reputation")}
+              </span>
+              <span>
+                <strong className="text-ink-text-header">{followerCount ?? 0}</strong>{" "}
+                {t("profile.followers")}
+              </span>
+              <span>
+                <strong className="text-ink-text-header">{followingCount ?? 0}</strong>{" "}
+                {t("profile.following")}
               </span>
               <span>
                 {t("profile.memberSince")} {joined}
