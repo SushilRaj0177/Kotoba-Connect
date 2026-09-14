@@ -2,11 +2,12 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import type { ContextEntry } from "@/types/database";
+import type { ContextEntry, FormalityLevel } from "@/types/database";
 import EntryForm from "@/components/EntryForm";
 import EntryCard from "@/components/EntryCard";
 import EmptyState from "@/components/EmptyState";
 import SearchBar from "@/components/SearchBar";
+import BoardControls, { type SortOption } from "@/components/BoardControls";
 import { EntryListSkeleton } from "@/components/Skeletons";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 
@@ -22,16 +23,24 @@ export default function EntryBoard({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchResults, setSearchResults] = useState<ContextEntry[] | null>(null);
+  const [sortBy, setSortBy] = useState<SortOption>("new");
+  const [formalityFilter, setFormalityFilter] = useState<FormalityLevel | "all">("all");
 
   const loadEntries = useCallback(async () => {
     setError(null);
     const supabase = createClient();
 
-    const { data, error: fetchError } = await supabase
+    let query = supabase
       .from("context_entries")
       .select("*, profiles!context_entries_user_id_fkey(username, avatar_url)")
-      .order("created_at", { ascending: false })
+      .order(sortBy === "popular" ? "upvotes_count" : "created_at", { ascending: false })
       .limit(50);
+
+    if (formalityFilter !== "all") {
+      query = query.eq("formality_level", formalityFilter);
+    }
+
+    const { data, error: fetchError } = await query;
 
     if (fetchError) {
       setError(t("board.loadError"));
@@ -58,7 +67,7 @@ export default function EntryBoard({
     );
     setLoading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId]);
+  }, [userId, sortBy, formalityFilter]);
 
   useEffect(() => {
     loadEntries();
@@ -101,6 +110,15 @@ export default function EntryBoard({
 
       <SearchBar onResults={setSearchResults} onClear={() => setSearchResults(null)} />
 
+      {searchResults === null && (
+        <BoardControls
+          sortBy={sortBy}
+          onSortChange={setSortBy}
+          formalityFilter={formalityFilter}
+          onFormalityChange={setFormalityFilter}
+        />
+      )}
+
       {loading ? (
         <EntryListSkeleton />
       ) : error ? (
@@ -130,7 +148,11 @@ export default function EntryBoard({
           </div>
         )
       ) : entries.length === 0 ? (
-        <EmptyState title={t("board.emptyTitle")} description={t("board.emptyDescription")} />
+        formalityFilter !== "all" ? (
+          <EmptyState title={t("board.filterEmptyTitle")} description={t("board.filterEmptyDescription")} variant="obake" />
+        ) : (
+          <EmptyState title={t("board.emptyTitle")} description={t("board.emptyDescription")} />
+        )
       ) : (
         <div className="space-y-4">
           {entries.map((entry) => (

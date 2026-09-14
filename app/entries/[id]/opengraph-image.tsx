@@ -7,10 +7,12 @@ export const contentType = "image/png";
 export const runtime = "nodejs";
 
 const FORMALITY_LABEL: Record<string, string> = {
-  casual: "Casual",
-  polite: "Polite",
-  formal: "Formal",
-  keigo: "Keigo",
+  Sonkeigo: "Sonkeigo",
+  Kenjougo: "Kenjougo",
+  Teineigo: "Teineigo",
+  Casual: "Casual",
+  Slang: "Slang",
+  Dialect: "Dialect",
 };
 
 function truncate(text: string, max: number) {
