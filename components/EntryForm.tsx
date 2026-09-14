@@ -144,9 +144,9 @@ export default function EntryForm({
       onSubmit={handleSubmit}
       className="rounded-2xl bg-ink-bg-secondary p-4 border-2 border-ink-border sm:p-5"
     >
-      <div className="mb-3 flex items-center gap-2.5">
-        <Avatar username={username ?? "user"} size={32} />
-        <h2 className="text-sm font-semibold text-ink-text-header">{t("form.heading")}</h2>
+      <div className="mb-4 flex items-center gap-2.5">
+        <Avatar username={username ?? "user"} size={36} />
+        <h2 className="font-display text-base font-bold text-ink-text-header">{t("form.heading")}</h2>
       </div>
 
       <div className="mb-3">

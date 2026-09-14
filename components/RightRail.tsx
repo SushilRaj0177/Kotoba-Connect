@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
-import Avatar from "@/components/Avatar";
+import UserHandle from "@/components/UserHandle";
+import Mascot from "@/components/Mascot";
 
 // Real supplementary content, not decoration — every reference app keeps
 // this column populated (stats, trending, promos) so the page never reads
@@ -31,7 +32,7 @@ export default async function RightRail() {
   return (
     <aside className="hidden w-72 flex-none space-y-4 lg:block">
       <div className="rounded-2xl bg-ink-bg-secondary p-4 border-2 border-ink-border">
-        <h2 className="mb-3 text-sm font-extrabold text-ink-text-header">{t("rail.communityTitle")}</h2>
+        <h2 className="mb-3 font-display text-base font-bold text-ink-text-header">{t("rail.communityTitle")}</h2>
         <dl className="space-y-2">
           <div className="flex items-center justify-between">
             <dt className="text-sm text-ink-text-muted">{t("rail.entries")}</dt>
@@ -47,19 +48,25 @@ export default async function RightRail() {
       {!!topProfiles?.length && (
         <div className="rounded-2xl bg-ink-bg-secondary p-4 border-2 border-ink-border">
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-sm font-extrabold text-ink-text-header">{t("rail.topContributorsTitle")}</h2>
+            <h2 className="font-display text-base font-bold text-ink-text-header">{t("rail.topContributorsTitle")}</h2>
             <Link href="/leaderboard" className="text-xs font-semibold text-ink-text-link hover:underline">
               {t("rail.viewAll")}
             </Link>
           </div>
-          <ul className="space-y-2.5">
+          <ul className="space-y-2">
             {topProfiles.map((p) => (
               <li key={p.username}>
-                <Link href={`/u/${p.username}`} className="flex items-center gap-2 hover:opacity-80">
-                  <Avatar username={p.username} size={26} />
-                  <span className="min-w-0 flex-1 truncate text-sm text-ink-text">@{p.username}</span>
-                  <span className="flex-none text-xs font-bold text-ink-accent">{p.reputation_score}</span>
-                </Link>
+                <UserHandle
+                  username={p.username}
+                  href={`/u/${p.username}`}
+                  size="sm"
+                  className="w-full"
+                  trailing={
+                    <span className="ml-auto flex-none text-xs font-bold text-ink-accent">
+                      {p.reputation_score}
+                    </span>
+                  }
+                />
               </li>
             ))}
           </ul>
@@ -68,7 +75,7 @@ export default async function RightRail() {
 
       {!!topTags.length && (
         <div className="rounded-2xl bg-ink-bg-secondary p-4 border-2 border-ink-border">
-          <h2 className="mb-3 text-sm font-extrabold text-ink-text-header">{t("rail.trendingTagsTitle")}</h2>
+          <h2 className="mb-3 font-display text-base font-bold text-ink-text-header">{t("rail.trendingTagsTitle")}</h2>
           <div className="flex flex-wrap gap-1.5">
             {topTags.map(([tag, count]) => (
               <Link
@@ -84,12 +91,13 @@ export default async function RightRail() {
       )}
 
       <div className="rounded-2xl bg-ink-bg-secondary p-4 border-2 border-ink-border">
-        <h2 className="mb-2 text-sm font-extrabold text-ink-text-header">{t("rail.aboutTitle")}</h2>
+        <h2 className="mb-2 font-display text-base font-bold text-ink-text-header">{t("rail.aboutTitle")}</h2>
         <p className="text-sm leading-relaxed text-ink-text-muted">{t("rail.aboutBody")}</p>
       </div>
 
-      <div className="rounded-2xl bg-ink-accent p-4 text-white">
-        <h2 className="mb-1 text-sm font-extrabold">{t("rail.tipTitle")}</h2>
+      <div className="bg-seigaiha relative overflow-hidden rounded-2xl bg-ink-accent p-4 text-white">
+        <Mascot size={44} mood="excited" className="float-right ml-3 mb-1" />
+        <h2 className="mb-1 font-display text-base font-bold">{t("rail.tipTitle")}</h2>
         <p className="text-sm leading-relaxed text-white/90">{t("rail.tipBody")}</p>
       </div>
     </aside>

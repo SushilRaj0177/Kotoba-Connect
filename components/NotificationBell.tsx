@@ -105,7 +105,7 @@ export default function NotificationBell({ userId }: { userId: string }) {
                     >
                       <Avatar username={n.actor?.username ?? "?"} size={28} />
                       <span className="min-w-0 flex-1 text-ink-text">
-                        <strong className="text-ink-text-header">@{n.actor?.username ?? "someone"}</strong>{" "}
+                        <strong className="font-display text-ink-text-header">@{n.actor?.username ?? "someone"}</strong>{" "}
                         {n.type === "upvote" ? t("notif.upvoted") : t("notif.annotated")}
                       </span>
                     </Link>

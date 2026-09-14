@@ -62,7 +62,7 @@ export default function EntryCard({
         <div className="mb-1 flex flex-wrap items-baseline gap-2">
           <Link
             href={`/u/${username}`}
-            className="text-sm font-semibold text-ink-text-header hover:underline"
+            className="font-display text-sm font-bold text-ink-text-header hover:underline"
           >
             @{username}
           </Link>
