@@ -70,6 +70,12 @@ export default function AdminQueue() {
       .from("report_flags")
       .update({ status: "dismissed", reviewed_at: new Date().toISOString() })
       .eq("id", report.id);
+    await supabase.from("notifications").insert({
+      user_id: report.reporter_id,
+      actor_id: null,
+      type: "system",
+      message: "A moderator reviewed your report — no rule violation was found, so the content stays up.",
+    });
     setActingOn(null);
   }
 
@@ -77,11 +83,23 @@ export default function AdminQueue() {
     setActingOn(report.id);
     const supabase = createClient();
     const table = report.target_type === "entry" ? "context_entries" : "token_annotations";
+
+    const { data: content } = await supabase.from(table).select("user_id").eq("id", report.target_id).single();
+
     await supabase.from(table).delete().eq("id", report.target_id);
     await supabase
       .from("report_flags")
       .update({ status: "resolved", reviewed_at: new Date().toISOString() })
       .eq("id", report.id);
+
+    if (content?.user_id) {
+      await supabase.from("notifications").insert({
+        user_id: content.user_id,
+        actor_id: null,
+        type: "system",
+        message: `Your ${report.target_type === "entry" ? "post" : "annotation"} was removed for violating community guidelines. Check the Terms page if you have questions.`,
+      });
+    }
     setActingOn(null);
   }
 

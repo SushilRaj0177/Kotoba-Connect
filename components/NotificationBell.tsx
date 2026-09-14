@@ -5,6 +5,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import type { AppNotification } from "@/types/database";
 import Avatar from "@/components/Avatar";
+import Mascot from "@/components/Mascot";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 
 export default function NotificationBell({ userId }: { userId: string }) {
@@ -103,10 +104,24 @@ export default function NotificationBell({ userId }: { userId: string }) {
                         n.read ? "opacity-60" : ""
                       }`}
                     >
-                      <Avatar username={n.actor?.username ?? "?"} size={28} />
+                      {n.type === "system" ? (
+                        <Mascot size={28} mood="happy" />
+                      ) : (
+                        <Avatar username={n.actor?.username ?? "?"} size={28} />
+                      )}
                       <span className="min-w-0 flex-1 text-ink-text">
-                        <strong className="font-display text-ink-text-header">@{n.actor?.username ?? "someone"}</strong>{" "}
-                        {n.type === "upvote" ? t("notif.upvoted") : t("notif.annotated")}
+                        {n.type === "system" ? (
+                          <>
+                            <strong className="font-display text-ink-text-header">Kotoba Bot</strong> {n.message}
+                          </>
+                        ) : (
+                          <>
+                            <strong className="font-display text-ink-text-header">
+                              @{n.actor?.username ?? "someone"}
+                            </strong>{" "}
+                            {n.type === "upvote" ? t("notif.upvoted") : t("notif.annotated")}
+                          </>
+                        )}
                       </span>
                     </Link>
                   </li>

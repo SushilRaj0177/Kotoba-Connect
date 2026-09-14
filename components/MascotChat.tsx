@@ -1,0 +1,149 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import Mascot from "@/components/Mascot";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+
+interface ChatMessage {
+  role: "user" | "assistant";
+  content: string;
+}
+
+// The mascot as an in-app presence: a floating chat widget that can answer
+// questions about how the board works and about Japanese formality/nuance
+// in general. It does not take actions on the user's behalf (no API key
+// lets a chat message post, delete, or edit anything) — moderation
+// "messages" from the same mascot persona are sent server-side from the
+// admin queue (see AdminQueue.tsx) and show up in the notification bell.
+export default function MascotChat() {
+  const { t } = useLocale();
+  const [open, setOpen] = useState(false);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [input, setInput] = useState("");
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
+  }, [messages, sending]);
+
+  async function send(e: React.FormEvent) {
+    e.preventDefault();
+    const text = input.trim();
+    if (!text || sending) return;
+
+    setError(null);
+    const next = [...messages, { role: "user" as const, content: text }];
+    setMessages(next);
+    setInput("");
+    setSending(true);
+
+    try {
+      const res = await fetch("/api/bot/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: next }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Kotoba Bot couldn't reply.");
+      setMessages((prev) => [...prev, { role: "assistant", content: data.reply }]);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong.");
+    } finally {
+      setSending(false);
+    }
+  }
+
+  return (
+    <div className="fixed bottom-5 right-5 z-30">
+      {open && (
+        <div className="mb-3 flex h-[28rem] w-80 flex-col overflow-hidden rounded-2xl bg-ink-bg-secondary border-2 border-ink-border shadow-2xl">
+          <div className="flex items-center gap-2.5 border-b border-ink-border p-3">
+            <Mascot size={30} mood="happy" />
+            <div className="min-w-0 flex-1">
+              <p className="font-display text-sm font-bold text-ink-text-header">{t("bot.name")}</p>
+              <p className="text-xs text-ink-text-muted">{t("bot.subtitle")}</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              className="flex h-7 w-7 flex-none items-center justify-center rounded-full text-ink-text-muted hover:bg-ink-bg-hover"
+              aria-label="Close"
+            >
+              ✕
+            </button>
+          </div>
+
+          <div ref={scrollRef} className="flex-1 space-y-2.5 overflow-y-auto p-3">
+            {messages.length === 0 && (
+              <div className="flex items-start gap-2">
+                <Mascot size={26} mood="happy" />
+                <p className="max-w-[85%] rounded-2xl rounded-tl-sm bg-ink-bg-input px-3 py-2 text-sm text-ink-text">
+                  {t("bot.greeting")}
+                </p>
+              </div>
+            )}
+            {messages.map((m, i) =>
+              m.role === "user" ? (
+                <p
+                  key={i}
+                  className="ml-auto max-w-[85%] rounded-2xl rounded-tr-sm bg-ink-accent px-3 py-2 text-sm text-white"
+                >
+                  {m.content}
+                </p>
+              ) : (
+                <div key={i} className="flex items-start gap-2">
+                  <Mascot size={26} mood="happy" />
+                  <p className="max-w-[85%] rounded-2xl rounded-tl-sm bg-ink-bg-input px-3 py-2 text-sm text-ink-text">
+                    {m.content}
+                  </p>
+                </div>
+              )
+            )}
+            {sending && (
+              <div className="flex items-start gap-2">
+                <Mascot size={26} mood="sleepy" />
+                <p className="rounded-2xl rounded-tl-sm bg-ink-bg-input px-3 py-2 text-sm text-ink-text-muted">…</p>
+              </div>
+            )}
+            {error && <p className="text-center text-xs text-ink-red">{error}</p>}
+          </div>
+
+          <form onSubmit={send} className="flex items-center gap-2 border-t border-ink-border p-2.5">
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder={t("bot.placeholder")}
+              maxLength={500}
+              className="min-w-0 flex-1 rounded-full border-none bg-ink-bg-input px-3.5 py-2 text-sm text-ink-text placeholder:text-ink-text-muted focus:outline-none focus:ring-2 focus:ring-ink-accent"
+            />
+            <button
+              type="submit"
+              disabled={sending || !input.trim()}
+              className="flex h-9 w-9 flex-none items-center justify-center rounded-full bg-ink-accent text-white disabled:opacity-50"
+              aria-label="Send"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3 11.5 21 3l-7.5 18-3-7.5-7.5-2z" />
+              </svg>
+            </button>
+          </form>
+        </div>
+      )}
+
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        title={t("bot.name")}
+        className="btn-chunky flex h-14 w-14 items-center justify-center rounded-full bg-ink-accent shadow-xl"
+      >
+        {open ? (
+          <span className="text-xl text-white">✕</span>
+        ) : (
+          <Mascot size={40} mood="excited" />
+        )}
+      </button>
+    </div>
+  );
+}
