@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Mascot from "@/components/Mascot";
 import ChatMessageText from "@/components/ChatMessageText";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { useEntryChatContext } from "@/components/EntryChatContext";
 
 interface ChatMessage {
   role: "user" | "assistant";
@@ -24,6 +25,7 @@ export default function MascotChat() {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { entry: entryContext } = useEntryChatContext();
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
@@ -44,7 +46,7 @@ export default function MascotChat() {
       const res = await fetch("/api/bot/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: next }),
+        body: JSON.stringify({ messages: next, entryContext }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Kotoba Bot couldn't reply.");
@@ -64,7 +66,13 @@ export default function MascotChat() {
             <Mascot size={30} mood="happy" />
             <div className="min-w-0 flex-1">
               <p className="font-display text-sm font-bold text-ink-text-header">{t("bot.name")}</p>
-              <p className="text-xs text-ink-text-muted">{t("bot.subtitle")}</p>
+              {entryContext ? (
+                <p className="truncate text-xs text-ink-accent" title={entryContext.raw_japanese}>
+                  {t("bot.aboutEntry")} {entryContext.raw_japanese}
+                </p>
+              ) : (
+                <p className="text-xs text-ink-text-muted">{t("bot.subtitle")}</p>
+              )}
             </div>
             <button
               type="button"

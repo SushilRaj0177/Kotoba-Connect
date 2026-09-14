@@ -28,7 +28,17 @@ export async function POST(request: Request) {
     .filter((m) => m && (m.role === "user" || m.role === "assistant") && typeof m.content === "string")
     .map((m) => ({ role: m.role, content: String(m.content).slice(0, 1000) }));
 
-  const reply = await chatWithBot(cleaned);
+  const rawContext = body?.entryContext;
+  const entryContext =
+    rawContext && typeof rawContext.raw_japanese === "string" && typeof rawContext.primary_translation === "string"
+      ? {
+          raw_japanese: rawContext.raw_japanese.slice(0, 500),
+          primary_translation: rawContext.primary_translation.slice(0, 300),
+          nuance_summary: typeof rawContext.nuance_summary === "string" ? rawContext.nuance_summary.slice(0, 500) : null,
+        }
+      : null;
+
+  const reply = await chatWithBot(cleaned, entryContext);
   if (!reply) {
     return NextResponse.json({ error: "Kotoba Bot couldn't come up with a reply. Try again." }, { status: 502 });
   }

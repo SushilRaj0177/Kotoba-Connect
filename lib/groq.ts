@@ -162,11 +162,35 @@ pragmatics/language questions. Keep answers short — 2-4 sentences, casual and 
 of text. You cannot take actions in the app yourself (you can't post, delete, or edit anything) —
 if asked to do something, explain how the person can do it themselves.`;
 
-export async function chatWithBot(messages: { role: "user" | "assistant"; content: string }[]): Promise<
-  string | null
-> {
+export interface BotEntryContext {
+  raw_japanese: string;
+  primary_translation: string;
+  nuance_summary?: string | null;
+}
+
+export async function chatWithBot(
+  messages: { role: "user" | "assistant"; content: string }[],
+  entryContext?: BotEntryContext | null
+): Promise<string | null> {
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) return null;
+
+  // When opened from an entry's detail page, the bot gets that entry as
+  // grounding context (its own system message, kept separate from the
+  // general instructions) so it can answer "what does THIS sentence
+  // actually imply" instead of only general Japanese questions.
+  const contextMessage = entryContext
+    ? [
+        {
+          role: "system" as const,
+          content: `The user is currently viewing this posted entry — answer with it in mind when relevant:
+Japanese: ${entryContext.raw_japanese}
+Translation: ${entryContext.primary_translation}${
+            entryContext.nuance_summary ? `\nExisting AI nuance note: ${entryContext.nuance_summary}` : ""
+          }`,
+        },
+      ]
+    : [];
 
   try {
     const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
@@ -177,7 +201,11 @@ export async function chatWithBot(messages: { role: "user" | "assistant"; conten
       },
       body: JSON.stringify({
         model: GROQ_MODEL,
-        messages: [{ role: "system", content: BOT_SYSTEM_PROMPT }, ...messages.slice(-10)],
+        messages: [
+          { role: "system", content: BOT_SYSTEM_PROMPT },
+          ...contextMessage,
+          ...messages.slice(-10),
+        ],
         reasoning_effort: REASONING_EFFORT,
         temperature: 0.6,
         max_tokens: 220,
