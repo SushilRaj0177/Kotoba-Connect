@@ -1,7 +1,7 @@
 "use client";
 
 import type { FormalityLevel } from "@/types/database";
-import { formalityGloss, formalityLabel } from "@/lib/formality-labels";
+import { formalityLabel } from "@/lib/formality-labels";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 
 export type SortOption = "new" | "popular";
@@ -78,7 +78,6 @@ export default function BoardControls({
           <button
             key={level}
             type="button"
-            title={formalityLabel(t, level)}
             onClick={() => onFormalityChange(formalityFilter === level ? "all" : level)}
             className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
               formalityFilter === level
@@ -86,7 +85,7 @@ export default function BoardControls({
                 : "bg-ink-bg-input text-ink-text-muted hover:text-ink-text"
             }`}
           >
-            {formalityGloss(t, level)}
+            {formalityLabel(t, level)}
           </button>
         ))}
       </div>

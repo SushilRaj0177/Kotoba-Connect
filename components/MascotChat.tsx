@@ -150,9 +150,7 @@ export default function MascotChat() {
         {open ? (
           <span className="text-xl text-white">✕</span>
         ) : (
-          <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white/15">
-            <Mascot size={32} mood="excited" />
-          </span>
+          <Mascot size={40} mood="excited" />
         )}
       </button>
     </div>
