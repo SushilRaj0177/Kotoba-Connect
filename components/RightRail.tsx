@@ -97,10 +97,12 @@ export default async function RightRail() {
         <p className="text-sm leading-relaxed text-ink-text-muted">{t("rail.aboutBody")}</p>
       </div>
 
-      <div className="bg-seigaiha relative overflow-hidden rounded-2xl bg-ink-accent p-4 text-white">
-        <Obake size={44} className="float-right ml-3 mb-1" />
-        <h2 className="mb-1 font-display text-base font-bold">{t("rail.tipTitle")}</h2>
-        <p className="text-sm leading-relaxed text-white/90">{t("rail.tipBody")}</p>
+      <div className="bg-seigaiha relative overflow-hidden rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm">
+        <div className="float-right ml-3 mb-1 flex h-12 w-12 items-center justify-center rounded-full bg-ink-accent/12">
+          <Obake size={32} />
+        </div>
+        <h2 className="mb-1 font-display text-base font-bold text-ink-accent">{t("rail.tipTitle")}</h2>
+        <p className="text-sm leading-relaxed text-ink-text-muted">{t("rail.tipBody")}</p>
       </div>
     </aside>
   );
