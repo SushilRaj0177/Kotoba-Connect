@@ -85,8 +85,18 @@
    of mobile widths because `width=device-width` in the viewport meta tag
    is computed *after* zoom on mobile browsers, so applying it there
    shrinks the effective layout viewport and makes the page load already
-   pinched in, forcing the user to manually zoom back out. */
-@media (min-width: 768px) {
+   pinched in, forcing the user to manually zoom back out.
+
+   `min-width: 768px` alone isn't a reliable phone/desktop signal — some
+   mobile browsers compute a media query's reported viewport width from
+   the page's actual (possibly wider, e.g. from unconstrained content)
+   layout box rather than the physical device width, which let this rule
+   fire on a phone after sign-in once the compose form's extra fields
+   pushed things wider, and the whole page visibly shrank as a result.
+   `pointer: fine` (a mouse/trackpad) is true for essentially no phone or
+   tablet regardless of viewport width, so it's a hard backstop that
+   makes this rule *only* ever apply to a real desktop/laptop. */
+@media (min-width: 768px) and (pointer: fine) {
   html {
     zoom: 1.2;
   }
@@ -129,6 +139,11 @@ button:disabled,
 
 body {
   @apply bg-ink-bg text-ink-text antialiased;
+  /* Defensive: a stray unconstrained-width element (a form row, a long
+     token, anything) shouldn't be able to widen the page and confuse a
+     mobile browser's viewport/media-query math — clip instead of letting
+     the layout box grow past the viewport. */
+  overflow-x: hidden;
 }
 
 /* A faint paper-grain texture — washi (和紙) has visible fiber texture

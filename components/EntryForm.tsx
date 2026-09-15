@@ -338,7 +338,7 @@ export default function EntryForm({
         )}
       </div>
 
-      <div className="mb-3 grid grid-cols-2 gap-3">
+      <div className="mb-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div>
           <label htmlFor="formality" className="mb-1 block text-xs font-medium text-ink-text-muted">
             {t("form.formalityLabel")}
