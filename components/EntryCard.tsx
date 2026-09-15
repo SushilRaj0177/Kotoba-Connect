@@ -5,7 +5,6 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import type { ContextEntry } from "@/types/database";
 import FormalityBadge from "@/components/FormalityBadge";
-import TokenizedText from "@/components/TokenizedText";
 import ReportButton from "@/components/ReportButton";
 import AiNuanceCallout from "@/components/AiNuanceCallout";
 import Avatar from "@/components/Avatar";
@@ -73,7 +72,7 @@ export default function EntryCard({
         </div>
 
         <Link href={`/entries/${entry.id}`} className="block min-w-0">
-          <TokenizedText tokens={entry.furigana_parsed} />
+          <p className="font-jp text-lg leading-loose text-ink-text-header">{entry.raw_japanese}</p>
         </Link>
 
         <p className="mt-1 text-sm text-ink-text-muted">{entry.primary_translation}</p>
