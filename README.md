@@ -82,9 +82,13 @@ Live at: https://kotoba-connect-three.vercel.app
 - Semantic search: entries get an OpenAI embedding on creation
   (`/api/entries/[id]/embed`); the search bar on the board calls `/api/search`, which embeds the
   query and matches via the `match_entries` pgvector RPC
-- Mascot chat bot (`/api/bot/chat`), Groq-backed, and entry-context-aware — opened from an
-  entry's detail page, it's grounded in that specific sentence (`EntryChatContext`) instead of
-  only answering general Japanese questions
+- Mascot chat bot (`/api/bot/chat`), Groq-backed, and a real retrieval-augmented agent rather
+  than a plain wrapper around an LLM: every message runs a pgvector semantic search
+  (`match_entries`, the same RPC the search bar uses) over the board's own submitted entries, and
+  relevant results are (a) fed to the model as grounding context it's instructed to cite rather
+  than invent, and (b) rendered separately in the UI as clickable "Found on the board" citation
+  chips. It's also entry-context-aware — opened from an entry's detail page, it's additionally
+  grounded in that specific sentence (`EntryChatContext`)
 - Compose-time AI assist (`/api/entries/assist`): Groq suggests a few topic tags and, if the
   translation field is still empty, a draft translation; separately, the OpenAI embeddings
   already generated per entry are reused to warn when a near-duplicate entry already exists
