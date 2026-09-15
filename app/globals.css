@@ -96,11 +96,15 @@
    still reads as "a cursor" at a glance) in a soft cream with a dark
    outline, noticeably bigger than a default system arrow. A filled
    matcha-green variant marks anything clickable. Rounded line joins keep
-   it feeling soft/cozy rather than a sharp system pointer. Text inputs
-   keep the normal caret — overriding that would actively hurt usability,
-   not just look different. */
+   it feeling soft/cozy rather than a sharp system pointer. A warm
+   top-to-bottom gradient (instead of a flat fill) gives it a painted,
+   handcrafted look, and a tiny bead dot in the tail flag echoes the
+   simple round accents on the Kokeshi mascot. Path geometry, viewBox,
+   dimensions, and hotspot are all untouched — this is a paint job, not a
+   reshape. Text inputs keep the normal caret — overriding that would
+   actively hurt usability, not just look different. */
 body {
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='34' viewBox='0 0 32 32'%3E%3Cpath d='M7 4 L7 24 L12 19.5 L15.3 27 L19 25.3 L15.8 18 L23 18 Z' fill='%23fdf8ef' stroke='%232a2438' stroke-width='2' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/svg%3E")
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='34' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g1' x1='0' y1='0' x2='0.6' y2='1'%3E%3Cstop offset='0' stop-color='%23fefaf2'/%3E%3Cstop offset='1' stop-color='%23f0dfc0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M7 4 L7 24 L12 19.5 L15.3 27 L19 25.3 L15.8 18 L23 18 Z' fill='url(%23g1)' stroke='%232a2438' stroke-width='2' stroke-linejoin='round' stroke-linecap='round'/%3E%3Ccircle cx='17.3' cy='22.5' r='1.4' fill='%23c97b63'/%3E%3C/svg%3E")
     7 4, auto;
 }
 a,
@@ -110,7 +114,7 @@ summary,
 select,
 label[for],
 .cursor-pointer {
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='38' height='38' viewBox='0 0 32 32'%3E%3Cpath d='M7 4 L7 24 L12 19.5 L15.3 27 L19 25.3 L15.8 18 L23 18 Z' fill='%23688c4a' stroke='%23fdf8ef' stroke-width='2' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/svg%3E")
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='38' height='38' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g2' x1='0' y1='0' x2='0.6' y2='1'%3E%3Cstop offset='0' stop-color='%238bb063'/%3E%3Cstop offset='1' stop-color='%23537336'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M7 4 L7 24 L12 19.5 L15.3 27 L19 25.3 L15.8 18 L23 18 Z' fill='url(%23g2)' stroke='%23fdf8ef' stroke-width='2' stroke-linejoin='round' stroke-linecap='round'/%3E%3Ccircle cx='17.3' cy='22.5' r='1.4' fill='%23fdf8ef'/%3E%3C/svg%3E")
     7 4, pointer;
 }
 input,
