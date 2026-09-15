@@ -123,123 +123,135 @@ export default function EntryDetail({
   const displayName = entry.profiles?.display_name;
 
   return (
-    <div className="space-y-4">
-      <div className="flex gap-3 rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm sm:p-5">
-        <Avatar username={username} avatarUrl={entry.profiles?.avatar_url} size={40} />
-        <div className="min-w-0 flex-1">
-          <div className="mb-1 flex flex-wrap items-baseline gap-2">
-            <Link href={`/u/${username}`} className="font-display text-sm font-bold text-ink-text-header hover:underline">
-              {displayName?.trim() || `@${username}`}
-            </Link>
-            <FormalityBadge level={entry.formality_level} />
-          </div>
-          <TokenizedText
-            tokens={entry.furigana_parsed}
-            onTokenClick={setActiveIndex}
-            activeIndex={activeIndex}
-          />
-          <p className="mt-1 text-sm text-ink-text-muted">{entry.primary_translation}</p>
-          <AiNuanceCallout
-            summary={entry.ai_nuance_summary}
-            formalitySuggestion={entry.ai_formality_suggestion}
-          />
-          {!!entry.tags?.length && (
-            <div className="mt-2 flex flex-wrap gap-1.5">
-              {entry.tags.map((tag) => (
-                <Link
-                  key={tag}
-                  href={`/tags/${encodeURIComponent(tag)}`}
-                  className="rounded-full bg-ink-bg-input px-2 py-0.5 text-xs text-ink-text-muted transition hover:text-ink-accent"
-                >
-                  #{tag}
-                </Link>
-              ))}
+    <div className="flex flex-col gap-4 lg:flex-row lg:items-start">
+      {/* Main column: the sentence and the discussion — comments are a core
+         social feature, so they belong in the primary flow right after the
+         entry, not buried below the (secondary, per-word) annotations panel. */}
+      <div className="min-w-0 flex-1 space-y-4">
+        <div className="flex gap-3 rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm sm:p-5">
+          <Avatar username={username} avatarUrl={entry.profiles?.avatar_url} size={40} />
+          <div className="min-w-0 flex-1">
+            <div className="mb-1 flex flex-wrap items-baseline gap-2">
+              <Link href={`/u/${username}`} className="font-display text-sm font-bold text-ink-text-header hover:underline">
+                {displayName?.trim() || `@${username}`}
+              </Link>
+              <FormalityBadge level={entry.formality_level} />
             </div>
-          )}
-          <div className="mt-3 flex items-center gap-4 text-xs">
-            <span className="text-ink-text-muted">
-              {entry.upvotes_count} {t("detail.upvotes")}
-            </span>
-            <BookmarkButton entryId={entry.id} userId={userId} initialBookmarked={bookmarked} />
-            {userId === entry.user_id && <DeleteEntryButton entryId={entry.id} redirectHome />}
+            <TokenizedText
+              tokens={entry.furigana_parsed}
+              onTokenClick={setActiveIndex}
+              activeIndex={activeIndex}
+            />
+            <p className="mt-1 text-sm text-ink-text-muted">{entry.primary_translation}</p>
+            <AiNuanceCallout
+              summary={entry.ai_nuance_summary}
+              formalitySuggestion={entry.ai_formality_suggestion}
+            />
+            {!!entry.tags?.length && (
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {entry.tags.map((tag) => (
+                  <Link
+                    key={tag}
+                    href={`/tags/${encodeURIComponent(tag)}`}
+                    className="rounded-full bg-ink-bg-input px-2 py-0.5 text-xs text-ink-text-muted transition hover:text-ink-accent"
+                  >
+                    #{tag}
+                  </Link>
+                ))}
+              </div>
+            )}
+            <div className="mt-3 flex items-center gap-4 text-xs">
+              <span className="text-ink-text-muted">
+                {entry.upvotes_count} {t("detail.upvotes")}
+              </span>
+              <BookmarkButton entryId={entry.id} userId={userId} initialBookmarked={bookmarked} />
+              {userId === entry.user_id && <DeleteEntryButton entryId={entry.id} redirectHome />}
+            </div>
+            <p className="mt-3 text-xs text-ink-text-muted">{t("detail.clickHint")}</p>
           </div>
-          <p className="mt-3 text-xs text-ink-text-muted">{t("detail.clickHint")}</p>
+        </div>
+
+        <EntryComments entryId={entry.id} userId={userId} />
+      </div>
+
+      {/* Side column: token annotations — a per-word glossary (click a word
+         in the sentence above to pin a note explaining just that word's
+         nuance), distinct from the AI's whole-sentence summary and from
+         general discussion. Secondary to the conversation, so it lives
+         beside it rather than in the way of it. */}
+      <div className="w-full flex-none space-y-4 lg:w-80 lg:sticky lg:top-6">
+        <div className="rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm sm:p-5">
+          <h2 className="mb-3 text-sm font-semibold text-ink-text-header">
+            {activeIndex !== null
+              ? `${t("detail.notesOn")} "${entry.furigana_parsed[activeIndex]?.surface_form}"`
+              : t("detail.tokenAnnotations")}
+          </h2>
+
+          {loading ? (
+            <p className="text-sm text-ink-text-muted">Loading annotations…</p>
+          ) : activeIndex === null ? (
+            <EmptyState title={t("detail.selectTokenTitle")} description={t("detail.selectTokenDescription")} />
+          ) : activeAnnotations.length === 0 ? (
+            <p className="text-sm text-ink-text-muted">{t("detail.noNotesYet")}</p>
+          ) : (
+            <ul className="mb-4 space-y-3">
+              {activeAnnotations.map((a) => (
+                <li key={a.id} className="rounded-2xl bg-ink-bg-input p-3">
+                  <UserHandle
+                    username={a.profiles?.username ?? "unknown"}
+                    displayName={a.profiles?.display_name}
+                    avatarUrl={a.profiles?.avatar_url}
+                    href={`/u/${a.profiles?.username ?? ""}`}
+                    size="sm"
+                  />
+                  <p className="mt-2 text-sm text-ink-text">{a.nuance_note}</p>
+                  {a.cultural_context && (
+                    <p className="mt-1 text-xs text-ink-text-muted">{a.cultural_context}</p>
+                  )}
+                  <div className="mt-1.5">
+                    <ReportButton targetType="annotation" targetId={a.id} userId={userId} />
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {userId ? (
+            <form onSubmit={handleSubmit} className="space-y-2 border-t border-ink-border pt-3">
+              <textarea
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                rows={2}
+                maxLength={500}
+                placeholder={t("detail.notePlaceholder")}
+                className="w-full resize-none rounded-lg border-none bg-ink-bg-input px-3 py-2 text-sm text-ink-text placeholder:text-ink-text-muted focus:outline-none focus:ring-2 focus:ring-ink-accent"
+              />
+              <input
+                value={culturalContext}
+                onChange={(e) => setCulturalContext(e.target.value)}
+                maxLength={300}
+                placeholder={t("detail.contextPlaceholder")}
+                className="w-full rounded-lg border-none bg-ink-bg-input px-3 py-2 text-sm text-ink-text placeholder:text-ink-text-muted focus:outline-none focus:ring-2 focus:ring-ink-accent"
+              />
+              {error && <p className="text-sm text-ink-red">{error}</p>}
+              <button
+                type="submit"
+                disabled={submitting || activeIndex === null}
+                className="btn-chunky rounded-2xl bg-ink-accent px-6 py-3 text-sm font-bold text-white disabled:opacity-60"
+              >
+                {submitting ? t("detail.saving") : t("detail.addNote")}
+              </button>
+            </form>
+          ) : (
+            <p className="border-t border-ink-border pt-3 text-sm text-ink-text-muted">
+              <a href="/login" className="font-semibold text-ink-text-link hover:underline">
+                {t("detail.signInToAnnotate")}
+              </a>{" "}
+              {t("detail.signInSuffix")}
+            </p>
+          )}
         </div>
       </div>
-
-      <div className="rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm sm:p-5">
-        <h2 className="mb-3 text-sm font-semibold text-ink-text-header">
-          {activeIndex !== null
-            ? `${t("detail.notesOn")} "${entry.furigana_parsed[activeIndex]?.surface_form}"`
-            : t("detail.tokenAnnotations")}
-        </h2>
-
-        {loading ? (
-          <p className="text-sm text-ink-text-muted">Loading annotations…</p>
-        ) : activeIndex === null ? (
-          <EmptyState title={t("detail.selectTokenTitle")} description={t("detail.selectTokenDescription")} />
-        ) : activeAnnotations.length === 0 ? (
-          <p className="text-sm text-ink-text-muted">{t("detail.noNotesYet")}</p>
-        ) : (
-          <ul className="mb-4 space-y-3">
-            {activeAnnotations.map((a) => (
-              <li key={a.id} className="rounded-2xl bg-ink-bg-input p-3">
-                <UserHandle
-                  username={a.profiles?.username ?? "unknown"}
-                  displayName={a.profiles?.display_name}
-                  avatarUrl={a.profiles?.avatar_url}
-                  href={`/u/${a.profiles?.username ?? ""}`}
-                  size="sm"
-                />
-                <p className="mt-2 text-sm text-ink-text">{a.nuance_note}</p>
-                {a.cultural_context && (
-                  <p className="mt-1 text-xs text-ink-text-muted">{a.cultural_context}</p>
-                )}
-                <div className="mt-1.5">
-                  <ReportButton targetType="annotation" targetId={a.id} userId={userId} />
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-
-        {userId ? (
-          <form onSubmit={handleSubmit} className="space-y-2 border-t border-ink-border pt-3">
-            <textarea
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              rows={2}
-              maxLength={500}
-              placeholder={t("detail.notePlaceholder")}
-              className="w-full resize-none rounded-lg border-none bg-ink-bg-input px-3 py-2 text-sm text-ink-text placeholder:text-ink-text-muted focus:outline-none focus:ring-2 focus:ring-ink-accent"
-            />
-            <input
-              value={culturalContext}
-              onChange={(e) => setCulturalContext(e.target.value)}
-              maxLength={300}
-              placeholder={t("detail.contextPlaceholder")}
-              className="w-full rounded-lg border-none bg-ink-bg-input px-3 py-2 text-sm text-ink-text placeholder:text-ink-text-muted focus:outline-none focus:ring-2 focus:ring-ink-accent"
-            />
-            {error && <p className="text-sm text-ink-red">{error}</p>}
-            <button
-              type="submit"
-              disabled={submitting || activeIndex === null}
-              className="btn-chunky rounded-2xl bg-ink-accent px-6 py-3 text-sm font-bold text-white disabled:opacity-60"
-            >
-              {submitting ? t("detail.saving") : t("detail.addNote")}
-            </button>
-          </form>
-        ) : (
-          <p className="border-t border-ink-border pt-3 text-sm text-ink-text-muted">
-            <a href="/login" className="font-semibold text-ink-text-link hover:underline">
-              {t("detail.signInToAnnotate")}
-            </a>{" "}
-            {t("detail.signInSuffix")}
-          </p>
-        )}
-      </div>
-
-      <EntryComments entryId={entry.id} userId={userId} />
     </div>
   );
 }

@@ -55,7 +55,7 @@ export default async function EntryPage({ params }: { params: { id: string } }) 
   return (
     <>
       <Navbar />
-      <main className="mx-auto max-w-3xl px-4 py-6 sm:px-6">
+      <main className="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:max-w-5xl">
         <Link
           href="/"
           className="mb-4 inline-block text-sm font-medium text-ink-text-link hover:underline"
