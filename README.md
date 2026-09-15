@@ -82,7 +82,19 @@ Live at: https://kotoba-connect-three.vercel.app
 - Semantic search: entries get an OpenAI embedding on creation
   (`/api/entries/[id]/embed`); the search bar on the board calls `/api/search`, which embeds the
   query and matches via the `match_entries` pgvector RPC
-- Mascot chat bot (`/api/bot/chat`), Groq-backed
+- Mascot chat bot (`/api/bot/chat`), Groq-backed, and entry-context-aware — opened from an
+  entry's detail page, it's grounded in that specific sentence (`EntryChatContext`) instead of
+  only answering general Japanese questions
+- Compose-time AI assist (`/api/entries/assist`): Groq suggests a few topic tags and, if the
+  translation field is still empty, a draft translation; separately, the OpenAI embeddings
+  already generated per entry are reused to warn when a near-duplicate entry already exists
+- OCR from photo (`/api/entries/ocr`): a Groq vision model (Llama 4 Scout) transcribes Japanese
+  text from an uploaded photo — manga panel, street sign, a screenshot — straight into the
+  compose box; the image itself is never stored, only the extracted text
+- AI moderation triage (`/api/reports/[id]/triage`): Groq pre-screens each filed report for
+  likely severity so the admin queue surfaces credible violations (spam, harassment, non-Japanese
+  junk) first — explicitly never treats rude/slang Japanese *content* itself as a violation,
+  since this app catalogs that as data on purpose (see Security notes)
 
 ## Local setup
 
@@ -131,9 +143,10 @@ Live at: https://kotoba-connect-three.vercel.app
 | Google sign-in | *(none — configured in Supabase)* | Supabase Dashboard → Authentication → Providers → enable Google, add your OAuth client ID/secret, and set the redirect URL to `https://<your-domain>/auth/callback` |
 | Rate limiting | `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN` | [upstash.com](https://upstash.com) (free tier) |
 | Error monitoring | `SENTRY_DSN` (+ `SENTRY_ORG`/`SENTRY_PROJECT`/`SENTRY_AUTH_TOKEN` for source maps) | [sentry.io](https://sentry.io) |
-| AI nuance classification + mascot chat bot | `GROQ_API_KEY` | [console.groq.com](https://console.groq.com) (free tier) |
-| Semantic search | `OPENAI_API_KEY` | [platform.openai.com](https://platform.openai.com) |
+| AI nuance classification, mascot chat bot, compose-time assist, OCR-from-photo, moderation triage | `GROQ_API_KEY` | [console.groq.com](https://console.groq.com) (free tier) |
+| Semantic search, duplicate-entry nudge | `OPENAI_API_KEY` | [platform.openai.com](https://platform.openai.com) |
 | Correct Open Graph image URLs in production | `NEXT_PUBLIC_SITE_URL` | your deployed domain, e.g. `https://kotoba-connect-three.vercel.app` |
+| Account deletion, AI moderation triage persistence | `SUPABASE_SERVICE_ROLE_KEY` | Supabase Project Settings → API → `service_role` |
 
 Each is independently optional — the app degrades gracefully (features just don't activate)
 without them.
@@ -187,17 +200,21 @@ app/
   api/tokenize/route.ts             Kuromoji tokenization endpoint (rate-limited)
   api/entries/[id]/analyze/route.ts Groq pragmatic classification (Phase 2)
   api/entries/[id]/embed/route.ts   OpenAI embedding for semantic search (Phase 2)
+  api/entries/assist/route.ts       Compose-time AI assist: tags, translation draft, duplicates
+  api/entries/ocr/route.ts          OCR-from-photo transcription (Groq vision)
+  api/reports/[id]/triage/route.ts  AI moderation-severity triage
   api/search/route.ts               Semantic search endpoint (Phase 2)
   api/bot/chat/route.ts             Mascot chat bot (Phase 2)
 components/
   EntryBoard.tsx / BoardControls.tsx  Client board: fetch, realtime, sort/filter, search
-  EntryForm.tsx                      Create entry with live tokenizer preview + validation
+  EntryForm.tsx                      Create entry — tokenizer preview, AI assist, photo OCR
   EntryCard.tsx / EntryDetail.tsx / EntryComments.tsx   List item / annotation canvas / comments
   FollowButton.tsx / BlockButton.tsx / BlockedUsersManager.tsx   Social graph
   ProfileBadges.tsx / Avatar.tsx / AvatarPicker.tsx   Profile customization
-  ReportButton.tsx / AdminQueue.tsx  Moderation UI
+  ReportButton.tsx / AdminQueue.tsx  Moderation UI (AI-triaged severity sort)
   NotificationBell.tsx               Notification inbox
-  Mascot.tsx / mascots/candidates.tsx / MascotChat.tsx   Mascots + chat bot widget
+  Mascot.tsx / mascots/candidates.tsx / MascotChat.tsx   Mascots + entry-aware chat bot widget
+  EntryChatContext.tsx               Hands the bot "the entry currently being viewed"
   SideRail.tsx / MobileNav.tsx / auth/ClientAuthProvider.tsx   App shell + shared client auth state
   AiNuanceCallout.tsx                Displays Groq's pragmatic read on an entry
   TokenizedText.tsx                  Renders Kuromoji tokens as clickable word chips
@@ -232,6 +249,7 @@ types/database.ts                   Shared TypeScript types
 | `0009_blocks.sql` | Blocking/muting users |
 | `0010_streaks.sql` | Daily posting streaks |
 | `0011_profile_customization.sql` | Display names, preset avatar icons |
+| `0012_moderation_triage.sql` | `ai_severity`/`ai_reasoning` on `report_flags` |
 
 ## Roadmap
 
@@ -239,29 +257,6 @@ types/database.ts                   Shared TypeScript types
 - Media embeds in posts
 - Onboarding tour for first-time users
 - Client-side Sentry tracing (run the Sentry wizard once a real project exists)
-
-### Further AI integration (queued, not yet built)
-
-Now that `GROQ_API_KEY` is configured in production, these are worth building next —
-roughly in order of value-to-effort:
-
-- **OCR ingestion pipeline for manga/street-signage photos** — Groq hosts vision models
-  (e.g. Llama 4 Scout) that could read Japanese text straight from an uploaded photo, feeding
-  it into the existing tokenizer pipeline instead of requiring manual typing
-- **Entry-context-aware chat bot** — MascotChat is currently generic; passing the current
-  entry's Japanese text + nuance summary as context when a user opens the bot from an entry
-  detail page would let it answer "what does this specific sentence really imply" directly
-- **AI-suggested tags** — same call pattern as the existing formality classifier
-  (`analyzePragmatics` in `lib/groq.ts`), suggesting 2-3 relevant tags from the sentence content
-  so posting has less manual busywork
-- **AI-assisted translation draft** — offer a suggested English translation as a starting
-  point when a user posts Japanese text, which they then edit/confirm rather than write from
-  scratch
-- **Duplicate/similar-entry nudge at post time** — reuse the OpenAI embeddings already
-  generated per entry (`match_entries` RPC) to warn "a similar entry already exists" before
-  someone posts a near-duplicate
-- **Moderation triage** — have Groq pre-screen reported content for likely severity before it
-  reaches the admin queue, so admins see the worst violations first instead of a flat FIFO list
 
 ---
 

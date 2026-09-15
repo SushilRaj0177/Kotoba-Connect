@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { FormalityLevel, KuromojiToken } from "@/types/database";
 import TokenizedText from "@/components/TokenizedText";
@@ -38,8 +38,56 @@ export default function EntryForm({
   >([]);
   const [duplicatesDismissed, setDuplicatesDismissed] = useState(false);
 
-  async function handleTokenize() {
-    const text = rawJapanese.trim();
+  const [ocrLoading, setOcrLoading] = useState(false);
+  const [ocrError, setOcrError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  async function handlePhotoSelected(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // allow re-selecting the same file later
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setOcrError(t("form.ocrErrorType"));
+      return;
+    }
+    if (file.size > 4_000_000) {
+      setOcrError(t("form.ocrErrorSize"));
+      return;
+    }
+
+    setOcrError(null);
+    setOcrLoading(true);
+    try {
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = () => reject(reader.error);
+        reader.readAsDataURL(file);
+      });
+
+      const res = await fetch("/api/entries/ocr", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: dataUrl }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Couldn't read that photo.");
+
+      const combined = rawJapanese.trim() ? `${rawJapanese.trim()}\n${data.text}` : data.text;
+      setRawJapanese(combined);
+      setTokens([]);
+      await handleTokenize(combined);
+      await handleAssist(combined);
+    } catch (err) {
+      setOcrError(errorMessage(err, t("form.ocrErrorGeneric")));
+    } finally {
+      setOcrLoading(false);
+    }
+  }
+
+  async function handleTokenize(overrideText?: string) {
+    const text = (overrideText ?? rawJapanese).trim();
     if (!text) return;
     setTokenizing(true);
     setError(null);
@@ -63,8 +111,8 @@ export default function EntryForm({
   // suggestions, a translation draft, a "similar entries exist" nudge).
   // Never blocks or surfaces errors; the compose flow works identically
   // without it.
-  async function handleAssist() {
-    const text = rawJapanese.trim();
+  async function handleAssist(overrideText?: string) {
+    const text = (overrideText ?? rawJapanese).trim();
     if (!text) return;
     setSuggestedTags([]);
     setTranslationDraft(null);
@@ -191,9 +239,30 @@ export default function EntryForm({
       </div>
 
       <div className="mb-3">
-        <label htmlFor="raw_japanese" className="mb-1 block text-xs font-medium text-ink-text-muted">
-          {t("form.rawLabel")}
-        </label>
+        <div className="mb-1 flex items-center justify-between">
+          <label htmlFor="raw_japanese" className="block text-xs font-medium text-ink-text-muted">
+            {t("form.rawLabel")}
+          </label>
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={ocrLoading}
+            className="flex items-center gap-1 text-xs font-semibold text-ink-text-link hover:underline disabled:opacity-60"
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M4 8a2 2 0 0 1 2-2h1.5l1-1.5h7l1 1.5H18a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8Z" />
+              <circle cx="12" cy="13" r="3.5" />
+            </svg>
+            {ocrLoading ? t("form.ocrReading") : t("form.ocrFromPhoto")}
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handlePhotoSelected}
+            className="hidden"
+          />
+        </div>
         <textarea
           id="raw_japanese"
           value={rawJapanese}
@@ -210,6 +279,7 @@ export default function EntryForm({
           placeholder="例：お先に失礼します"
           className="w-full resize-none rounded-lg border-none bg-ink-bg-input px-3 py-2 font-jp text-base text-ink-text placeholder:text-ink-text-muted focus:outline-none focus:ring-2 focus:ring-ink-accent"
         />
+        {ocrError && <p className="mt-1 text-xs text-ink-red">{ocrError}</p>}
         {tokenizing && <p className="mt-1 text-xs text-ink-text-muted">{t("form.tokenizing")}</p>}
         {!!tokens.length && (
           <div className="mt-2 rounded-lg bg-ink-bg-input p-2">
