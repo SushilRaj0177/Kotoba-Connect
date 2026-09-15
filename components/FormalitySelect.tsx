@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { FormalityLevel } from "@/types/database";
 import { FORMALITY_COLORS } from "@/lib/formality-colors";
-import { formalityDisplayLabel, formalityDescription } from "@/lib/formality-labels";
+import { formalityLabel } from "@/lib/formality-labels";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 
 const FORMALITY_LEVELS: FormalityLevel[] = [
@@ -62,7 +62,7 @@ export default function FormalitySelect({
         className="flex w-full items-center gap-2 rounded-lg border-none bg-ink-bg-input px-3 py-2 text-left text-sm text-ink-text focus:outline-none focus:ring-2 focus:ring-ink-accent"
       >
         <span className={`h-2.5 w-2.5 flex-none rounded-full ${FORMALITY_COLORS[value]}`} aria-hidden="true" />
-        <span className="min-w-0 flex-1 truncate">{formalityDisplayLabel(t, value)}</span>
+        <span className="min-w-0 flex-1 truncate">{formalityLabel(t, value)}</span>
         <svg
           width="14"
           height="14"
@@ -91,18 +91,12 @@ export default function FormalitySelect({
                   onChange(level);
                   setOpen(false);
                 }}
-                className={`flex w-full items-start gap-2 rounded-xl px-2.5 py-2 text-left text-sm transition ${
+                className={`flex w-full items-center gap-2 rounded-xl px-2.5 py-2 text-left text-sm transition ${
                   level === value ? "bg-ink-bg-input font-semibold text-ink-text-header" : "text-ink-text hover:bg-ink-bg-hover"
                 }`}
               >
-                <span
-                  className={`mt-1.5 h-2.5 w-2.5 flex-none rounded-full ${FORMALITY_COLORS[level]}`}
-                  aria-hidden="true"
-                />
-                <span className="min-w-0">
-                  <span className="block">{formalityDisplayLabel(t, level)}</span>
-                  <span className="block text-xs font-normal text-ink-text-muted">{formalityDescription(t, level)}</span>
-                </span>
+                <span className={`h-2.5 w-2.5 flex-none rounded-full ${FORMALITY_COLORS[level]}`} aria-hidden="true" />
+                {formalityLabel(t, level)}
               </button>
             </li>
           ))}
