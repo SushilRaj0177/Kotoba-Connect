@@ -1,14 +1,26 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import Mascot from "@/components/Mascot";
 import ChatMessageText from "@/components/ChatMessageText";
+import FormalityBadge from "@/components/FormalityBadge";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { useEntryChatContext } from "@/components/EntryChatContext";
+import type { FormalityLevel } from "@/types/database";
+
+interface RetrievedEntry {
+  id: string;
+  raw_japanese: string;
+  primary_translation: string;
+  formality_level: FormalityLevel | null;
+  similarity: number;
+}
 
 interface ChatMessage {
   role: "user" | "assistant";
   content: string;
+  retrieved?: RetrievedEntry[];
 }
 
 // The mascot as an in-app presence: a floating chat widget that can answer
@@ -50,7 +62,10 @@ export default function MascotChat() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Kotoba Bot couldn't reply.");
-      setMessages((prev) => [...prev, { role: "assistant", content: data.reply }]);
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: data.reply, retrieved: data.retrieved ?? [] },
+      ]);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
@@ -104,9 +119,30 @@ export default function MascotChat() {
               ) : (
                 <div key={i} className="flex items-start gap-2">
                   <Mascot size={26} mood="happy" />
-                  <p className="max-w-[85%] rounded-2xl rounded-tl-sm bg-ink-bg-input px-3 py-2 text-sm text-ink-text">
-                    <ChatMessageText text={m.content} />
-                  </p>
+                  <div className="max-w-[85%] space-y-1.5">
+                    <p className="rounded-2xl rounded-tl-sm bg-ink-bg-input px-3 py-2 text-sm text-ink-text">
+                      <ChatMessageText text={m.content} />
+                    </p>
+                    {!!m.retrieved?.length && (
+                      <div className="space-y-1">
+                        <p className="px-1 text-[10px] font-semibold uppercase tracking-wide text-ink-text-muted">
+                          🔍 {t("bot.foundOnBoard")}
+                        </p>
+                        {m.retrieved.map((r) => (
+                          <Link
+                            key={r.id}
+                            href={`/entries/${r.id}`}
+                            className="flex items-center gap-1.5 rounded-xl bg-ink-bg-input px-2.5 py-1.5 text-xs transition hover:bg-ink-bg-hover"
+                          >
+                            <span className="min-w-0 flex-1 truncate font-jp text-ink-text-header">
+                              {r.raw_japanese}
+                            </span>
+                            <FormalityBadge level={r.formality_level} />
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
               )
             )}

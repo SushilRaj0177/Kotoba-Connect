@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
-import { chatWithBot, groqEnabled } from "@/lib/groq";
+import { chatWithBot, groqEnabled, type RetrievedEntry } from "@/lib/groq";
+import { embedText, embeddingsEnabled } from "@/lib/embeddings";
+import { createClient } from "@/lib/supabase/server";
 import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function POST(request: Request) {
@@ -38,10 +40,34 @@ export async function POST(request: Request) {
         }
       : null;
 
-  const reply = await chatWithBot(cleaned, entryContext);
+  // The agent step: semantic search over the board's own entries, grounded
+  // on the user's latest message, so the bot can cite real community
+  // examples instead of only general knowledge. Best-effort — a failed
+  // embed/search just means the bot answers without citations, same as
+  // before this existed.
+  let retrieved: RetrievedEntry[] = [];
+  const lastUserMessage = [...cleaned].reverse().find((m) => m.role === "user")?.content;
+  if (embeddingsEnabled() && lastUserMessage) {
+    try {
+      const embedding = await embedText(lastUserMessage);
+      if (embedding) {
+        const supabase = createClient();
+        const { data } = await supabase.rpc("match_entries", {
+          query_embedding: embedding,
+          match_threshold: 0.35,
+          match_count: 4,
+        });
+        retrieved = (data ?? []) as RetrievedEntry[];
+      }
+    } catch (err) {
+      console.error("Bot retrieval step failed", err);
+    }
+  }
+
+  const reply = await chatWithBot(cleaned, entryContext, retrieved);
   if (!reply) {
     return NextResponse.json({ error: "Kotoba Bot couldn't come up with a reply. Try again." }, { status: 502 });
   }
 
-  return NextResponse.json({ reply });
+  return NextResponse.json({ reply, retrieved });
 }

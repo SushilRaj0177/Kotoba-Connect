@@ -281,6 +281,13 @@ searching by meaning (semantic search, not just keyword), browsing tags at /tags
 leaderboard at /leaderboard (ranked by reputation earned from upvotes), user profiles at
 /u/[username], and account settings at /settings.
 
+When a "Related examples actually posted on the board" system message is present, you were given
+those by a real-time semantic search over the board's own user-submitted entries — ground your
+answer in them when they're relevant (compare registers, point out what makes one more polite or
+casual than another, etc). Never invent an example or claim one exists on the board unless it's
+in that list. If none are given or none are relevant, answer from general Japanese knowledge as
+usual — don't force a citation that doesn't fit.
+
 Answer questions about how the app works, Japanese formality registers, or general Japanese
 pragmatics/language questions. Keep answers short — 2-4 sentences, casual and warm, never a wall
 of text. You cannot take actions in the app yourself (you can't post, delete, or edit anything) —
@@ -292,9 +299,18 @@ export interface BotEntryContext {
   nuance_summary?: string | null;
 }
 
+export interface RetrievedEntry {
+  id: string;
+  raw_japanese: string;
+  primary_translation: string;
+  formality_level: string | null;
+  similarity: number;
+}
+
 export async function chatWithBot(
   messages: { role: "user" | "assistant"; content: string }[],
-  entryContext?: BotEntryContext | null
+  entryContext?: BotEntryContext | null,
+  retrievedEntries?: RetrievedEntry[] | null
 ): Promise<string | null> {
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) return null;
@@ -316,6 +332,22 @@ Translation: ${entryContext.primary_translation}${
       ]
     : [];
 
+  // The real retrieval step: the API route already ran a pgvector semantic
+  // search over the board's own entries using the user's latest message and
+  // hands the results here — this is what turns "a chatbot that knows about
+  // Japanese" into an agent that can ground answers in this community's
+  // actual submitted data, with citations the UI renders separately below.
+  const retrievalMessage = retrievedEntries?.length
+    ? [
+        {
+          role: "system" as const,
+          content: `Related examples actually posted on the board (ranked by relevance to the user's latest message):\n${retrievedEntries
+            .map((e) => `- "${e.raw_japanese}" (${e.formality_level ?? "unrated"}) — ${e.primary_translation}`)
+            .join("\n")}`,
+        },
+      ]
+    : [];
+
   try {
     const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
@@ -328,11 +360,12 @@ Translation: ${entryContext.primary_translation}${
         messages: [
           { role: "system", content: BOT_SYSTEM_PROMPT },
           ...contextMessage,
+          ...retrievalMessage,
           ...messages.slice(-10),
         ],
         reasoning_effort: REASONING_EFFORT,
         temperature: 0.6,
-        max_tokens: 220,
+        max_tokens: 260,
       }),
     });
 
