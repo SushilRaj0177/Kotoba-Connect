@@ -4,6 +4,15 @@ const { withSentryConfig } = require("@sentry/nextjs/config");
 const nextConfig = {
   experimental: {
     instrumentationHook: true,
+    // kuromoji resolves its dictionary path at runtime via
+    // path.join(process.cwd(), "node_modules", "kuromoji", "dict"), which
+    // Next.js's static file tracer can't follow — without this, the .dat.gz
+    // dictionary files get left out of the Vercel serverless bundle and
+    // tokenization fails in production (but works locally, where the dict
+    // is just sitting on disk).
+    outputFileTracingIncludes: {
+      "/api/tokenize": ["./node_modules/kuromoji/dict/**/*"],
+    },
   },
 };
 
