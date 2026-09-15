@@ -26,7 +26,7 @@ export default async function BookmarksPage() {
   return (
     <>
       <Navbar title={t("bookmarks.title")} />
-      <main className="mx-auto max-w-3xl px-4 py-6 sm:px-6">
+      <main className="mx-auto max-w-3xl px-4 py-6 sm:px-6 lg:max-w-5xl">
         {!entries.length ? (
           <EmptyState
             title={t("bookmarks.emptyTitle")}
@@ -34,9 +34,11 @@ export default async function BookmarksPage() {
             variant="obake"
           />
         ) : (
-          <div className="space-y-3">
+          <div className="columns-1 gap-4 lg:columns-2">
             {entries.map((entry) => (
-              <EntryCard key={entry.id} entry={entry} currentUserId={user.id} bookmarked />
+              <div key={entry.id} className="mb-4 break-inside-avoid">
+                <EntryCard entry={entry} currentUserId={user.id} bookmarked />
+              </div>
             ))}
           </div>
         )}

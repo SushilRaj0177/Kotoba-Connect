@@ -82,7 +82,7 @@ export default async function ProfilePage({ params }: { params: { username: stri
   return (
     <>
       <Navbar title={profile.display_name?.trim() || `@${profile.username}`} />
-      <main className="mx-auto max-w-3xl px-4 py-6 sm:px-6">
+      <main className="mx-auto max-w-3xl px-4 py-6 sm:px-6 lg:max-w-5xl">
         <div className="mb-6 rounded-2xl bg-ink-bg-secondary p-5 border border-ink-border/70 shadow-sm sm:p-6">
           <div className="flex items-start gap-4">
             <Avatar username={profile.username} avatarUrl={profile.avatar_url} size={72} />
@@ -135,26 +135,38 @@ export default async function ProfilePage({ params }: { params: { username: stri
             </div>
           )}
 
-          <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-1.5 border-t border-ink-border pt-3.5 text-sm">
-            <span className="text-ink-text-muted">
-              <strong className="text-ink-text-header">{entries?.length ?? 0}</strong> {t("profile.entriesPosted")}
-            </span>
-            <span className="text-ink-text-muted">
-              <strong className="text-ink-text-header">{profile.reputation_score}</strong> {t("profile.reputation")}
-            </span>
-            <span className="text-ink-text-muted">
-              <strong className="text-ink-text-header">{followerCount ?? 0}</strong> {t("profile.followers")}
-            </span>
-            <span className="text-ink-text-muted">
-              <strong className="text-ink-text-header">{followingCount ?? 0}</strong> {t("profile.following")}
-            </span>
+          <div
+            className={`mt-4 grid grid-cols-2 gap-2 border-t border-ink-border pt-4 sm:grid-cols-4 ${
+              effectiveStreak > 0 ? "sm:grid-cols-5" : ""
+            }`}
+          >
+            <div className="rounded-xl bg-ink-bg-input p-3 text-center">
+              <p className="font-display text-lg font-extrabold text-ink-text-header">{entries?.length ?? 0}</p>
+              <p className="text-xs text-ink-text-muted">{t("profile.entriesPosted")}</p>
+            </div>
+            <div className="rounded-xl bg-ink-bg-input p-3 text-center">
+              <p className="font-display text-lg font-extrabold text-ink-accent">{profile.reputation_score}</p>
+              <p className="text-xs text-ink-text-muted">{t("profile.reputation")}</p>
+            </div>
+            <div className="rounded-xl bg-ink-bg-input p-3 text-center">
+              <p className="font-display text-lg font-extrabold text-ink-text-header">{followerCount ?? 0}</p>
+              <p className="text-xs text-ink-text-muted">{t("profile.followers")}</p>
+            </div>
+            <div className="rounded-xl bg-ink-bg-input p-3 text-center">
+              <p className="font-display text-lg font-extrabold text-ink-text-header">{followingCount ?? 0}</p>
+              <p className="text-xs text-ink-text-muted">{t("profile.following")}</p>
+            </div>
             {effectiveStreak > 0 && (
-              <span className="text-ink-text-muted" title={`${t("profile.longestStreak")}: ${typedProfile.longest_streak}`}>
-                🔥 <strong className="text-ink-text-header">{effectiveStreak}</strong> {t("profile.streak")}
-              </span>
+              <div
+                className="rounded-xl bg-ink-bg-input p-3 text-center"
+                title={`${t("profile.longestStreak")}: ${typedProfile.longest_streak}`}
+              >
+                <p className="font-display text-lg font-extrabold text-ink-text-header">🔥 {effectiveStreak}</p>
+                <p className="text-xs text-ink-text-muted">{t("profile.streak")}</p>
+              </div>
             )}
           </div>
-          <p className="mt-1.5 text-xs text-ink-text-muted">
+          <p className="mt-3 text-xs text-ink-text-muted">
             {t("profile.memberSince")} {joined}
           </p>
 
@@ -172,14 +184,15 @@ export default async function ProfilePage({ params }: { params: { username: stri
             description={t("profile.noEntriesDescription")}
           />
         ) : (
-          <div className="space-y-3">
+          <div className="columns-1 gap-4 lg:columns-2">
             {entries.map((entry) => (
-              <EntryCard
-                key={entry.id}
-                entry={entry as ContextEntry}
-                currentUserId={user?.id ?? null}
-                bookmarked={bookmarkedIds.has(entry.id)}
-              />
+              <div key={entry.id} className="mb-4 break-inside-avoid">
+                <EntryCard
+                  entry={entry as ContextEntry}
+                  currentUserId={user?.id ?? null}
+                  bookmarked={bookmarkedIds.has(entry.id)}
+                />
+              </div>
             ))}
           </div>
         )}

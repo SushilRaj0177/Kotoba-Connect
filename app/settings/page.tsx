@@ -18,7 +18,7 @@ export default async function SettingsPage() {
   return (
     <>
       <Navbar title={t("settings.title")} />
-      <main className="mx-auto max-w-lg px-4 py-6 sm:px-6">
+      <main className="mx-auto max-w-lg px-4 py-6 sm:px-6 lg:max-w-3xl">
         <SettingsForm profile={profile} email={user.email ?? null} />
         <BlockedUsersManager userId={user.id} />
       </main>

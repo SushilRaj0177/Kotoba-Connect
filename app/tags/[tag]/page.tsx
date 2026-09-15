@@ -34,7 +34,7 @@ export default async function TagPage({ params }: { params: { tag: string } }) {
   return (
     <>
       <Navbar title={`#${tag}`} />
-      <main className="mx-auto max-w-3xl px-4 py-6 sm:px-6">
+      <main className="mx-auto max-w-3xl px-4 py-6 sm:px-6 lg:max-w-5xl">
         <h1 className="mb-4 font-display text-xl font-bold text-ink-text-header">
           {t("tags.heading")} <span className="text-ink-accent">#{tag}</span>
         </h1>
@@ -42,14 +42,15 @@ export default async function TagPage({ params }: { params: { tag: string } }) {
         {!entries?.length ? (
           <EmptyState title={t("tags.empty")} description="" variant="obake" />
         ) : (
-          <div className="space-y-3">
+          <div className="columns-1 gap-4 lg:columns-2">
             {entries.map((entry) => (
-              <EntryCard
-                key={entry.id}
-                entry={entry as ContextEntry}
-                currentUserId={user?.id ?? null}
-                bookmarked={bookmarkedIds.has(entry.id)}
-              />
+              <div key={entry.id} className="mb-4 break-inside-avoid">
+                <EntryCard
+                  entry={entry as ContextEntry}
+                  currentUserId={user?.id ?? null}
+                  bookmarked={bookmarkedIds.has(entry.id)}
+                />
+              </div>
             ))}
           </div>
         )}
