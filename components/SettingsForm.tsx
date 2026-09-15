@@ -144,6 +144,11 @@ export default function SettingsForm({ profile, email }: { profile: Profile; ema
         </div>
       </div>
 
+      {/* Two columns on desktop — profile fields (the ones people actually
+         come back to tweak) on the left, password + danger zone grouped on
+         the right so the page reads as a couple of focused widgets rather
+         than one long scroll of stacked forms. */}
+      <div className="space-y-5 lg:grid lg:grid-cols-2 lg:items-start lg:gap-5 lg:space-y-0">
       <form
         onSubmit={handleSave}
         className="space-y-3 rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm sm:p-5"
@@ -234,6 +239,7 @@ export default function SettingsForm({ profile, email }: { profile: Profile; ema
         </button>
       </form>
 
+      <div className="space-y-5">
       <form
         onSubmit={handlePasswordChange}
         className="space-y-3 rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm sm:p-5"
@@ -320,6 +326,8 @@ export default function SettingsForm({ profile, email }: { profile: Profile; ema
             </div>
           </div>
         )}
+      </div>
+      </div>
       </div>
     </div>
   );
