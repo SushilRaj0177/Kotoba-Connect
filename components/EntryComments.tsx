@@ -10,7 +10,20 @@ import { errorMessage } from "@/lib/errors";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { useBlockedIds } from "@/lib/use-blocked-ids";
 
-export default function EntryComments({ entryId, userId }: { entryId: string; userId: string | null }) {
+export default function EntryComments({
+  entryId,
+  userId,
+  embedded = false,
+}: {
+  entryId: string;
+  userId: string | null;
+  // When nested inside another card (e.g. an inline thread on a feed card),
+  // the default bg-ink-bg-secondary card styling would sit at the exact
+  // same shade as its parent and blend in with no visible separation —
+  // swap to an inset ink-bg-input surface instead, same pattern used for
+  // AiNuanceCallout nested inside cards elsewhere.
+  embedded?: boolean;
+}) {
   const { t } = useLocale();
   const [comments, setComments] = useState<EntryComment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -87,7 +100,13 @@ export default function EntryComments({ entryId, userId }: { entryId: string; us
   }
 
   return (
-    <div className="rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm sm:p-5">
+    <div
+      className={
+        embedded
+          ? "rounded-lg bg-ink-bg-input p-3"
+          : "rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm sm:p-5"
+      }
+    >
       <h2 className="mb-3 text-sm font-semibold text-ink-text-header">
         {t("comments.title")} {visibleComments.length > 0 && `(${visibleComments.length})`}
       </h2>
@@ -99,7 +118,7 @@ export default function EntryComments({ entryId, userId }: { entryId: string; us
       ) : (
         <ul className="mb-4 space-y-3">
           {visibleComments.map((c) => (
-            <li key={c.id} className="rounded-2xl bg-ink-bg-input p-3">
+            <li key={c.id} className={`rounded-2xl p-3 ${embedded ? "bg-ink-bg-secondary" : "bg-ink-bg-input"}`}>
               <div className="flex items-center justify-between">
                 <UserHandle
                   username={c.profiles?.username ?? "unknown"}
@@ -138,7 +157,9 @@ export default function EntryComments({ entryId, userId }: { entryId: string; us
             rows={2}
             maxLength={1000}
             placeholder={t("comments.placeholder")}
-            className="w-full resize-none rounded-lg border-none bg-ink-bg-input px-3 py-2 text-sm text-ink-text placeholder:text-ink-text-muted focus:outline-none focus:ring-2 focus:ring-ink-accent"
+            className={`w-full resize-none rounded-lg border-none px-3 py-2 text-sm text-ink-text placeholder:text-ink-text-muted focus:outline-none focus:ring-2 focus:ring-ink-accent ${
+              embedded ? "bg-ink-bg-secondary" : "bg-ink-bg-input"
+            }`}
           />
           {error && <p className="text-sm text-ink-red">{error}</p>}
           <button

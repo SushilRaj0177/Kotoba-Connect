@@ -10,21 +10,25 @@ import AiNuanceCallout from "@/components/AiNuanceCallout";
 import Avatar from "@/components/Avatar";
 import BookmarkButton from "@/components/BookmarkButton";
 import DeleteEntryButton from "@/components/DeleteEntryButton";
+import EntryComments from "@/components/EntryComments";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 
 export default function EntryCard({
   entry,
   currentUserId,
   bookmarked = false,
+  commentCount = 0,
 }: {
   entry: ContextEntry;
   currentUserId: string | null;
   bookmarked?: boolean;
+  commentCount?: number;
 }) {
   const { t } = useLocale();
   const [hasVoted, setHasVoted] = useState(!!entry.has_voted);
   const [count, setCount] = useState(entry.upvotes_count);
   const [voting, setVoting] = useState(false);
+  const [commentsOpen, setCommentsOpen] = useState(false);
 
   async function handleVote() {
     if (!currentUserId || voting) return;
@@ -124,10 +128,28 @@ export default function EntryCard({
           >
             {t("card.annotate")}
           </Link>
+          <button
+            type="button"
+            onClick={() => setCommentsOpen((o) => !o)}
+            className={`flex items-center gap-1.5 font-bold transition ${
+              commentsOpen ? "text-ink-accent" : "text-ink-text-muted hover:text-ink-text"
+            }`}
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+            </svg>
+            {commentCount > 0 ? `${commentCount} ${t("card.comments")}` : t("comments.title")}
+          </button>
           <BookmarkButton entryId={entry.id} userId={currentUserId} initialBookmarked={bookmarked} />
           <ReportButton targetType="entry" targetId={entry.id} userId={currentUserId} />
           {currentUserId === entry.user_id && <DeleteEntryButton entryId={entry.id} />}
         </div>
+
+        {commentsOpen && (
+          <div className="mt-3">
+            <EntryComments entryId={entry.id} userId={currentUserId} embedded />
+          </div>
+        )}
       </div>
     </article>
   );
