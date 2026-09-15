@@ -7,6 +7,9 @@
 // short-answer use cases rather than producing long reasoning traces.
 const GROQ_MODEL = "openai/gpt-oss-120b";
 const REASONING_EFFORT = "low";
+// gpt-oss-120b is text-only — image input needs one of Groq's vision-
+// capable models. If Groq's lineup changes, swap this constant.
+const GROQ_VISION_MODEL = "meta-llama/llama-4-scout-17b-16e-instruct";
 
 export interface PragmaticAnalysis {
   formality_suggestion: string;
@@ -20,6 +23,58 @@ export interface EntryAssist {
 
 export function groqEnabled(): boolean {
   return !!process.env.GROQ_API_KEY;
+}
+
+// OCR ingestion: transcribes Japanese text from a photo (manga panel,
+// street signage, a screenshot) so a user can post from a picture instead
+// of typing it out by hand. The image is never stored — it's sent once for
+// transcription and discarded; only the extracted text reaches the form.
+export async function extractTextFromImage(imageDataUrl: string): Promise<string | null> {
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) return null;
+
+  try {
+    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: GROQ_VISION_MODEL,
+        messages: [
+          {
+            role: "user",
+            content: [
+              {
+                type: "text",
+                text: `Transcribe ONLY the Japanese text visible in this image, exactly as written
+(keep kanji/kana as-is, don't romanize or translate). If there are multiple lines or speech
+bubbles, join them with a single space. Respond with ONLY the transcribed text, nothing else —
+no quotes, no explanation. If no Japanese text is visible, respond with exactly: NONE`,
+              },
+              { type: "image_url", image_url: { url: imageDataUrl } },
+            ],
+          },
+        ],
+        temperature: 0.1,
+        max_tokens: 400,
+      }),
+    });
+
+    if (!res.ok) {
+      console.error("Groq OCR error", res.status, await res.text());
+      return null;
+    }
+
+    const data = await res.json();
+    const text = data.choices?.[0]?.message?.content?.trim();
+    if (!text || text === "NONE") return null;
+    return text;
+  } catch (err) {
+    console.error("Groq OCR failed", err);
+    return null;
+  }
 }
 
 // Compose-time assist: suggests a few tags and, when the user hasn't
