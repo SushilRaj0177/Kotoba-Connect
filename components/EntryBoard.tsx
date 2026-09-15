@@ -28,6 +28,7 @@ export default function EntryBoard({
   const [searchResults, setSearchResults] = useState<ContextEntry[] | null>(null);
   const [sortBy, setSortBy] = useState<SortOption>("new");
   const [formalityFilter, setFormalityFilter] = useState<FormalityLevel | "all">("all");
+  const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
   const blockedIds = useBlockedIds(userId);
 
   const loadEntries = useCallback(async () => {
@@ -54,14 +55,29 @@ export default function EntryBoard({
 
     let votedIds = new Set<string>();
     let bookmarkedIds = new Set<string>();
-    if (userId && data?.length) {
+    if (data?.length) {
       const ids = data.map((e) => e.id);
-      const [{ data: votes }, { data: saves }] = await Promise.all([
-        supabase.from("entry_upvotes").select("entry_id").eq("user_id", userId).in("entry_id", ids),
-        supabase.from("bookmarks").select("entry_id").eq("user_id", userId).in("entry_id", ids),
+      const votesQuery = userId
+        ? supabase.from("entry_upvotes").select("entry_id").eq("user_id", userId).in("entry_id", ids)
+        : Promise.resolve({ data: [] as { entry_id: string }[] });
+      const savesQuery = userId
+        ? supabase.from("bookmarks").select("entry_id").eq("user_id", userId).in("entry_id", ids)
+        : Promise.resolve({ data: [] as { entry_id: string }[] });
+      // Just the entry_id column, one request for every visible card — cheap
+      // enough to show a live comment count without a per-card fetch, and
+      // full comment bodies still only load when a card's thread is opened.
+      const [{ data: votes }, { data: saves }, { data: commentRows }] = await Promise.all([
+        votesQuery,
+        savesQuery,
+        supabase.from("entry_comments").select("entry_id").in("entry_id", ids),
       ]);
       votedIds = new Set((votes ?? []).map((v) => v.entry_id));
       bookmarkedIds = new Set((saves ?? []).map((s) => s.entry_id));
+      const counts: Record<string, number> = {};
+      (commentRows ?? []).forEach((c) => {
+        counts[c.entry_id] = (counts[c.entry_id] ?? 0) + 1;
+      });
+      setCommentCounts(counts);
     }
 
     setEntries(
@@ -93,6 +109,11 @@ export default function EntryBoard({
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "entry_upvotes" },
+        () => loadEntries()
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "entry_comments" },
         () => loadEntries()
       )
       .subscribe();
@@ -150,6 +171,7 @@ export default function EntryBoard({
                 entry={entry}
                 currentUserId={userId}
                 bookmarked={!!entry.is_bookmarked}
+                commentCount={commentCounts[entry.id] ?? 0}
               />
             ))}
           </div>
@@ -163,7 +185,12 @@ export default function EntryBoard({
       ) : (
         <div className="space-y-4">
           {visibleEntries.map((entry) => (
-            <EntryCard key={entry.id} entry={entry} currentUserId={userId} />
+            <EntryCard
+              key={entry.id}
+              entry={entry}
+              currentUserId={userId}
+              commentCount={commentCounts[entry.id] ?? 0}
+            />
           ))}
         </div>
       )}
