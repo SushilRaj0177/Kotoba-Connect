@@ -160,7 +160,7 @@ export default function EntryDetail({
                 ))}
               </div>
             )}
-            <div className="mt-3 flex items-center gap-4 text-xs">
+            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs">
               <span className="text-ink-text-muted">
                 {entry.upvotes_count} {t("detail.upvotes")}
               </span>
