@@ -1,18 +1,21 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import type { AppNotification } from "@/types/database";
 import Avatar from "@/components/Avatar";
 import Mascot from "@/components/Mascot";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { usePopoverClamp } from "@/lib/use-popover-clamp";
 
 export default function NotificationBell({ userId }: { userId: string }) {
   const { t } = useLocale();
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
   const [loading, setLoading] = useState(true);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const shift = usePopoverClamp(open, panelRef);
 
   const load = useCallback(async () => {
     const supabase = createClient();
@@ -82,7 +85,11 @@ export default function NotificationBell({ userId }: { userId: string }) {
       {open && (
         <>
           <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 top-full z-20 mt-2 max-h-96 w-80 overflow-y-auto rounded-2xl bg-ink-bg-secondary border border-ink-border/70 shadow-xl">
+          <div
+            ref={panelRef}
+            style={{ transform: shift ? `translateX(${shift}px)` : undefined }}
+            className="absolute right-0 top-full z-20 mt-2 max-h-96 w-80 overflow-y-auto rounded-2xl bg-ink-bg-secondary border border-ink-border/70 shadow-xl"
+          >
             <div className="flex items-center justify-between border-b border-ink-border p-3">
               <span className="text-sm font-semibold text-ink-text-header">{t("notif.title")}</span>
               {unreadCount > 0 && (

@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { REPORT_REASONS } from "@/lib/moderation";
 import { errorMessage } from "@/lib/errors";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { usePopoverClamp } from "@/lib/use-popover-clamp";
 
 export default function ReportButton({
   targetType,
@@ -22,6 +23,8 @@ export default function ReportButton({
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const shift = usePopoverClamp(open, formRef);
 
   if (!userId) return null;
 
@@ -71,7 +74,9 @@ export default function ReportButton({
 
       {open && (
         <form
+          ref={formRef}
           onSubmit={handleSubmit}
+          style={{ transform: shift ? `translateX(${shift}px)` : undefined }}
           className="absolute right-0 top-full z-20 mt-2 w-56 space-y-2 rounded-2xl bg-ink-bg-secondary p-3 border border-ink-border/70 shadow-sm"
         >
           <select
