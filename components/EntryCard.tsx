@@ -27,7 +27,7 @@ export default function EntryCard({
   bookmarked?: boolean;
   commentCount?: number;
 }) {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [editing, setEditing] = useState(false);
   // Local override so a save reflects immediately on pages without a
@@ -79,7 +79,9 @@ export default function EntryCard({
               <p className="font-jp text-lg leading-loose text-ink-text-header">{liveEntry.raw_japanese}</p>
               <p className="mt-1 text-sm text-ink-text-muted">{liveEntry.primary_translation}</p>
             </Link>
-            <TranslateButton text={liveEntry.raw_japanese} className="mt-1" />
+            {/* Entries are always Japanese — only useful to translate when
+               viewing the EN UI, otherwise it's Japanese to Japanese. */}
+            {locale === "en" && <TranslateButton text={liveEntry.raw_japanese} className="mt-1" />}
 
             <AiNuanceCallout
               summary={liveEntry.ai_nuance_summary}

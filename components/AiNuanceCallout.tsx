@@ -14,7 +14,7 @@ export default function AiNuanceCallout({
   summary: string | null;
   formalitySuggestion: string | null;
 }) {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   if (!summary) return null;
 
   return (
@@ -24,7 +24,10 @@ export default function AiNuanceCallout({
         {formalitySuggestion ? ` · ${t("ai.suggests")} ${formalitySuggestion}` : ""}
       </p>
       <p className="mt-0.5 text-sm text-ink-text">{summary}</p>
-      <TranslateButton text={summary} className="mt-1.5" />
+      {/* The AI read is always generated in English — offering to
+         "translate" it while already viewing the English UI would just
+         translate English to English and echo the same text back. */}
+      {locale === "ja" && <TranslateButton text={summary} className="mt-1.5" />}
     </div>
   );
 }

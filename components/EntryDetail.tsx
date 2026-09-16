@@ -33,7 +33,7 @@ export default function EntryDetail({
   userId: string | null;
   bookmarked?: boolean;
 }) {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const { showToast } = useToast();
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [annotations, setAnnotations] = useState<TokenAnnotation[]>([]);
@@ -168,7 +168,10 @@ export default function EntryDetail({
                   activeIndex={activeIndex}
                 />
                 <p className="mt-1 text-sm text-ink-text-muted">{liveEntry.primary_translation}</p>
-                <TranslateButton text={liveEntry.raw_japanese} className="mt-1" />
+                {/* Entries are always Japanese — only useful to translate
+                   when viewing the EN UI, otherwise it's Japanese to
+                   Japanese. */}
+                {locale === "en" && <TranslateButton text={liveEntry.raw_japanese} className="mt-1" />}
                 <AiNuanceCallout
                   summary={liveEntry.ai_nuance_summary}
                   formalitySuggestion={liveEntry.ai_formality_suggestion}
