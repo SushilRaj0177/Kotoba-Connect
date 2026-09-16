@@ -141,7 +141,7 @@ export default function EntryDetail({
              full-height left column that would sit empty beside the rest
              of the entry, the annotation hint, and the action row below it. */}
           <div className="mb-1 flex flex-wrap items-center gap-2">
-            <Avatar username={username} avatarUrl={entry.profiles?.avatar_url} size={22} />
+            <Avatar username={username} avatarUrl={entry.profiles?.avatar_url} size={28} />
             <Link href={`/u/${username}`} className="font-display text-sm font-bold text-ink-text-header hover:underline">
               {displayName?.trim() || `@${username}`}
             </Link>
@@ -199,9 +199,9 @@ export default function EntryDetail({
                         type="button"
                         onClick={() => setEditing(true)}
                         title={t("card.edit")}
-                        className="flex h-9 w-9 items-center justify-center rounded-full text-ink-text-muted transition hover:bg-ink-bg-hover hover:text-ink-text"
+                        className="flex h-10 w-10 items-center justify-center rounded-full text-ink-text-muted transition hover:bg-ink-bg-hover hover:text-ink-text"
                       >
-                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
                         </svg>
                       </button>
