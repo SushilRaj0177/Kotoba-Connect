@@ -3,7 +3,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Mascot from "@/components/Mascot";
 import { Obake } from "@/components/mascots/candidates";
-import HeroDuo from "@/components/HeroDuo";
+import UserHandle from "@/components/UserHandle";
 import { createClient } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
 
@@ -29,10 +29,29 @@ function FeatureIcon({ children }: { children: React.ReactNode }) {
 export default async function LandingPage() {
   const { t } = getServerTranslator();
   const supabase = createClient();
-  const [{ count: entryCount }, { count: userCount }] = await Promise.all([
-    supabase.from("context_entries").select("id", { count: "exact", head: true }),
-    supabase.from("profiles").select("id", { count: "exact", head: true }),
-  ]);
+  const [{ count: entryCount }, { count: userCount }, { data: topProfiles }, { data: recentEntries }] =
+    await Promise.all([
+      supabase.from("context_entries").select("id", { count: "exact", head: true }),
+      supabase.from("profiles").select("id", { count: "exact", head: true }),
+      supabase
+        .from("profiles")
+        .select("username, display_name, avatar_url, reputation_score")
+        .order("reputation_score", { ascending: false })
+        .limit(3),
+      supabase.from("context_entries").select("tags").order("created_at", { ascending: false }).limit(200),
+    ]);
+
+  const tagCounts = new Map<string, number>();
+  (recentEntries ?? []).forEach((e) => {
+    (e.tags ?? []).forEach((tag: string) => tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1));
+  });
+  const topTags = [...tagCounts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8);
+
+  const steps = [
+    { title: t("landing.step1Title"), body: t("landing.step1Body") },
+    { title: t("landing.step2Title"), body: t("landing.step2Body") },
+    { title: t("landing.step3Title"), body: t("landing.step3Body") },
+  ];
 
   const features = [
     {
@@ -80,7 +99,10 @@ export default async function LandingPage() {
       <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-14">
         {/* Hero */}
         <section className="flex flex-col items-center gap-5 text-center">
-          <HeroDuo />
+          <div className="flex items-center gap-2">
+            <Mascot size={72} mood="excited" />
+            <Obake size={72} />
+          </div>
           <h1 className="max-w-2xl font-display text-4xl font-black leading-tight text-ink-text-header sm:text-5xl">
             {t("landing.heroTitle")}
           </h1>
@@ -132,6 +154,84 @@ export default async function LandingPage() {
             ))}
           </div>
         </section>
+
+        {/* How it works */}
+        <section className="mt-16 sm:mt-20">
+          <h2 className="text-center font-display text-2xl font-black text-ink-text-header">
+            {t("landing.howItWorksTitle")}
+          </h2>
+          <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
+            {steps.map((s, i) => (
+              <div
+                key={s.title}
+                className="rounded-2xl bg-ink-bg-secondary p-5 border border-ink-border/70 shadow-sm"
+              >
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-ink-accent font-display text-sm font-black text-white">
+                  {i + 1}
+                </div>
+                <h3 className="mt-3 font-display text-base font-bold text-ink-text-header">{s.title}</h3>
+                <p className="mt-1 text-sm leading-relaxed text-ink-text-muted">{s.body}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Live community activity — real data, not marketing copy, so a
+           visitor can see the board actually has people on it before
+           signing up. */}
+        {(!!topProfiles?.length || !!topTags.length) && (
+          <section className="mt-16 grid grid-cols-1 gap-4 sm:mt-20 sm:grid-cols-2">
+            {!!topProfiles?.length && (
+              <div className="rounded-2xl bg-ink-bg-secondary p-5 border border-ink-border/70 shadow-sm">
+                <div className="mb-3 flex items-center justify-between">
+                  <h2 className="font-display text-base font-bold text-ink-text-header">
+                    {t("rail.topContributorsTitle")}
+                  </h2>
+                  <Link href="/leaderboard" className="text-xs font-semibold text-ink-text-link hover:underline">
+                    {t("rail.viewAll")}
+                  </Link>
+                </div>
+                <ul className="space-y-2">
+                  {topProfiles.map((p) => (
+                    <li key={p.username}>
+                      <UserHandle
+                        username={p.username}
+                        displayName={p.display_name}
+                        avatarUrl={p.avatar_url}
+                        href={`/u/${p.username}`}
+                        size="sm"
+                        className="w-full"
+                        trailing={
+                          <span className="ml-auto flex-none text-xs font-bold text-ink-accent">
+                            {p.reputation_score}
+                          </span>
+                        }
+                      />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {!!topTags.length && (
+              <div className="rounded-2xl bg-ink-bg-secondary p-5 border border-ink-border/70 shadow-sm">
+                <h2 className="mb-3 font-display text-base font-bold text-ink-text-header">
+                  {t("rail.trendingTagsTitle")}
+                </h2>
+                <div className="flex flex-wrap gap-1.5">
+                  {topTags.map(([tag, count]) => (
+                    <Link
+                      key={tag}
+                      href={`/tags/${encodeURIComponent(tag)}`}
+                      className="rounded-full bg-ink-bg-input px-2.5 py-1 text-xs text-ink-text-muted transition hover:text-ink-accent"
+                    >
+                      #{tag} <span className="text-ink-text-muted/70">{count}</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+          </section>
+        )}
 
         {/* Closing CTA */}
         <section className="bg-seigaiha mt-16 rounded-2xl bg-ink-accent p-8 text-center text-white sm:mt-20">
