@@ -59,20 +59,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <html lang={locale} data-theme={theme} className={`${inter.variable} ${zenMaru.variable}`}>
-      <head>
-        {/* Gates the desktop-only +20% zoom (see globals.css). Must run
-            synchronously before first paint (no defer/async) so there's no
-            flash of un-zoomed content on real desktops, and must check
-            window.screen.width rather than a CSS media query alone —
-            a phone's "Request desktop site" mode fakes pointer/hover media
-            features on purpose, but does not change the OS-reported
-            physical screen size. */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `try{if(window.screen&&window.screen.width>=768&&matchMedia('(pointer: fine)').matches){document.documentElement.setAttribute('data-desktop-zoom','true')}}catch(e){}`,
-          }}
-        />
-      </head>
       <body className="flex min-h-screen bg-ink-bg">
         <ThemeProvider initialTheme={theme}>
           <LocaleProvider initialLocale={locale}>
