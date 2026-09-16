@@ -184,7 +184,7 @@ export default function EntryDetail({
                     ))}
                   </div>
                 )}
-                <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs">
+                <div className="mt-3 flex flex-wrap items-center gap-0.5">
                   <LikeButton
                     entryId={entry.id}
                     currentUserId={userId}
@@ -198,9 +198,12 @@ export default function EntryDetail({
                       <button
                         type="button"
                         onClick={() => setEditing(true)}
-                        className="rounded px-2 py-1 text-xs font-semibold text-ink-text-muted transition hover:text-ink-text"
+                        title={t("card.edit")}
+                        className="flex h-9 w-9 items-center justify-center rounded-full text-ink-text-muted transition hover:bg-ink-bg-hover hover:text-ink-text"
                       >
-                        {t("card.edit")}
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                        </svg>
                       </button>
                       <DeleteEntryButton entryId={entry.id} redirectHome />
                     </>

@@ -132,15 +132,20 @@ export default function EntryComments({
                 </span>
               </div>
               <p className="mt-2 whitespace-pre-wrap text-sm text-ink-text">{c.body}</p>
-              <div className="mt-1.5 flex items-center gap-1">
+              <div className="mt-1.5 flex items-center gap-0.5">
                 <ReportButton targetType="comment" targetId={c.id} userId={userId} />
                 {userId === c.user_id && (
                   <button
                     type="button"
                     onClick={() => handleDelete(c.id)}
-                    className="rounded px-2 py-1 text-xs font-semibold text-ink-text-muted transition hover:text-ink-red"
+                    title={t("comments.delete")}
+                    className="flex h-9 w-9 items-center justify-center rounded-full text-ink-text-muted transition hover:bg-ink-bg-hover hover:text-ink-red"
                   >
-                    {t("comments.delete")}
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M3 6h18" />
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                      <path d="M10 11v6M14 11v6" />
+                    </svg>
                   </button>
                 )}
               </div>

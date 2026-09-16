@@ -59,7 +59,16 @@ export default function ReportButton({
   }
 
   if (done) {
-    return <span className="px-2 text-xs text-ink-text-muted">{t("card.reported")}</span>;
+    return (
+      <span
+        title={t("card.reported")}
+        className="flex h-9 w-9 items-center justify-center text-ink-text-muted"
+      >
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M20 6 9 17l-5-5" />
+        </svg>
+      </span>
+    );
   }
 
   return (
@@ -67,9 +76,13 @@ export default function ReportButton({
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="rounded px-2 py-1 text-xs font-semibold text-ink-text-muted transition hover:text-ink-red"
+        title={t("card.report")}
+        className="flex h-9 w-9 items-center justify-center rounded-full text-ink-text-muted transition hover:bg-ink-bg-hover hover:text-ink-red active:scale-90"
       >
-        {t("card.report")}
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1Z" />
+          <path d="M4 22v-7" />
+        </svg>
       </button>
 
       {open && (

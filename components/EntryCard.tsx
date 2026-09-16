@@ -101,7 +101,7 @@ export default function EntryCard({
         )}
 
         {!editing && (
-          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs">
+          <div className="mt-3 flex flex-wrap items-center gap-0.5">
             <LikeButton
               entryId={entry.id}
               currentUserId={currentUserId}
@@ -110,21 +110,26 @@ export default function EntryCard({
             />
             <Link
               href={`/entries/${entry.id}`}
-              className="font-medium text-ink-text-link hover:underline"
+              title={t("card.annotateTitle")}
+              className="flex h-9 w-9 items-center justify-center rounded-full text-ink-text-muted transition hover:bg-ink-bg-hover hover:text-ink-text"
             >
-              {t("card.annotate")}
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                <path d="M18.4 2.6a2.1 2.1 0 1 1 3 3L11 16l-4 1 1-4Z" />
+              </svg>
             </Link>
             <button
               type="button"
               onClick={() => setCommentsOpen((o) => !o)}
-              className={`flex items-center gap-1.5 font-bold transition ${
-                commentsOpen ? "text-ink-accent" : "text-ink-text-muted hover:text-ink-text"
+              title={t("comments.title")}
+              className={`flex h-9 items-center gap-1 rounded-full px-2.5 text-xs font-bold transition ${
+                commentsOpen ? "text-ink-accent" : "text-ink-text-muted hover:bg-ink-bg-hover hover:text-ink-text"
               }`}
             >
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
               </svg>
-              {commentCount > 0 ? `${commentCount} ${t("card.comments")}` : t("comments.title")}
+              {commentCount > 0 && commentCount}
             </button>
             <BookmarkButton entryId={entry.id} userId={currentUserId} initialBookmarked={bookmarked} />
             <ShareEntryButton entryId={entry.id} rawJapanese={liveEntry.raw_japanese} />
@@ -134,9 +139,12 @@ export default function EntryCard({
                 <button
                   type="button"
                   onClick={() => setEditing(true)}
-                  className="rounded px-2 py-1 text-xs font-semibold text-ink-text-muted transition hover:text-ink-text"
+                  title={t("card.edit")}
+                  className="flex h-9 w-9 items-center justify-center rounded-full text-ink-text-muted transition hover:bg-ink-bg-hover hover:text-ink-text"
                 >
-                  {t("card.edit")}
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                  </svg>
                 </button>
                 <DeleteEntryButton entryId={entry.id} />
               </>
