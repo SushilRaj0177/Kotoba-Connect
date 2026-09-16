@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/client";
 import type { ContextEntry } from "@/types/database";
 import FormalityBadge from "@/components/FormalityBadge";
 import ReportButton from "@/components/ReportButton";
@@ -12,6 +11,7 @@ import BookmarkButton from "@/components/BookmarkButton";
 import DeleteEntryButton from "@/components/DeleteEntryButton";
 import EditEntryForm from "@/components/EditEntryForm";
 import ShareEntryButton from "@/components/ShareEntryButton";
+import LikeButton from "@/components/LikeButton";
 import EntryComments from "@/components/EntryComments";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 
@@ -27,34 +27,12 @@ export default function EntryCard({
   commentCount?: number;
 }) {
   const { t } = useLocale();
-  const [hasVoted, setHasVoted] = useState(!!entry.has_voted);
-  const [count, setCount] = useState(entry.upvotes_count);
-  const [voting, setVoting] = useState(false);
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [editing, setEditing] = useState(false);
   // Local override so a save reflects immediately on pages without a
   // realtime context_entries subscription (bookmarks, tags, profile) —
   // not just on the board.
   const [liveEntry, setLiveEntry] = useState(entry);
-
-  async function handleVote() {
-    if (!currentUserId || voting) return;
-    setVoting(true);
-
-    // Optimistic update — reconciled by the realtime subscription on the parent list.
-    const nextVoted = !hasVoted;
-    setHasVoted(nextVoted);
-    setCount((c) => c + (nextVoted ? 1 : -1));
-
-    const supabase = createClient();
-    const { error } = await supabase.rpc("toggle_entry_upvote", { p_entry_id: entry.id });
-
-    if (error) {
-      setHasVoted(!nextVoted);
-      setCount((c) => c + (nextVoted ? -1 : 1));
-    }
-    setVoting(false);
-  }
 
   const username = entry.profiles?.username ?? "unknown";
   const displayName = entry.profiles?.display_name;
@@ -121,27 +99,12 @@ export default function EntryCard({
 
         {!editing && (
           <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs">
-            <button
-              type="button"
-              onClick={handleVote}
-              disabled={!currentUserId || voting}
-              title={currentUserId ? t("card.upvote") : t("card.signInToVote")}
-              className={`flex items-center gap-1.5 font-bold transition active:scale-90 ${
-                hasVoted ? "text-ink-accent" : "text-ink-text-muted hover:text-ink-text"
-              } disabled:cursor-not-allowed disabled:opacity-50`}
-            >
-              <svg
-                width="15"
-                height="15"
-                viewBox="0 0 24 24"
-                fill={hasVoted ? "currentColor" : "none"}
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path d="M12 21s-6.7-4.35-9.3-8.1C1 10.1 1.6 6.6 4.6 5.1c2.4-1.2 5 .1 7.4 3 2.4-2.9 5-4.2 7.4-3 3 1.5 3.6 5 1.9 7.8C18.7 16.65 12 21 12 21z" />
-              </svg>
-              {count}
-            </button>
+            <LikeButton
+              entryId={entry.id}
+              currentUserId={currentUserId}
+              initialCount={entry.upvotes_count}
+              initialVoted={!!entry.has_voted}
+            />
             <Link
               href={`/entries/${entry.id}`}
               className="font-medium text-ink-text-link hover:underline"

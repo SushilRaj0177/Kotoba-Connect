@@ -7,6 +7,7 @@ import FormalitySelect from "@/components/FormalitySelect";
 import { spamSignal } from "@/lib/moderation";
 import { errorMessage } from "@/lib/errors";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { useToast } from "@/components/Toast";
 
 export interface EntryEditPatch {
   raw_japanese: string;
@@ -30,6 +31,7 @@ export default function EditEntryForm({
   onCancel: () => void;
 }) {
   const { t } = useLocale();
+  const { showToast } = useToast();
   const [rawJapanese, setRawJapanese] = useState(entry.raw_japanese);
   const [translation, setTranslation] = useState(entry.primary_translation);
   const [formality, setFormality] = useState<FormalityLevel>(entry.formality_level ?? "Teineigo");
@@ -96,6 +98,7 @@ export default function EditEntryForm({
       fetch(`/api/entries/${entry.id}/analyze`, { method: "POST" }).catch(() => {});
       fetch(`/api/entries/${entry.id}/embed`, { method: "POST" }).catch(() => {});
 
+      showToast(t("toast.saved"));
       onSaved({
         raw_japanese: trimmedJapanese,
         primary_translation: trimmedTranslation,

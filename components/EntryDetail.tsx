@@ -16,9 +16,11 @@ import BookmarkButton from "@/components/BookmarkButton";
 import DeleteEntryButton from "@/components/DeleteEntryButton";
 import EditEntryForm from "@/components/EditEntryForm";
 import ShareEntryButton from "@/components/ShareEntryButton";
+import LikeButton from "@/components/LikeButton";
 import { spamSignal } from "@/lib/moderation";
 import { errorMessage } from "@/lib/errors";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { useToast } from "@/components/Toast";
 import { useEntryChatContext } from "@/components/EntryChatContext";
 
 export default function EntryDetail({
@@ -31,6 +33,7 @@ export default function EntryDetail({
   bookmarked?: boolean;
 }) {
   const { t } = useLocale();
+  const { showToast } = useToast();
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [annotations, setAnnotations] = useState<TokenAnnotation[]>([]);
   const [loading, setLoading] = useState(true);
@@ -118,6 +121,7 @@ export default function EntryDetail({
     } else {
       setNote("");
       setCulturalContext("");
+      showToast(t("toast.noteAdded"));
     }
     setSubmitting(false);
   }
@@ -178,9 +182,12 @@ export default function EntryDetail({
                   </div>
                 )}
                 <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs">
-                  <span className="text-ink-text-muted">
-                    {entry.upvotes_count} {t("detail.upvotes")}
-                  </span>
+                  <LikeButton
+                    entryId={entry.id}
+                    currentUserId={userId}
+                    initialCount={liveEntry.upvotes_count}
+                    initialVoted={!!liveEntry.has_voted}
+                  />
                   <BookmarkButton entryId={entry.id} userId={userId} initialBookmarked={bookmarked} />
                   <ShareEntryButton entryId={entry.id} rawJapanese={liveEntry.raw_japanese} />
                   {userId === entry.user_id && (

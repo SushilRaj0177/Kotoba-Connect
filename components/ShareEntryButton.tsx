@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { useToast } from "@/components/Toast";
 import { SITE_URL } from "@/lib/site";
 
 // Content-sharing platform with no share affordance anywhere was a real
 // gap — native share sheet where available (mobile), clipboard copy with
-// a brief confirmation everywhere else.
+// a toast confirmation everywhere else (the shared app-wide toast queue
+// instead of a one-off inline label swap).
 export default function ShareEntryButton({
   entryId,
   rawJapanese,
@@ -15,7 +16,7 @@ export default function ShareEntryButton({
   rawJapanese: string;
 }) {
   const { t } = useLocale();
-  const [copied, setCopied] = useState(false);
+  const { showToast } = useToast();
 
   async function handleShare(e: React.MouseEvent) {
     e.preventDefault();
@@ -32,8 +33,7 @@ export default function ShareEntryButton({
 
     try {
       await navigator.clipboard.writeText(url);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      showToast(t("card.linkCopied"));
     } catch {
       // Clipboard API blocked (permissions, insecure context) — silently no-op
       // rather than surface an error for a non-critical convenience action.
@@ -52,7 +52,7 @@ export default function ShareEntryButton({
         <circle cx="18" cy="19" r="3" />
         <path d="m8.6 13.5 6.8 4M15.4 6.5 8.6 10.5" />
       </svg>
-      {copied ? t("card.linkCopied") : t("card.share")}
+      {t("card.share")}
     </button>
   );
 }

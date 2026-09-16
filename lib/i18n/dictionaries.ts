@@ -103,6 +103,10 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "card.saveEdit": "Save changes",
     "card.share": "Share",
     "card.linkCopied": "Link copied!",
+    "toast.posted": "Posted! ✨",
+    "toast.deleted": "Entry deleted.",
+    "toast.saved": "Changes saved.",
+    "toast.noteAdded": "Note added.",
 
     "detail.back": "← Back to board",
     "detail.clickHint": "Click any word above to pin a pragmatic nuance note to that token.",
@@ -362,6 +366,10 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "card.saveEdit": "変更を保存",
     "card.share": "共有",
     "card.linkCopied": "リンクをコピーしました！",
+    "toast.posted": "投稿しました！✨",
+    "toast.deleted": "投稿を削除しました。",
+    "toast.saved": "変更を保存しました。",
+    "toast.noteAdded": "ノートを追加しました。",
 
     "detail.back": "← ボードに戻る",
     "detail.clickHint": "上の単語をクリックすると、その語にニュアンスノートを固定できます。",
