@@ -38,8 +38,15 @@ export default function MobileNav() {
       show: true,
       icon: (
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <circle cx="11" cy="11" r="7" />
-          <path d="m21 21-4.3-4.3" />
+          <g strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="10.5" cy="10.5" r="6.5" />
+            <path d="m20 20-3.8-3.8" />
+            <path
+              d="M17 3.5c0 .9-.7 1.6-1.6 1.6.9 0 1.6.7 1.6 1.6 0-.9.7-1.6 1.6-1.6-.9 0-1.6-.7-1.6-1.6Z"
+              fill="currentColor"
+              stroke="none"
+            />
+          </g>
         </svg>
       ),
     },
