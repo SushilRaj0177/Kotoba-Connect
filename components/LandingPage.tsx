@@ -2,9 +2,23 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Mascot from "@/components/Mascot";
-import { Obake, Kitsune, Neko } from "@/components/mascots/candidates";
+import { Obake } from "@/components/mascots/candidates";
+import HeroDuo from "@/components/HeroDuo";
 import { createClient } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
+
+// The site has exactly two mascots, Kokeshi and Obake — introducing more
+// characters (there used to be a fox and a cat here) reads as a bigger,
+// inconsistent cast than actually exists anywhere else in the app. The
+// features that aren't "about" one of the two get a plain icon tile
+// instead, sized to match so the grid still reads as one family.
+function FeatureIcon({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex h-14 w-14 flex-none items-center justify-center rounded-2xl bg-ink-accent/10 text-ink-accent">
+      {children}
+    </div>
+  );
+}
 
 // The marketing front door for signed-out visitors — previously "/" just
 // showed the live board with a two-line heading above it, which meant a
@@ -32,12 +46,26 @@ export default async function LandingPage() {
       body: t("landing.feature2Body"),
     },
     {
-      mascot: <Kitsune size={56} />,
+      mascot: (
+        <FeatureIcon>
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0V4Z" />
+            <path d="M7 6H4a3 3 0 0 0 3 5M17 6h3a3 3 0 0 1-3 5" />
+          </svg>
+        </FeatureIcon>
+      ),
       title: t("landing.feature3Title"),
       body: t("landing.feature3Body"),
     },
     {
-      mascot: <Neko size={56} />,
+      mascot: (
+        <FeatureIcon>
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M3 12h18M12 3a13.5 13.5 0 0 1 0 18 13.5 13.5 0 0 1 0-18Z" />
+          </svg>
+        </FeatureIcon>
+      ),
       title: t("landing.feature4Title"),
       body: t("landing.feature4Body"),
     },
@@ -49,10 +77,7 @@ export default async function LandingPage() {
       <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-14">
         {/* Hero */}
         <section className="flex flex-col items-center gap-5 text-center">
-          <div className="flex items-center -space-x-3">
-            <Mascot size={72} mood="excited" />
-            <Obake size={64} />
-          </div>
+          <HeroDuo />
           <h1 className="max-w-2xl font-display text-4xl font-black leading-tight text-ink-text-header sm:text-5xl">
             {t("landing.heroTitle")}
           </h1>

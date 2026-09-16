@@ -110,7 +110,7 @@ export default function LoginPage() {
   const [state, formAction] = useFormState(action, initialState);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center px-6 py-12">
+    <main className="flex min-h-screen flex-col items-center px-6 py-8 sm:justify-center sm:py-12">
       <div className="mb-4 flex w-full max-w-sm items-center justify-end gap-2">
         <ThemeToggle />
         <LanguageToggle />
@@ -118,9 +118,9 @@ export default function LoginPage() {
 
       <div className="w-full max-w-sm overflow-hidden rounded-2xl bg-ink-bg-secondary border border-ink-border/70 shadow-sm">
         <div className="bg-seigaiha px-8 pb-7 pt-8 text-center">
-          <div className="mb-2 flex items-end justify-center gap-1">
+          <div className="mb-2 flex items-end justify-center gap-1.5">
             <Mascot size={56} />
-            <Obake size={38} className="mb-1" />
+            <Obake size={54} />
           </div>
           <span className="font-display text-4xl font-black text-ink-accent">言葉</span>
           <p className="mt-1 text-sm text-ink-text-muted">{t("login.title")}</p>
