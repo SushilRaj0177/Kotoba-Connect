@@ -9,15 +9,31 @@ export default async function LeaderboardPage() {
   const supabase = createClient();
   const { t } = getServerTranslator();
 
-  const { data: profiles } = await supabase
-    .from("profiles")
-    .select("id, username, display_name, avatar_url, reputation_score")
-    .order("reputation_score", { ascending: false })
-    .limit(50);
+  // Ordering by reputation_score alone leaves every tie (very common —
+  // most members sit at 0 rep) to whatever order Postgres happens to
+  // return them in, which is unstable and looks arbitrary to a user (a
+  // member with zero entries outranking one who's actually posted). Pull
+  // both signals and break ties with entry count, then username, so the
+  // result is fully deterministic and never looks random.
+  const [{ data: profiles }, { data: entryCounts }] = await Promise.all([
+    // 500 candidates is a generous ceiling for a community this size; if
+    // the member base ever outgrows it, this tiebreak logic should move
+    // into the query itself (ORDER BY reputation_score, entry_count,
+    // username) instead of sorting a fetched batch in JS.
+    supabase.from("profiles").select("id, username, display_name, avatar_url, reputation_score").limit(500),
+    supabase.from("context_entries").select("user_id"),
+  ]);
 
-  const { data: entryCounts } = await supabase.from("context_entries").select("user_id");
   const counts = new Map<string, number>();
   (entryCounts ?? []).forEach((e) => counts.set(e.user_id, (counts.get(e.user_id) ?? 0) + 1));
+
+  profiles?.sort((a, b) => {
+    if (b.reputation_score !== a.reputation_score) return b.reputation_score - a.reputation_score;
+    const entryDiff = (counts.get(b.id) ?? 0) - (counts.get(a.id) ?? 0);
+    if (entryDiff !== 0) return entryDiff;
+    return a.username.localeCompare(b.username);
+  });
+  profiles?.splice(50);
 
   const RANK_RING = ["ring-yellow-400/60 bg-yellow-400/5", "ring-gray-300/60 bg-gray-300/5", "ring-amber-600/60 bg-amber-600/5"];
   const RANK_TEXT = ["text-yellow-400", "text-gray-300", "text-amber-600"];
