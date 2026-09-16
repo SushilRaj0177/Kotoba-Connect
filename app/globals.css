@@ -347,3 +347,18 @@ body::before {
   clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
   pointer-events: none;
 }
+
+/* Desktop-only +17% scale across the entire UI. `zoom` (not
+   `transform: scale`) actually reflows layout at the larger size —
+   spacing, wrapping, and fixed-position elements all recompute against
+   the bigger effective pixel grid, the same way the browser's own
+   ctrl/cmd-+ zoom works — instead of just stretching a fixed-size
+   render and clipping/overflowing at the edges the way a transform
+   would. Scoped to the same >=768px breakpoint the rest of the app
+   already treats as "desktop" (e.g. SideRail's md:flex), so mobile is
+   completely untouched. */
+@media (min-width: 768px) {
+  html {
+    zoom: 1.17;
+  }
+}
