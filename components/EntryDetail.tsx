@@ -136,16 +136,19 @@ export default function EntryDetail({
          social feature, so they belong in the primary flow right after the
          entry, not buried below the (secondary, per-word) annotations panel. */}
       <div className="min-w-0 flex-1 space-y-4">
-        <div className="flex gap-3 rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm sm:p-5">
-          <Avatar username={username} avatarUrl={entry.profiles?.avatar_url} size={40} />
-          <div className="min-w-0 flex-1">
-            <div className="mb-1 flex flex-wrap items-baseline gap-2">
-              <Link href={`/u/${username}`} className="font-display text-sm font-bold text-ink-text-header hover:underline">
-                {displayName?.trim() || `@${username}`}
-              </Link>
-              <FormalityBadge level={liveEntry.formality_level} />
-            </div>
+        <div className="rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm sm:p-5">
+          {/* Avatar sits inline on the name row instead of anchoring a
+             full-height left column that would sit empty beside the rest
+             of the entry, the annotation hint, and the action row below it. */}
+          <div className="mb-1 flex flex-wrap items-center gap-2">
+            <Avatar username={username} avatarUrl={entry.profiles?.avatar_url} size={22} />
+            <Link href={`/u/${username}`} className="font-display text-sm font-bold text-ink-text-header hover:underline">
+              {displayName?.trim() || `@${username}`}
+            </Link>
+            <FormalityBadge level={liveEntry.formality_level} />
+          </div>
 
+          <div className="min-w-0">
             {editing ? (
               <EditEntryForm
                 entry={liveEntry}

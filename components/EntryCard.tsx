@@ -45,21 +45,24 @@ export default function EntryCard({
   });
 
   return (
-    <article className="flex gap-3 rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm">
-      <Avatar username={username} avatarUrl={avatarUrl} size={40} />
+    <article className="rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm">
+      {/* Avatar sits inline on the name row instead of anchoring a full-height
+         left column — at 40px it only fills the top sliver of a card that's
+         several times taller, leaving the rest of that column as dead space
+         running down the whole card. */}
+      <div className="mb-1 flex flex-wrap items-center gap-2">
+        <Avatar username={username} avatarUrl={avatarUrl} size={22} />
+        <Link
+          href={`/u/${username}`}
+          className="font-display text-sm font-bold text-ink-text-header hover:underline"
+        >
+          {displayName?.trim() || `@${username}`}
+        </Link>
+        <span className="text-xs text-ink-text-muted">{timestamp}</span>
+        <FormalityBadge level={liveEntry.formality_level} />
+      </div>
 
-      <div className="min-w-0 flex-1">
-        <div className="mb-1 flex flex-wrap items-baseline gap-2">
-          <Link
-            href={`/u/${username}`}
-            className="font-display text-sm font-bold text-ink-text-header hover:underline"
-          >
-            {displayName?.trim() || `@${username}`}
-          </Link>
-          <span className="text-xs text-ink-text-muted">{timestamp}</span>
-          <FormalityBadge level={liveEntry.formality_level} />
-        </div>
-
+      <div className="min-w-0">
         {editing ? (
           <EditEntryForm
             entry={liveEntry}

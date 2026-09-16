@@ -5,6 +5,7 @@ import type { FormalityLevel } from "@/types/database";
 import { FORMALITY_COLORS } from "@/lib/formality-colors";
 import { formalityLabel, formalityGloss, formalityHasGloss, formalityDescription } from "@/lib/formality-labels";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { usePopoverClamp } from "@/lib/use-popover-clamp";
 
 // Bold solid tag chips, one vivid hue per register — reads as a badge/
 // achievement pill rather than a subtle label, matching the energetic UI.
@@ -16,6 +17,8 @@ export default function FormalityBadge({ level }: { level: FormalityLevel | null
   const { t } = useLocale();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const glossRef = useRef<HTMLDivElement>(null);
+  const shift = usePopoverClamp(open, glossRef);
 
   useEffect(() => {
     if (!open) return;
@@ -55,7 +58,11 @@ export default function FormalityBadge({ level }: { level: FormalityLevel | null
       </button>
 
       {open && hasGloss && (
-        <div className="absolute left-0 top-full z-20 mt-1.5 w-56 rounded-xl bg-ink-bg-secondary p-3 border border-ink-border/70 shadow-xl">
+        <div
+          ref={glossRef}
+          style={{ transform: shift ? `translateX(${shift}px)` : undefined }}
+          className="absolute left-0 top-full z-20 mt-1.5 w-56 rounded-xl bg-ink-bg-secondary p-3 border border-ink-border/70 shadow-xl"
+        >
           <p className="text-xs font-bold text-ink-text-header">{formalityGloss(t, level)}</p>
           <p className="mt-1 text-xs leading-relaxed text-ink-text-muted">{formalityDescription(t, level)}</p>
         </div>
