@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { FormalityLevel, KuromojiToken } from "@/types/database";
 import TokenizedText from "@/components/TokenizedText";
@@ -41,6 +41,17 @@ export default function EntryForm({
   const [ocrLoading, setOcrLoading] = useState(false);
   const [ocrError, setOcrError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Collapsed by default — a full multi-field form sitting above the feed
+  // on every single visit was the single biggest thing pushing real content
+  // (other people's posts) below the fold. Expands into the full form on
+  // demand, like a Twitter/Facebook-style compose trigger.
+  const [expanded, setExpanded] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (expanded) textareaRef.current?.focus();
+  }, [expanded]);
 
   async function handlePhotoSelected(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -220,12 +231,28 @@ export default function EntryForm({
       setTranslationDraft(null);
       setDuplicates([]);
       setDuplicatesDismissed(false);
+      setExpanded(false);
       onCreated?.();
     } catch (err) {
       setError(errorMessage(err, t("form.errorGeneric")));
     } finally {
       setSubmitting(false);
     }
+  }
+
+  if (!expanded) {
+    return (
+      <button
+        type="button"
+        onClick={() => setExpanded(true)}
+        className="flex w-full items-center gap-2.5 rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm text-left transition hover:border-ink-accent/40"
+      >
+        <Avatar username={username ?? "user"} avatarUrl={avatarUrl} size={36} />
+        <span className="min-w-0 flex-1 truncate rounded-full bg-ink-bg-input px-4 py-2.5 text-sm text-ink-text-muted">
+          {t("form.composePlaceholder")}
+        </span>
+      </button>
+    );
   }
 
   return (
@@ -265,6 +292,7 @@ export default function EntryForm({
         </div>
         <textarea
           id="raw_japanese"
+          ref={textareaRef}
           value={rawJapanese}
           onChange={(e) => {
             setRawJapanese(e.target.value);
@@ -377,13 +405,22 @@ export default function EntryForm({
         <p className="mb-3 rounded-md bg-ink-red/10 px-3 py-2 text-sm text-ink-red">{error}</p>
       )}
 
-      <button
-        type="submit"
-        disabled={submitting}
-        className="btn-chunky w-full rounded-2xl bg-ink-accent px-6 py-3 text-sm font-bold text-white disabled:opacity-60 sm:w-auto"
-      >
-        {submitting ? t("form.submitting") : t("form.submit")}
-      </button>
+      <div className="flex flex-wrap gap-2">
+        <button
+          type="submit"
+          disabled={submitting}
+          className="btn-chunky rounded-2xl bg-ink-accent px-6 py-3 text-sm font-bold text-white disabled:opacity-60"
+        >
+          {submitting ? t("form.submitting") : t("form.submit")}
+        </button>
+        <button
+          type="button"
+          onClick={() => setExpanded(false)}
+          className="rounded-2xl px-6 py-3 text-sm font-semibold text-ink-text-muted transition hover:bg-ink-bg-hover"
+        >
+          {t("card.cancel")}
+        </button>
+      </div>
     </form>
   );
 }

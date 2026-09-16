@@ -62,6 +62,7 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "board.filterEmptyDescription": "Nothing posted at this formality level yet — try a different filter.",
 
     "form.heading": "Add a Japanese sentence",
+    "form.composePlaceholder": "Add a Japanese sentence…",
     "form.rawLabel": "Raw Japanese text",
     "form.tokenizing": "Tokenizing…",
     "form.ocrFromPhoto": "From photo",
@@ -318,6 +319,7 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "board.filterEmptyDescription": "この敬語レベルの投稿はまだありません — 別のフィルターを試してください。",
 
     "form.heading": "日本語の文を追加",
+    "form.composePlaceholder": "日本語の文を追加…",
     "form.rawLabel": "生の日本語テキスト",
     "form.tokenizing": "解析中…",
     "form.ocrFromPhoto": "写真から",
