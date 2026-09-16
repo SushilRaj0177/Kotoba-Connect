@@ -22,7 +22,7 @@ export default async function HomePage() {
     .from("context_entries")
     .select("*, profiles!context_entries_user_id_fkey(username, display_name, avatar_url)")
     .order("created_at", { ascending: false })
-    .limit(50);
+    .range(0, 29); // matches EntryBoard's PAGE_SIZE (30) so "load more" continues seamlessly
 
   let initialVotedIds = new Set<string>();
   let initialBookmarkedIds = new Set<string>();
