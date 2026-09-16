@@ -55,13 +55,13 @@ export default function LikeButton({
       onClick={handleVote}
       disabled={!currentUserId || voting}
       title={currentUserId ? t("card.upvote") : t("card.signInToVote")}
-      className={`flex h-9 items-center gap-1 rounded-full px-2.5 text-xs font-bold transition active:scale-90 ${
+      className={`flex h-10 items-center gap-1.5 rounded-full px-3 text-sm font-bold transition active:scale-90 ${
         hasVoted ? "text-ink-accent" : "text-ink-text-muted hover:bg-ink-bg-hover hover:text-ink-text"
       } disabled:cursor-not-allowed disabled:opacity-50`}
     >
       <svg
-        width="17"
-        height="17"
+        width="19"
+        height="19"
         viewBox="0 0 24 24"
         fill={hasVoted ? "currentColor" : "none"}
         stroke="currentColor"

@@ -40,13 +40,13 @@ export default function BookmarkButton({
       onClick={toggle}
       disabled={busy}
       title={bookmarked ? t("card.unsave") : t("card.save")}
-      className={`flex h-9 w-9 items-center justify-center rounded-full transition active:scale-90 ${
+      className={`flex h-10 w-10 items-center justify-center rounded-full transition active:scale-90 ${
         bookmarked ? "text-ink-accent" : "text-ink-text-muted hover:bg-ink-bg-hover hover:text-ink-text"
       } disabled:cursor-not-allowed disabled:opacity-50`}
     >
       <svg
-        width="17"
-        height="17"
+        width="19"
+        height="19"
         viewBox="0 0 24 24"
         fill={bookmarked ? "currentColor" : "none"}
         stroke="currentColor"

@@ -62,9 +62,9 @@ export default function ReportButton({
     return (
       <span
         title={t("card.reported")}
-        className="flex h-9 w-9 items-center justify-center text-ink-text-muted"
+        className="flex h-10 w-10 items-center justify-center text-ink-text-muted"
       >
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M20 6 9 17l-5-5" />
         </svg>
       </span>
@@ -77,9 +77,9 @@ export default function ReportButton({
         type="button"
         onClick={() => setOpen((o) => !o)}
         title={t("card.report")}
-        className="flex h-9 w-9 items-center justify-center rounded-full text-ink-text-muted transition hover:bg-ink-bg-hover hover:text-ink-red active:scale-90"
+        className="flex h-10 w-10 items-center justify-center rounded-full text-ink-text-muted transition hover:bg-ink-bg-hover hover:text-ink-red active:scale-90"
       >
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1Z" />
           <path d="M4 22v-7" />
         </svg>
