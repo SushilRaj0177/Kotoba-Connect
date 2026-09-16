@@ -332,22 +332,6 @@ body::before {
 .m-whoosh-out { display: inline-block; animation: m-whoosh-out 0.34s ease-in forwards; }
 .m-whoosh-in { display: inline-block; animation: m-whoosh-in 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
 
-/* HeroDuo — Kokeshi and Obake's landing-hero interaction loop. The
-   motion itself is driven imperatively by framer-motion (real spring
-   physics — see components/HeroDuo.tsx), not CSS @keyframes: transform
-   interpolation between two keyframe points is always a straight line
-   no matter the easing curve, which is why an earlier version of this
-   read as a flat cutout sliding around rather than something with real
-   weight. These are just the static base styles framer-motion animates
-   on top of. */
-.hero-sparkle {
-  width: 10px;
-  height: 10px;
-  background: rgb(var(--c-accent));
-  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-  pointer-events: none;
-}
-
 /* Desktop-only +17% scale across the entire UI. `zoom` (not
    `transform: scale`) actually reflows layout at the larger size —
    spacing, wrapping, and fixed-position elements all recompute against
