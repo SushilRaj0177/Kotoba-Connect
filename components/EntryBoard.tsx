@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { ContextEntry, FormalityLevel } from "@/types/database";
 import EntryForm from "@/components/EntryForm";
@@ -16,20 +16,30 @@ export default function EntryBoard({
   userId,
   username,
   avatarUrl,
+  initialEntries,
+  initialCommentCounts,
 }: {
   userId: string | null;
   username: string | null;
   avatarUrl?: string | null;
+  // Server-fetched first page (newest, unfiltered) so the board paints
+  // immediately instead of every visit showing a skeleton while this
+  // component's own fetch runs after hydration — see app/page.tsx.
+  initialEntries?: ContextEntry[];
+  initialCommentCounts?: Record<string, number>;
 }) {
   const { t } = useLocale();
-  const [entries, setEntries] = useState<ContextEntry[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [entries, setEntries] = useState<ContextEntry[]>(initialEntries ?? []);
+  const [loading, setLoading] = useState(!initialEntries);
   const [error, setError] = useState<string | null>(null);
   const [searchResults, setSearchResults] = useState<ContextEntry[] | null>(null);
   const [sortBy, setSortBy] = useState<SortOption>("new");
   const [formalityFilter, setFormalityFilter] = useState<FormalityLevel | "all">("all");
-  const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
+  const [commentCounts, setCommentCounts] = useState<Record<string, number>>(initialCommentCounts ?? {});
   const blockedIds = useBlockedIds(userId);
+  // Skips exactly one redundant client fetch on mount when server data was
+  // already provided — sort/filter changes after that still fetch normally.
+  const skipInitialLoad = useRef(!!initialEntries);
 
   const loadEntries = useCallback(async () => {
     setError(null);
@@ -90,6 +100,10 @@ export default function EntryBoard({
   }, [userId, sortBy, formalityFilter]);
 
   useEffect(() => {
+    if (skipInitialLoad.current) {
+      skipInitialLoad.current = false;
+      return;
+    }
     loadEntries();
   }, [loadEntries]);
 
