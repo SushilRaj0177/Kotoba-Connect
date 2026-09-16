@@ -4,8 +4,21 @@ import Footer from "@/components/Footer";
 import Mascot from "@/components/Mascot";
 import { Obake } from "@/components/mascots/candidates";
 import UserHandle from "@/components/UserHandle";
+import FormalityBadge from "@/components/FormalityBadge";
+import TokenizedText from "@/components/TokenizedText";
+import AiNuanceCallout from "@/components/AiNuanceCallout";
 import { createClient } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
+import type { KuromojiToken } from "@/types/database";
+
+// A static, illustrative example entry — not live data — so a first-time
+// visitor sees exactly what posting and annotating looks like before
+// being asked to sign in. The abstract "word-by-word nuance" feature
+// blurb doesn't land nearly as well as actually seeing it.
+const EXAMPLE_TOKENS: KuromojiToken[] = [
+  { word_id: 1, word_type: "KNOWN", surface_form: "お疲れ様", pos: "名詞", pos_detail_1: "*", basic_form: "お疲れ様", reading: "オツカレサマ" },
+  { word_id: 2, word_type: "KNOWN", surface_form: "でした", pos: "助動詞", pos_detail_1: "*", basic_form: "です", reading: "デシタ" },
+];
 
 // The site has exactly two mascots, Kokeshi and Obake — introducing more
 // characters (there used to be a fox and a cat here) reads as a bigger,
@@ -131,6 +144,30 @@ export default async function LandingPage() {
               <strong className="font-display text-ink-text-header">{userCount ?? 0}</strong>{" "}
               {t("landing.statsMembers")}
             </span>
+          </div>
+        </section>
+
+        {/* Concrete example — a static illustration of what a real entry
+           looks like, since "word-by-word nuance" as a phrase doesn't land
+           nearly as well as actually seeing one. */}
+        <section className="mx-auto mt-16 max-w-xl sm:mt-20">
+          <p className="text-center text-xs font-bold uppercase tracking-wide text-ink-text-muted">
+            {t("landing.exampleLabel")}
+          </p>
+          <div className="mt-3 rounded-2xl bg-ink-bg-secondary p-5 border border-ink-border/70 shadow-sm">
+            <div className="mb-2 flex items-center gap-2">
+              <UserHandle username="sushil" displayName="Sushil" size="sm" />
+              <FormalityBadge level="Teineigo" />
+            </div>
+            <TokenizedText tokens={EXAMPLE_TOKENS} activeIndex={0} />
+            <p className="mt-1 text-sm text-ink-text-muted">{t("landing.exampleTranslation")}</p>
+            <AiNuanceCallout summary={t("landing.exampleAiRead")} formalitySuggestion={null} />
+            <div className="mt-3 rounded-xl bg-ink-bg-input p-3">
+              <p className="text-xs font-bold text-ink-text-header">
+                {t("landing.exampleNoteLabel")} “{EXAMPLE_TOKENS[0].surface_form}”
+              </p>
+              <p className="mt-1 text-sm text-ink-text-muted">{t("landing.exampleNoteBody")}</p>
+            </div>
           </div>
         </section>
 
