@@ -159,6 +159,12 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "detail.signInSuffix": "to add a note.",
     "detail.upvotes": "likes",
     "detail.postedBy": "Posted by",
+
+    "translate.action": "Translate",
+    "translate.loading": "Translating…",
+    "translate.error": "Couldn't translate",
+    "translate.show": "Show translation",
+    "translate.showOriginal": "Show original",
     "comments.title": "Comments",
     "comments.placeholder": "Add a comment…",
     "comments.post": "Post",
@@ -455,6 +461,13 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "detail.signInSuffix": "してノートを追加してください。",
     "detail.upvotes": "件のいいね",
     "detail.postedBy": "投稿者:",
+
+    "translate.action": "翻訳",
+    "translate.loading": "翻訳中…",
+    "translate.error": "翻訳できませんでした",
+    "translate.show": "翻訳を表示",
+    "translate.showOriginal": "原文を表示",
+
     "comments.title": "コメント",
     "comments.placeholder": "コメントを追加…",
     "comments.post": "投稿",

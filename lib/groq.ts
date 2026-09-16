@@ -200,6 +200,54 @@ Translation: ${translation}`;
   }
 }
 
+// On-demand translation for content that doesn't track the UI locale
+// toggle — the AI nuance summary is generated once (always in English,
+// see analyzePragmatics above) and stored, and user-written text
+// (entries, comments, annotation notes) is whatever language its author
+// happened to write in. Switching the site's own UI to 日本語 doesn't
+// retroactively translate any of that, so this gives a per-piece-of-text
+// "translate this" action instead.
+export async function translateText(text: string, targetLang: "en" | "ja"): Promise<string | null> {
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) return null;
+
+  const targetName = targetLang === "ja" ? "Japanese" : "English";
+  const prompt = `Translate the following text to ${targetName}. Preserve tone and meaning,
+including any cultural/pragmatic nuance. Respond with ONLY the translation, nothing else —
+no quotes, no explanation, no romaji unless it was in the source.
+
+Text: ${text}`;
+
+  try {
+    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: GROQ_MODEL,
+        messages: [{ role: "user", content: prompt }],
+        reasoning_effort: REASONING_EFFORT,
+        temperature: 0.2,
+        max_tokens: 500,
+      }),
+    });
+
+    if (!res.ok) {
+      console.error("Groq API error", res.status, await res.text());
+      return null;
+    }
+
+    const data = await res.json();
+    const content = data.choices?.[0]?.message?.content;
+    return typeof content === "string" && content.trim() ? content.trim() : null;
+  } catch (err) {
+    console.error("Groq translation failed", err);
+    return null;
+  }
+}
+
 export interface ReportTriage {
   severity: "low" | "medium" | "high";
   reasoning: string;

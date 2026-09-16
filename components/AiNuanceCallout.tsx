@@ -1,7 +1,12 @@
 "use client";
 
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import TranslateButton from "@/components/TranslateButton";
 
+// The AI read is generated once, always in English (see analyzePragmatics
+// in lib/groq.ts), and stored — it doesn't regenerate per-locale, so
+// switching the UI to 日本語 leaves this stuck in English. TranslateButton
+// gives a per-card way to translate it on demand instead.
 export default function AiNuanceCallout({
   summary,
   formalitySuggestion,
@@ -19,6 +24,7 @@ export default function AiNuanceCallout({
         {formalitySuggestion ? ` · ${t("ai.suggests")} ${formalitySuggestion}` : ""}
       </p>
       <p className="mt-0.5 text-sm text-ink-text">{summary}</p>
+      <TranslateButton text={summary} className="mt-1.5" />
     </div>
   );
 }
