@@ -49,8 +49,11 @@ export default async function LandingPage() {
       mascot: (
         <FeatureIcon>
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0V4Z" />
-            <path d="M7 6H4a3 3 0 0 0 3 5M17 6h3a3 3 0 0 1-3 5" />
+            <path d="M7 3h10v5a5 5 0 0 1-10 0V3Z" />
+            <path d="M7 4H4.5a2 2 0 0 0 0 4c.5 1.5 1.6 2.7 3 3.3" />
+            <path d="M17 4h2.5a2 2 0 0 1 0 4c-.5 1.5-1.6 2.7-3 3.3" />
+            <path d="M12 15.5V19" />
+            <path d="M8.5 21h7" />
           </svg>
         </FeatureIcon>
       ),
