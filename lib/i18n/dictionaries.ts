@@ -96,6 +96,10 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "card.deleting": "Deleting…",
     "card.confirmDelete": "Confirm delete",
     "card.cancel": "Cancel",
+    "card.edit": "Edit",
+    "card.saveEdit": "Save changes",
+    "card.share": "Share",
+    "card.linkCopied": "Link copied!",
 
     "detail.back": "← Back to board",
     "detail.clickHint": "Click any word above to pin a pragmatic nuance note to that token.",
@@ -348,6 +352,10 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "card.deleting": "削除中…",
     "card.confirmDelete": "削除を確認",
     "card.cancel": "キャンセル",
+    "card.edit": "編集",
+    "card.saveEdit": "変更を保存",
+    "card.share": "共有",
+    "card.linkCopied": "リンクをコピーしました！",
 
     "detail.back": "← ボードに戻る",
     "detail.clickHint": "上の単語をクリックすると、その語にニュアンスノートを固定できます。",
