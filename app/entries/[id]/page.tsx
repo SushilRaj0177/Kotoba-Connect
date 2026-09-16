@@ -57,7 +57,7 @@ export default async function EntryPage({ params }: { params: { id: string } }) 
       <Navbar />
       <main className="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:max-w-5xl">
         <Link
-          href="/"
+          href={user ? "/" : "/board"}
           className="mb-4 inline-block text-sm font-medium text-ink-text-link hover:underline"
         >
           {t("detail.back")}

@@ -1,0 +1,123 @@
+import Link from "next/link";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import Mascot from "@/components/Mascot";
+import { Obake, Kitsune, Neko } from "@/components/mascots/candidates";
+import { createClient } from "@/lib/supabase/server";
+import { getServerTranslator } from "@/lib/i18n/server";
+
+// The marketing front door for signed-out visitors — previously "/" just
+// showed the live board with a two-line heading above it, which meant a
+// first-time visitor landed straight in an app UI with no explanation of
+// what the product even is before being asked to sign in. Signed-in
+// visitors never see this (app/page.tsx renders BoardView for them
+// instead); this is reachable only when signed out.
+export default async function LandingPage() {
+  const { t } = getServerTranslator();
+  const supabase = createClient();
+  const [{ count: entryCount }, { count: userCount }] = await Promise.all([
+    supabase.from("context_entries").select("id", { count: "exact", head: true }),
+    supabase.from("profiles").select("id", { count: "exact", head: true }),
+  ]);
+
+  const features = [
+    {
+      mascot: <Mascot size={56} mood="happy" />,
+      title: t("landing.feature1Title"),
+      body: t("landing.feature1Body"),
+    },
+    {
+      mascot: <Obake size={56} />,
+      title: t("landing.feature2Title"),
+      body: t("landing.feature2Body"),
+    },
+    {
+      mascot: <Kitsune size={56} />,
+      title: t("landing.feature3Title"),
+      body: t("landing.feature3Body"),
+    },
+    {
+      mascot: <Neko size={56} />,
+      title: t("landing.feature4Title"),
+      body: t("landing.feature4Body"),
+    },
+  ];
+
+  return (
+    <>
+      <Navbar title={t("app.name")} />
+      <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-14">
+        {/* Hero */}
+        <section className="flex flex-col items-center gap-5 text-center">
+          <div className="flex items-center -space-x-3">
+            <Mascot size={72} mood="excited" />
+            <Obake size={64} />
+          </div>
+          <h1 className="max-w-2xl font-display text-4xl font-black leading-tight text-ink-text-header sm:text-5xl">
+            {t("landing.heroTitle")}
+          </h1>
+          <p className="max-w-xl text-base text-ink-text-muted sm:text-lg">{t("landing.heroSubtitle")}</p>
+          <div className="mt-2 flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href="/login"
+              className="btn-chunky rounded-2xl px-6 py-3 text-sm font-bold text-white sm:text-base"
+            >
+              {t("landing.ctaSignIn")}
+            </Link>
+            <Link
+              href="/board"
+              className="rounded-2xl border border-ink-border px-6 py-3 text-sm font-bold text-ink-text transition hover:bg-ink-bg-hover sm:text-base"
+            >
+              {t("landing.ctaBrowse")}
+            </Link>
+          </div>
+          <div className="mt-1 flex items-center gap-6 text-sm text-ink-text-muted">
+            <span>
+              <strong className="font-display text-ink-text-header">{entryCount ?? 0}</strong>{" "}
+              {t("landing.statsEntries")}
+            </span>
+            <span aria-hidden="true">·</span>
+            <span>
+              <strong className="font-display text-ink-text-header">{userCount ?? 0}</strong>{" "}
+              {t("landing.statsMembers")}
+            </span>
+          </div>
+        </section>
+
+        {/* Features */}
+        <section className="mt-16 sm:mt-20">
+          <h2 className="text-center font-display text-2xl font-black text-ink-text-header">
+            {t("landing.featuresTitle")}
+          </h2>
+          <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {features.map((f) => (
+              <div
+                key={f.title}
+                className="flex gap-4 rounded-2xl bg-ink-bg-secondary p-5 border border-ink-border/70 shadow-sm"
+              >
+                <div className="flex-none">{f.mascot}</div>
+                <div className="min-w-0">
+                  <h3 className="font-display text-base font-bold text-ink-text-header">{f.title}</h3>
+                  <p className="mt-1 text-sm leading-relaxed text-ink-text-muted">{f.body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Closing CTA */}
+        <section className="bg-seigaiha mt-16 rounded-2xl bg-ink-accent p-8 text-center text-white sm:mt-20">
+          <h2 className="font-display text-xl font-black sm:text-2xl">{t("landing.closingTitle")}</h2>
+          <p className="mx-auto mt-2 max-w-md text-sm text-white/90 sm:text-base">{t("landing.closingBody")}</p>
+          <Link
+            href="/login"
+            className="mt-5 inline-block rounded-2xl bg-white px-6 py-3 text-sm font-bold text-ink-accent shadow-md transition hover:scale-[1.03] sm:text-base"
+          >
+            {t("landing.ctaSignIn")}
+          </Link>
+        </section>
+      </main>
+      <Footer />
+    </>
+  );
+}

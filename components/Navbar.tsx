@@ -17,7 +17,10 @@ export default async function Navbar({ title }: { title?: string } = {}) {
   return (
     <header className="sticky top-0 z-10 bg-ink-bg/90 shadow-[0_1px_0_0_rgb(var(--c-border)/0.6)] backdrop-blur">
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3.5 sm:px-6">
-        <Link href="/" className="flex-none md:hidden">
+        {/* Signed out, "/" is the marketing landing page rather than the
+           board — send the logo to "/board" instead so tapping it while
+           browsing without an account doesn't bounce back to the pitch. */}
+        <Link href={user ? "/" : "/board"} className="flex-none md:hidden">
           <span className="font-display text-2xl font-black text-ink-accent">言葉</span>
         </Link>
 

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Zen_Maru_Gothic } from "next/font/google";
 import "./globals.css";
-import Footer from "@/components/Footer";
 import SideRail from "@/components/SideRail";
 import MobileNav from "@/components/MobileNav";
 import MascotChat from "@/components/MascotChat";
@@ -74,7 +73,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   <div className="hidden w-[72px] flex-none md:block" aria-hidden="true" />
                   <div className="flex min-h-screen flex-1 flex-col pb-16 md:pb-0">
                     <div className="flex-1">{children}</div>
-                    <Footer />
                   </div>
                   <MobileNav />
                   <MascotChat />
