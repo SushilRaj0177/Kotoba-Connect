@@ -42,6 +42,13 @@ export default function SideRail() {
         </svg>
       </RailIcon>
 
+      <RailIcon href="/search" title={t("nav.search")}>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <circle cx="11" cy="11" r="7" />
+          <path d="m21 21-4.3-4.3" />
+        </svg>
+      </RailIcon>
+
       <RailIcon href="/leaderboard" title={t("nav.leaderboard")}>
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M7 3h10v5a5 5 0 0 1-10 0V3Z" />

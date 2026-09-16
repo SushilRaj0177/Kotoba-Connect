@@ -2,18 +2,22 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import type { ContextEntry, FormalityLevel } from "@/types/database";
+import type { ContextEntry } from "@/types/database";
 import EntryForm from "@/components/EntryForm";
 import EntryCard from "@/components/EntryCard";
 import EmptyState from "@/components/EmptyState";
-import SearchBar from "@/components/SearchBar";
-import BoardControls, { type SortOption } from "@/components/BoardControls";
 import { EntryListSkeleton } from "@/components/Skeletons";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { useBlockedIds } from "@/lib/use-blocked-ids";
 
 const PAGE_SIZE = 30;
 
+// The home feed — just the compose box and newest posts, no search or
+// sort/filter controls cluttering it (those moved to /search, reachable
+// via the sidebar's search icon). Chronological is the feed here; with
+// no personalization signal to rank on, "newest first" already is what
+// a for-you feed degrades to for a young community — this isn't
+// pretending to be a ranked recommender it isn't.
 export default function EntryBoard({
   userId,
   username,
@@ -24,9 +28,9 @@ export default function EntryBoard({
   userId: string | null;
   username: string | null;
   avatarUrl?: string | null;
-  // Server-fetched first page (newest, unfiltered) so the board paints
-  // immediately instead of every visit showing a skeleton while this
-  // component's own fetch runs after hydration — see app/page.tsx.
+  // Server-fetched first page (newest) so the board paints immediately
+  // instead of every visit showing a skeleton while this component's own
+  // fetch runs after hydration — see app/page.tsx.
   initialEntries?: ContextEntry[];
   initialCommentCounts?: Record<string, number>;
 }) {
@@ -36,9 +40,6 @@ export default function EntryBoard({
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState((initialEntries?.length ?? 0) >= PAGE_SIZE);
   const [error, setError] = useState<string | null>(null);
-  const [searchResults, setSearchResults] = useState<ContextEntry[] | null>(null);
-  const [sortBy, setSortBy] = useState<SortOption>("new");
-  const [formalityFilter, setFormalityFilter] = useState<FormalityLevel | "all">("all");
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>(initialCommentCounts ?? {});
   // Count of new posts that arrived via realtime while the viewer has
   // already scrolled/paginated — surfaced as a banner instead of silently
@@ -46,7 +47,7 @@ export default function EntryBoard({
   const [newPostCount, setNewPostCount] = useState(0);
   const blockedIds = useBlockedIds(userId);
   // Skips exactly one redundant client fetch on mount when server data was
-  // already provided — sort/filter changes after that still fetch normally.
+  // already provided.
   const skipInitialLoad = useRef(!!initialEntries);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
@@ -91,17 +92,11 @@ export default function EntryBoard({
     setError(null);
     const supabase = createClient();
 
-    let query = supabase
+    const { data, error: fetchError } = await supabase
       .from("context_entries")
       .select("*, profiles!context_entries_user_id_fkey(username, display_name, avatar_url)")
-      .order(sortBy === "popular" ? "upvotes_count" : "created_at", { ascending: false })
+      .order("created_at", { ascending: false })
       .range(0, PAGE_SIZE - 1);
-
-    if (formalityFilter !== "all") {
-      query = query.eq("formality_level", formalityFilter);
-    }
-
-    const { data, error: fetchError } = await query;
 
     if (fetchError) {
       setError(t("board.loadError"));
@@ -114,7 +109,7 @@ export default function EntryBoard({
     setCommentCounts(counts);
     setHasMore((data?.length ?? 0) >= PAGE_SIZE);
     setLoading(false);
-  }, [sortBy, formalityFilter, enrichBatch, t]);
+  }, [enrichBatch, t]);
 
   // Appends the next page instead of replacing — the board's actual content
   // "keeps going" the way any mature feed does, instead of hard-stopping at
@@ -124,17 +119,12 @@ export default function EntryBoard({
     setLoadingMore(true);
     const supabase = createClient();
 
-    let query = supabase
+    const { data, error: fetchError } = await supabase
       .from("context_entries")
       .select("*, profiles!context_entries_user_id_fkey(username, display_name, avatar_url)")
-      .order(sortBy === "popular" ? "upvotes_count" : "created_at", { ascending: false })
+      .order("created_at", { ascending: false })
       .range(entries.length, entries.length + PAGE_SIZE - 1);
 
-    if (formalityFilter !== "all") {
-      query = query.eq("formality_level", formalityFilter);
-    }
-
-    const { data, error: fetchError } = await query;
     if (fetchError || !data?.length) {
       setHasMore(false);
       setLoadingMore(false);
@@ -149,7 +139,7 @@ export default function EntryBoard({
     setCommentCounts((prev) => ({ ...prev, ...counts }));
     setHasMore(data.length >= PAGE_SIZE);
     setLoadingMore(false);
-  }, [entries, loadingMore, hasMore, sortBy, formalityFilter, enrichBatch]);
+  }, [entries, loadingMore, hasMore, enrichBatch]);
 
   useEffect(() => {
     if (skipInitialLoad.current) {
@@ -160,13 +150,11 @@ export default function EntryBoard({
   }, [loadEntries]);
 
   const visibleEntries = entries.filter((e) => !blockedIds.has(e.user_id));
-  const visibleSearchResults = searchResults?.filter((e) => !blockedIds.has(e.user_id)) ?? null;
 
   // Auto-loads the next page as the sentinel at the bottom of the list
   // scrolls into view — no "click to load more" step, matching how a
   // normal social feed behaves.
   useEffect(() => {
-    if (searchResults !== null) return; // pagination only applies to the board itself
     const node = sentinelRef.current;
     if (!node) return;
 
@@ -178,7 +166,7 @@ export default function EntryBoard({
     );
     observer.observe(node);
     return () => observer.disconnect();
-  }, [loadMore, searchResults]);
+  }, [loadMore]);
 
   // Real-time sync. Previously any insert/update/delete on any of these
   // tables just re-ran loadEntries(), which replaces the whole list with a
@@ -260,18 +248,7 @@ export default function EntryBoard({
         </div>
       )}
 
-      <SearchBar userId={userId} onResults={setSearchResults} onClear={() => setSearchResults(null)} />
-
-      {searchResults === null && (
-        <BoardControls
-          sortBy={sortBy}
-          onSortChange={setSortBy}
-          formalityFilter={formalityFilter}
-          onFormalityChange={setFormalityFilter}
-        />
-      )}
-
-      {searchResults === null && newPostCount > 0 && (
+      {newPostCount > 0 && (
         <button
           type="button"
           onClick={loadNewPosts}
@@ -297,28 +274,8 @@ export default function EntryBoard({
             {t("board.retry")}
           </button>
         </div>
-      ) : visibleSearchResults !== null ? (
-        visibleSearchResults.length === 0 ? (
-          <EmptyState title={t("board.searchEmptyTitle")} description={t("board.searchEmptyDescription")} variant="obake" />
-        ) : (
-          <div className="space-y-4">
-            {visibleSearchResults.map((entry) => (
-              <EntryCard
-                key={entry.id}
-                entry={entry}
-                currentUserId={userId}
-                bookmarked={!!entry.is_bookmarked}
-                commentCount={commentCounts[entry.id] ?? 0}
-              />
-            ))}
-          </div>
-        )
       ) : visibleEntries.length === 0 ? (
-        formalityFilter !== "all" ? (
-          <EmptyState title={t("board.filterEmptyTitle")} description={t("board.filterEmptyDescription")} variant="obake" />
-        ) : (
-          <EmptyState title={t("board.emptyTitle")} description={t("board.emptyDescription")} variant="obake" />
-        )
+        <EmptyState title={t("board.emptyTitle")} description={t("board.emptyDescription")} variant="obake" />
       ) : (
         <>
           <div className="space-y-4">

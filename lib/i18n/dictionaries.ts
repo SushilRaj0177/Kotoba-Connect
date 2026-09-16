@@ -54,6 +54,11 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "landing.step2Body": "An AI pragmatic read on formality and cultural context kicks off the discussion.",
     "landing.step3Title": "The community digs in",
     "landing.step3Body": "Click any word to see nuance notes, vote on the ones that ring true, discuss in comments.",
+    "landing.exampleLabel": "What an entry looks like",
+    "landing.exampleTranslation": "Thanks for your hard work (said at end of day/task).",
+    "landing.exampleAiRead": "Commonly said when leaving work, regardless of actual effort involved — a ritual sign-off, not a literal thanks.",
+    "landing.exampleNoteLabel": "Nuance note on",
+    "landing.exampleNoteBody": "A dictionary just says \"thank you for your hard work.\" In practice it's said to everyone leaving, worked hard or not — skipping it can read as rude.",
 
     "board.signInPrompt": "Sign in",
     "board.signInSuffix": "to post a sentence, vote, or add nuance notes.",
@@ -345,6 +350,11 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "landing.step2Body": "AIが丁寧さと文化的背景を解釈し、議論のきっかけを作ります。",
     "landing.step3Title": "コミュニティが深掘りする",
     "landing.step3Body": "任意の単語をクリックしてニュアンス注釈を見たり、納得できる注釈に投票したり、コメントで議論しましょう。",
+    "landing.exampleLabel": "投稿はこんな感じです",
+    "landing.exampleTranslation": "Thanks for your hard work (said at end of day/task).",
+    "landing.exampleAiRead": "実際の努力量に関係なく、退勤する人に言う定型的な挨拶で、文字通りの感謝ではありません。",
+    "landing.exampleNoteLabel": "ニュアンス注釈：",
+    "landing.exampleNoteBody": "辞書には「お疲れ様でした」としか載っていませんが、実際は頑張ったかどうかに関わらず退勤する人全員に言う言葉です。省略すると失礼に聞こえることがあります。",
 
     "board.signInPrompt": "サインイン",
     "board.signInSuffix": "して、文を投稿したり、投票したり、ニュアンスノートを追加しましょう。",
