@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import type { EntryComment } from "@/types/database";
 import UserHandle from "@/components/UserHandle";
 import ReportButton from "@/components/ReportButton";
+import TranslateButton from "@/components/TranslateButton";
 import { spamSignal } from "@/lib/moderation";
 import { errorMessage } from "@/lib/errors";
 import { useLocale } from "@/components/i18n/LocaleProvider";
@@ -132,6 +133,7 @@ export default function EntryComments({
                 </span>
               </div>
               <p className="mt-2 whitespace-pre-wrap text-sm text-ink-text">{c.body}</p>
+              <TranslateButton text={c.body} className="mt-1" />
               <div className="mt-1.5 flex items-center gap-0.5">
                 <ReportButton targetType="comment" targetId={c.id} userId={userId} />
                 {userId === c.user_id && (

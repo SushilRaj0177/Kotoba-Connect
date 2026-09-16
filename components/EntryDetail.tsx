@@ -17,6 +17,7 @@ import DeleteEntryButton from "@/components/DeleteEntryButton";
 import EditEntryForm from "@/components/EditEntryForm";
 import ShareEntryButton from "@/components/ShareEntryButton";
 import LikeButton from "@/components/LikeButton";
+import TranslateButton from "@/components/TranslateButton";
 import { spamSignal } from "@/lib/moderation";
 import { errorMessage } from "@/lib/errors";
 import { useLocale } from "@/components/i18n/LocaleProvider";
@@ -167,6 +168,7 @@ export default function EntryDetail({
                   activeIndex={activeIndex}
                 />
                 <p className="mt-1 text-sm text-ink-text-muted">{liveEntry.primary_translation}</p>
+                <TranslateButton text={liveEntry.raw_japanese} className="mt-1" />
                 <AiNuanceCallout
                   summary={liveEntry.ai_nuance_summary}
                   formalitySuggestion={liveEntry.ai_formality_suggestion}
@@ -252,6 +254,10 @@ export default function EntryDetail({
                   {a.cultural_context && (
                     <p className="mt-1 text-xs text-ink-text-muted">{a.cultural_context}</p>
                   )}
+                  <TranslateButton
+                    text={a.cultural_context ? `${a.nuance_note}\n${a.cultural_context}` : a.nuance_note}
+                    className="mt-1"
+                  />
                   <div className="mt-1.5">
                     <ReportButton targetType="annotation" targetId={a.id} userId={userId} />
                   </div>

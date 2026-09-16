@@ -12,6 +12,7 @@ import DeleteEntryButton from "@/components/DeleteEntryButton";
 import EditEntryForm from "@/components/EditEntryForm";
 import ShareEntryButton from "@/components/ShareEntryButton";
 import LikeButton from "@/components/LikeButton";
+import TranslateButton from "@/components/TranslateButton";
 import EntryComments from "@/components/EntryComments";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 
@@ -78,6 +79,7 @@ export default function EntryCard({
               <p className="font-jp text-lg leading-loose text-ink-text-header">{liveEntry.raw_japanese}</p>
               <p className="mt-1 text-sm text-ink-text-muted">{liveEntry.primary_translation}</p>
             </Link>
+            <TranslateButton text={liveEntry.raw_japanese} className="mt-1" />
 
             <AiNuanceCallout
               summary={liveEntry.ai_nuance_summary}
