@@ -81,25 +81,20 @@
 
 /* +20% layout scale, desktop/tablet only. `zoom` (not `transform: scale`
    or a font-size hack) scales the whole render — layout, px-based widths,
-   everything — consistently, the same way browser zoom would. Scoped out
-   of mobile widths because `width=device-width` in the viewport meta tag
-   is computed *after* zoom on mobile browsers, so applying it there
-   shrinks the effective layout viewport and makes the page load already
-   pinched in, forcing the user to manually zoom back out.
+   everything — consistently, the same way browser zoom would.
 
-   `min-width: 768px` alone isn't a reliable phone/desktop signal — some
-   mobile browsers compute a media query's reported viewport width from
-   the page's actual (possibly wider, e.g. from unconstrained content)
-   layout box rather than the physical device width, which let this rule
-   fire on a phone after sign-in once the compose form's extra fields
-   pushed things wider, and the whole page visibly shrank as a result.
-   `pointer: fine` (a mouse/trackpad) is true for essentially no phone or
-   tablet regardless of viewport width, so it's a hard backstop that
-   makes this rule *only* ever apply to a real desktop/laptop. */
-@media (min-width: 768px) and (pointer: fine) {
-  html {
-    zoom: 1.2;
-  }
+   This used to be a `@media (min-width: 768px) and (pointer: fine)` rule,
+   but CSS media features are exactly what a phone browser's "Request
+   desktop site" mode fakes on purpose (that's the point of the feature —
+   make the page believe it's on a desktop), so a real phone in that mode
+   still matched and rendered a badly-overflowing, half-legible page. The
+   gate is now a `data-desktop-zoom` attribute set by a blocking inline
+   script in <head> (see layout.tsx) that additionally checks
+   `window.screen.width` — the OS-reported physical display size, which
+   "request desktop site" does not spoof — so a phone can't trigger this
+   no matter what the page-rendering layer claims about itself. */
+html[data-desktop-zoom="true"] {
+  zoom: 1.2;
 }
 
 /* Custom cozy cursor — a familiar rounded arrow (not a dot/circle, so it
