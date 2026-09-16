@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { useToast } from "@/components/Toast";
 
 export default function DeleteEntryButton({
   entryId,
@@ -13,6 +14,7 @@ export default function DeleteEntryButton({
   redirectHome?: boolean;
 }) {
   const { t } = useLocale();
+  const { showToast } = useToast();
   const router = useRouter();
   const [confirming, setConfirming] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -22,6 +24,7 @@ export default function DeleteEntryButton({
     const supabase = createClient();
     await supabase.from("context_entries").delete().eq("id", entryId);
     setBusy(false);
+    showToast(t("toast.deleted"));
     if (redirectHome) router.push("/");
   }
 

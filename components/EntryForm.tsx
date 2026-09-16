@@ -8,6 +8,7 @@ import FormalitySelect from "@/components/FormalitySelect";
 import { spamSignal } from "@/lib/moderation";
 import { errorMessage } from "@/lib/errors";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { useToast } from "@/components/Toast";
 import Avatar from "@/components/Avatar";
 
 export default function EntryForm({
@@ -22,6 +23,7 @@ export default function EntryForm({
   onCreated?: () => void;
 }) {
   const { t } = useLocale();
+  const { showToast } = useToast();
   const [rawJapanese, setRawJapanese] = useState("");
   const [translation, setTranslation] = useState("");
   const [formality, setFormality] = useState<FormalityLevel>("Teineigo");
@@ -232,6 +234,7 @@ export default function EntryForm({
       setDuplicates([]);
       setDuplicatesDismissed(false);
       setExpanded(false);
+      showToast(t("toast.posted"));
       onCreated?.();
     } catch (err) {
       setError(errorMessage(err, t("form.errorGeneric")));

@@ -219,6 +219,44 @@ body::before {
   animation: pulse-soft 1.4s ease-in-out infinite;
 }
 
+/* Toast confirmations — slides/fades up from the bottom nav rather than
+   just appearing, so an action's confirmation reads as a live response
+   instead of a static text swap. */
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.animate-toast-in {
+  animation: toast-in 0.22s ease-out;
+}
+
+/* A quick outward pop on the like icon at the moment it's liked — the
+   kind of tiny, disposable feedback (LinkedIn's thumbs-up, Twitter's
+   heart) that makes an action feel acknowledged rather than just toggled. */
+@keyframes like-pop {
+  0% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.5);
+  }
+  60% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.animate-like-pop {
+  animation: like-pop 0.35s ease-out;
+}
+
 /* Mascot idle-motion library — every mascot design gets a real loop
    (never a static image) via one of these, applied to a <g> wrapping the
    part that should move. */
