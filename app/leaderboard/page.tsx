@@ -36,23 +36,25 @@ export default async function LeaderboardPage() {
           <EmptyState title={t("leaderboard.empty")} description="" />
         ) : (
           <>
-            <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div className="mb-4 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
               {top3.map((p, i) => (
                 <Link
                   key={p.id}
                   href={`/u/${p.username}`}
-                  className={`flex flex-col items-center rounded-2xl p-5 text-center border shadow-sm ring-1 transition hover:-translate-y-0.5 ${RANK_RING[i]} border-ink-border/70`}
+                  className={`flex items-center gap-3 rounded-2xl p-3.5 border shadow-sm ring-1 transition hover:-translate-y-0.5 ${RANK_RING[i]} border-ink-border/70`}
                 >
-                  <span className="text-2xl">{RANK_MEDAL[i]}</span>
-                  <Avatar username={p.username} avatarUrl={p.avatar_url} size={64} />
-                  <span className="mt-2.5 min-w-0 max-w-full truncate font-display text-base font-bold text-ink-text-header">
-                    {p.display_name?.trim() || `@${p.username}`}
+                  <span className="flex-none text-lg">{RANK_MEDAL[i]}</span>
+                  <Avatar username={p.username} avatarUrl={p.avatar_url} size={40} />
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate font-display text-sm font-bold text-ink-text-header">
+                      {p.display_name?.trim() || `@${p.username}`}
+                    </span>
+                    <span className="block text-xs text-ink-text-muted">
+                      {counts.get(p.id) ?? 0} {t("leaderboard.entries")}
+                    </span>
                   </span>
-                  <span className="text-xs text-ink-text-muted">
-                    {counts.get(p.id) ?? 0} {t("leaderboard.entries")}
-                  </span>
-                  <span className={`mt-1.5 text-lg font-extrabold ${RANK_TEXT[i]}`}>
-                    {p.reputation_score} <span className="text-xs font-semibold">{t("leaderboard.rep")}</span>
+                  <span className={`flex-none text-sm font-extrabold ${RANK_TEXT[i]}`}>
+                    {p.reputation_score} <span className="text-[10px] font-semibold">{t("leaderboard.rep")}</span>
                   </span>
                 </Link>
               ))}
