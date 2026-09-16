@@ -20,18 +20,22 @@ export default function SideRail() {
   const { userId, isAdmin } = useClientAuth();
 
   const user = !!userId;
+  // Signed out, "/" is the marketing landing page rather than the board —
+  // send Home to "/board" instead so navigating away and back (e.g. while
+  // browsing without an account) doesn't bounce back to the pitch.
+  const homeHref = user ? "/" : "/board";
 
   return (
     <nav className="fixed inset-y-0 left-0 z-30 hidden w-[72px] flex-none flex-col items-center gap-3 overflow-y-auto bg-ink-bg-secondary py-6 shadow-[1px_0_0_0_rgb(var(--c-border)/0.6)] md:flex">
       <Link
-        href="/"
+        href={homeHref}
         title={t("app.name")}
         className="mb-2 flex h-12 w-12 flex-none items-center justify-center rounded-2xl transition hover:scale-105 hover:bg-ink-bg-hover"
       >
         <MascotLogo size={40} />
       </Link>
 
-      <RailIcon href="/" title={t("nav.home")}>
+      <RailIcon href={homeHref} title={t("nav.home")}>
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M3 11.5 12 4l9 7.5" />
           <path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9" />

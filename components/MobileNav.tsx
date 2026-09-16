@@ -15,9 +15,14 @@ export default function MobileNav() {
   const pathname = usePathname();
   const { userId } = useClientAuth();
 
+  // Signed out, "/" is the marketing landing page rather than the board —
+  // send Home to "/board" instead so navigating away and back (e.g. while
+  // browsing without an account) doesn't bounce back to the pitch.
+  const homeHref = userId ? "/" : "/board";
+
   const items = [
     {
-      href: "/",
+      href: homeHref,
       label: t("nav.home"),
       show: true,
       icon: (

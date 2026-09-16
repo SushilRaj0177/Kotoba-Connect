@@ -26,6 +26,28 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "home.subtitle":
       "Real Japanese sentences, decomposed into tokens and annotated with the cultural nuance dictionaries miss.",
 
+    "landing.heroTitle": "Understand what Japanese actually means",
+    "landing.heroSubtitle":
+      "A community board for the cultural nuance dictionaries miss — annotate real sentences, word by word, with people who actually know.",
+    "landing.ctaSignIn": "Get started",
+    "landing.ctaBrowse": "Browse without an account →",
+    "landing.statsEntries": "sentences annotated",
+    "landing.statsMembers": "members",
+    "landing.featuresTitle": "Why 言葉",
+    "landing.feature1Title": "Word-by-word nuance",
+    "landing.feature1Body":
+      "Click any token in a sentence and see exactly what it implies, not just what it means.",
+    "landing.feature2Title": "AI pragmatic reads",
+    "landing.feature2Body":
+      "Every post gets an AI-generated read on formality and cultural context to kick off the discussion.",
+    "landing.feature3Title": "Community voting",
+    "landing.feature3Body":
+      "Upvote the notes that ring true, and climb the leaderboard as your reputation grows.",
+    "landing.feature4Title": "Bilingual by design",
+    "landing.feature4Body": "Switch the whole app between English and Japanese any time, no separate version.",
+    "landing.closingTitle": "Ready to dig into the nuance?",
+    "landing.closingBody": "Sign in and post your first sentence — the community will help you unpack it.",
+
     "board.signInPrompt": "Sign in",
     "board.signInSuffix": "to post a sentence, vote, or add nuance notes.",
     "board.retry": "Retry",
@@ -290,6 +312,25 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
 
     "home.title": "語用論ボード",
     "home.subtitle": "実際の日本語文をトークンに分解し、辞書にはない文化的ニュアンスを注釈します。",
+
+    "landing.heroTitle": "日本語の本当の意味を理解する",
+    "landing.heroSubtitle":
+      "辞書には載っていない文化的ニュアンスのためのコミュニティボード。実際の文を、言葉が分かる人たちと一緒に語ごとに注釈しよう。",
+    "landing.ctaSignIn": "はじめる",
+    "landing.ctaBrowse": "アカウントなしで見る →",
+    "landing.statsEntries": "件の投稿",
+    "landing.statsMembers": "人のメンバー",
+    "landing.featuresTitle": "言葉の特徴",
+    "landing.feature1Title": "語ごとのニュアンス",
+    "landing.feature1Body": "文中の任意のトークンをクリックすると、意味だけでなく、その語が本当に伝えていることが分かります。",
+    "landing.feature2Title": "AIによる語用論的解釈",
+    "landing.feature2Body": "すべての投稿にAIが丁寧さと文化的背景を解釈し、議論のきっかけを作ります。",
+    "landing.feature3Title": "コミュニティ投票",
+    "landing.feature3Body": "納得できる注釈にいいねをして、評価を上げてランキングを駆け上がろう。",
+    "landing.feature4Title": "バイリンガル設計",
+    "landing.feature4Body": "アプリ全体をいつでも英語と日本語で切り替えられます。別バージョンは不要です。",
+    "landing.closingTitle": "ニュアンスを深掘りする準備はできましたか?",
+    "landing.closingBody": "サインインして最初の文を投稿しましょう。コミュニティが理解を手伝います。",
 
     "board.signInPrompt": "サインイン",
     "board.signInSuffix": "して、文を投稿したり、投票したり、ニュアンスノートを追加しましょう。",
