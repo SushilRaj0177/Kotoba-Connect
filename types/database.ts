@@ -26,6 +26,7 @@ export interface Profile {
   website: string | null;
   reputation_score: number;
   is_admin: boolean;
+  is_bot: boolean;
   current_streak: number;
   longest_streak: number;
   last_post_date: string | null;
@@ -86,7 +87,7 @@ export interface ContextEntry {
   ai_nuance_summary: string | null;
   ai_processed: boolean;
   embedding?: number[] | null;
-  profiles?: Pick<Profile, "username" | "display_name" | "avatar_url">;
+  profiles?: Pick<Profile, "username" | "display_name" | "avatar_url" | "is_bot">;
   has_voted?: boolean;
   is_bookmarked?: boolean;
   similarity?: number;

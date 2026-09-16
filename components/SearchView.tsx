@@ -73,7 +73,7 @@ export default function SearchView({ userId }: { userId: string | null }) {
 
     let query = supabase
       .from("context_entries")
-      .select("*, profiles!context_entries_user_id_fkey(username, display_name, avatar_url)")
+      .select("*, profiles!context_entries_user_id_fkey(username, display_name, avatar_url, is_bot)")
       .order(sortBy === "popular" ? "upvotes_count" : "created_at", { ascending: false })
       .range(0, PAGE_SIZE - 1);
 
@@ -103,7 +103,7 @@ export default function SearchView({ userId }: { userId: string | null }) {
 
     let query = supabase
       .from("context_entries")
-      .select("*, profiles!context_entries_user_id_fkey(username, display_name, avatar_url)")
+      .select("*, profiles!context_entries_user_id_fkey(username, display_name, avatar_url, is_bot)")
       .order(sortBy === "popular" ? "upvotes_count" : "created_at", { ascending: false })
       .range(entries.length, entries.length + PAGE_SIZE - 1);
 

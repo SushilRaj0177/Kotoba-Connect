@@ -57,7 +57,7 @@ export default function SearchBar({
       const [{ data: fullEntries }, { data: votes }, { data: saves }] = await Promise.all([
         supabase
           .from("context_entries")
-          .select("*, profiles!context_entries_user_id_fkey(username, display_name, avatar_url)")
+          .select("*, profiles!context_entries_user_id_fkey(username, display_name, avatar_url, is_bot)")
           .in("id", ids),
         userId
           ? supabase.from("entry_upvotes").select("entry_id").eq("user_id", userId).in("entry_id", ids)

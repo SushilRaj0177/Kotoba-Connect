@@ -10,6 +10,7 @@ import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { getServerTheme } from "@/lib/theme";
 import { SITE_URL } from "@/lib/site";
 import { ClientAuthProvider } from "@/components/auth/ClientAuthProvider";
+import OnboardingGate from "@/components/auth/OnboardingGate";
 import { EntryChatProvider } from "@/components/EntryChatContext";
 import { ToastProvider } from "@/components/Toast";
 
@@ -63,6 +64,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeProvider initialTheme={theme}>
           <LocaleProvider initialLocale={locale}>
             <ClientAuthProvider>
+              <OnboardingGate />
               <EntryChatProvider>
                 <ToastProvider>
                   {/* The rail is fixed to the real left edge (so it can't be

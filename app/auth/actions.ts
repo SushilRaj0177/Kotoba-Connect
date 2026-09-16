@@ -37,9 +37,10 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
   const email = String(formData.get("email") || "").trim();
   const password = String(formData.get("password") || "");
   const username = String(formData.get("username") || "").trim();
+  const displayName = String(formData.get("displayName") || "").trim();
 
-  if (!email || !password || !username) {
-    return { error: "Username, email, and password are required." };
+  if (!email || !password || !username || !displayName) {
+    return { error: "Display name, username, email, and password are required." };
   }
   if (password.length < 6) {
     return { error: "Password must be at least 6 characters." };
@@ -47,12 +48,15 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
   if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
     return { error: "Username must be 3-20 characters (letters, numbers, underscore)." };
   }
+  if (displayName.length > 50) {
+    return { error: "Display name must be 50 characters or fewer." };
+  }
 
   const supabase = createClient();
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: { data: { username } },
+    options: { data: { username, display_name: displayName } },
   });
 
   if (error) {

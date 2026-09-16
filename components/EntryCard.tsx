@@ -59,6 +59,11 @@ export default function EntryCard({
         >
           {displayName?.trim() || `@${username}`}
         </Link>
+        {entry.profiles?.is_bot && (
+          <span className="flex-none rounded-full bg-ink-accent/15 px-1.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wide text-ink-accent">
+            {t("card.bot")}
+          </span>
+        )}
         <span className="text-xs text-ink-text-muted">{timestamp}</span>
         <FormalityBadge level={liveEntry.formality_level} />
       </div>

@@ -9,13 +9,26 @@ export default function EmptyState({
   title,
   description,
   variant = "kokeshi",
+  bare = false,
 }: {
   title: string;
   description: string;
   variant?: "kokeshi" | "obake";
+  // When EmptyState sits inside another bordered/shadowed card (rather
+  // than directly on the page background), its own border+shadow doubles
+  // up on an identical background color — the two rounded boxes' corners
+  // plus a divider below it then read as a stray line jutting past a
+  // curved edge instead of one cohesive card.
+  bare?: boolean;
 }) {
   return (
-    <div className="rounded-2xl bg-ink-bg-secondary px-6 py-14 text-center border border-ink-border/70 shadow-sm">
+    <div
+      className={
+        bare
+          ? "px-6 py-14 text-center"
+          : "rounded-2xl bg-ink-bg-secondary px-6 py-14 text-center border border-ink-border/70 shadow-sm"
+      }
+    >
       {variant === "obake" ? (
         <Obake size={88} className="mx-auto" />
       ) : (

@@ -146,6 +146,11 @@ export default function EntryDetail({
             <Link href={`/u/${username}`} className="font-display text-sm font-bold text-ink-text-header hover:underline">
               {displayName?.trim() || `@${username}`}
             </Link>
+            {entry.profiles?.is_bot && (
+              <span className="flex-none rounded-full bg-ink-accent/15 px-1.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wide text-ink-accent">
+                {t("card.bot")}
+              </span>
+            )}
             <FormalityBadge level={liveEntry.formality_level} />
           </div>
 
@@ -239,7 +244,7 @@ export default function EntryDetail({
           {loading ? (
             <p className="text-sm text-ink-text-muted">Loading annotations…</p>
           ) : activeIndex === null ? (
-            <EmptyState title={t("detail.selectTokenTitle")} description={t("detail.selectTokenDescription")} />
+            <EmptyState title={t("detail.selectTokenTitle")} description={t("detail.selectTokenDescription")} bare />
           ) : activeAnnotations.length === 0 ? (
             <p className="text-sm text-ink-text-muted">{t("detail.noNotesYet")}</p>
           ) : (
