@@ -136,7 +136,7 @@ export default function EntryBoard({
         </div>
       )}
 
-      <SearchBar onResults={setSearchResults} onClear={() => setSearchResults(null)} />
+      <SearchBar userId={userId} onResults={setSearchResults} onClear={() => setSearchResults(null)} />
 
       {searchResults === null && (
         <BoardControls

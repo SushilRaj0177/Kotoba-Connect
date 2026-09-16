@@ -54,6 +54,12 @@ export default function NotificationBell({ userId }: { userId: string }) {
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
   }
 
+  async function markRead(id: string) {
+    setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
+    const supabase = createClient();
+    await supabase.from("notifications").update({ read: true }).eq("id", id);
+  }
+
   return (
     <div className="relative">
       <button
@@ -107,7 +113,10 @@ export default function NotificationBell({ userId }: { userId: string }) {
                             ? `/entries/${n.entry_id}`
                             : "#"
                       }
-                      onClick={() => setOpen(false)}
+                      onClick={() => {
+                        setOpen(false);
+                        if (!n.read) markRead(n.id);
+                      }}
                       className={`flex items-start gap-2.5 border-b border-ink-border p-3 text-sm transition hover:bg-ink-bg-hover ${
                         n.read ? "opacity-60" : ""
                       }`}

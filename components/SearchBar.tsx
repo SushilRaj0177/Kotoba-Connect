@@ -6,9 +6,11 @@ import type { ContextEntry } from "@/types/database";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 
 export default function SearchBar({
+  userId,
   onResults,
   onClear,
 }: {
+  userId: string | null;
   onResults: (entries: ContextEntry[]) => void;
   onClear: () => void;
 }) {
@@ -52,15 +54,25 @@ export default function SearchBar({
       // full rows so results render with the same EntryCard as the board.
       const supabase = createClient();
       const ids = results.map((r) => r.id);
-      const { data: fullEntries } = await supabase
-        .from("context_entries")
-        .select("*, profiles!context_entries_user_id_fkey(username, display_name, avatar_url)")
-        .in("id", ids);
+      const [{ data: fullEntries }, { data: votes }, { data: saves }] = await Promise.all([
+        supabase
+          .from("context_entries")
+          .select("*, profiles!context_entries_user_id_fkey(username, display_name, avatar_url)")
+          .in("id", ids),
+        userId
+          ? supabase.from("entry_upvotes").select("entry_id").eq("user_id", userId).in("entry_id", ids)
+          : Promise.resolve({ data: [] as { entry_id: string }[] }),
+        userId
+          ? supabase.from("bookmarks").select("entry_id").eq("user_id", userId).in("entry_id", ids)
+          : Promise.resolve({ data: [] as { entry_id: string }[] }),
+      ]);
+      const votedIds = new Set((votes ?? []).map((v) => v.entry_id));
+      const bookmarkedIds = new Set((saves ?? []).map((s) => s.entry_id));
 
       const order = new Map(ids.map((id, i) => [id, i]));
-      const sorted = [...(fullEntries ?? [])].sort(
-        (a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0)
-      );
+      const sorted = [...(fullEntries ?? [])]
+        .sort((a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0))
+        .map((e) => ({ ...e, has_voted: votedIds.has(e.id), is_bookmarked: bookmarkedIds.has(e.id) }));
 
       onResults(sorted as ContextEntry[]);
     } catch {
