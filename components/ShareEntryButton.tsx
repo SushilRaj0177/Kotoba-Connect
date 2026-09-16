@@ -44,15 +44,15 @@ export default function ShareEntryButton({
     <button
       type="button"
       onClick={handleShare}
-      className="flex items-center gap-1.5 font-bold text-ink-text-muted transition hover:text-ink-text"
+      title={t("card.share")}
+      className="flex h-9 w-9 items-center justify-center rounded-full text-ink-text-muted transition hover:bg-ink-bg-hover hover:text-ink-text active:scale-90"
     >
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <circle cx="18" cy="5" r="3" />
         <circle cx="6" cy="12" r="3" />
         <circle cx="18" cy="19" r="3" />
         <path d="m8.6 13.5 6.8 4M15.4 6.5 8.6 10.5" />
       </svg>
-      {t("card.share")}
     </button>
   );
 }

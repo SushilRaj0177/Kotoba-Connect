@@ -88,7 +88,7 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "form.errorEmptyTranslation": "Add a primary translation so others understand the meaning.",
     "form.errorGeneric": "Could not save the entry. Try again.",
 
-    "card.annotate": "Annotate tokens →",
+    "card.annotateTitle": "Annotate tokens",
     "card.comments": "comments",
     "card.hideComments": "Hide",
     "card.report": "Report",
@@ -353,7 +353,7 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "form.errorEmptyTranslation": "他の人が意味を理解できるよう、翻訳を追加してください。",
     "form.errorGeneric": "エントリーを保存できませんでした。もう一度お試しください。",
 
-    "card.annotate": "トークンを注釈する →",
+    "card.annotateTitle": "トークンを注釈する",
     "card.comments": "コメント",
     "card.hideComments": "閉じる",
     "card.report": "報告",
