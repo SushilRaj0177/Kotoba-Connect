@@ -79,24 +79,6 @@
   color-scheme: dark;
 }
 
-/* +20% layout scale, desktop/tablet only. `zoom` (not `transform: scale`
-   or a font-size hack) scales the whole render — layout, px-based widths,
-   everything — consistently, the same way browser zoom would.
-
-   This used to be a `@media (min-width: 768px) and (pointer: fine)` rule,
-   but CSS media features are exactly what a phone browser's "Request
-   desktop site" mode fakes on purpose (that's the point of the feature —
-   make the page believe it's on a desktop), so a real phone in that mode
-   still matched and rendered a badly-overflowing, half-legible page. The
-   gate is now a `data-desktop-zoom` attribute set by a blocking inline
-   script in <head> (see layout.tsx) that additionally checks
-   `window.screen.width` — the OS-reported physical display size, which
-   "request desktop site" does not spoof — so a phone can't trigger this
-   no matter what the page-rendering layer claims about itself. */
-html[data-desktop-zoom="true"] {
-  zoom: 1.2;
-}
-
 /* Custom cozy cursor — a familiar rounded arrow (not a dot/circle, so it
    still reads as "a cursor" at a glance) in a soft cream with a dark
    outline, noticeably bigger than a default system arrow. A filled
