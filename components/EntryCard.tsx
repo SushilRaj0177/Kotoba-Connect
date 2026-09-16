@@ -95,9 +95,8 @@ export default function EntryCard({
           <>
             <Link href={`/entries/${entry.id}`} className="block min-w-0">
               <p className="font-jp text-lg leading-loose text-ink-text-header">{liveEntry.raw_japanese}</p>
+              <p className="mt-1 text-sm text-ink-text-muted">{liveEntry.primary_translation}</p>
             </Link>
-
-            <p className="mt-1 text-sm text-ink-text-muted">{liveEntry.primary_translation}</p>
 
             <AiNuanceCallout
               summary={liveEntry.ai_nuance_summary}
