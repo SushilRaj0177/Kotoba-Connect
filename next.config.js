@@ -12,6 +12,7 @@ const nextConfig = {
     // is just sitting on disk).
     outputFileTracingIncludes: {
       "/api/tokenize": ["./node_modules/kuromoji/dict/**/*"],
+      "/api/admin/bot/seed": ["./node_modules/kuromoji/dict/**/*"],
     },
   },
 };
