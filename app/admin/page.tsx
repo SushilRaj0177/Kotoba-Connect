@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import AdminQueue from "@/components/AdminQueue";
+import BotSeedPanel from "@/components/BotSeedPanel";
 import { getCurrentUser, getCurrentProfile } from "@/lib/supabase/server";
 
 export default async function AdminPage() {
@@ -21,6 +22,7 @@ export default async function AdminPage() {
           Reports filed by the community. Dismiss false positives, or delete content that
           breaks the rules.
         </p>
+        <BotSeedPanel />
         <AdminQueue />
       </main>
     </>

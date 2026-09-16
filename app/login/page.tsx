@@ -167,6 +167,21 @@ export default function LoginPage() {
             <form action={formAction} className="space-y-4" key={mode}>
               {mode === "signUp" && (
                 <div>
+                  <label htmlFor="displayName" className="mb-1 block text-xs font-semibold uppercase text-ink-text-muted">
+                    {t("login.displayName")}
+                  </label>
+                  <input
+                    id="displayName"
+                    name="displayName"
+                    required
+                    maxLength={50}
+                    placeholder="Sushil"
+                    className="w-full rounded-lg border-none bg-ink-bg-input px-3 py-2 text-sm text-ink-text placeholder:text-ink-text-muted focus:outline-none focus:ring-2 focus:ring-ink-accent"
+                  />
+                </div>
+              )}
+              {mode === "signUp" && (
+                <div>
                   <label htmlFor="username" className="mb-1 block text-xs font-semibold uppercase text-ink-text-muted">
                     {t("login.username")}
                   </label>

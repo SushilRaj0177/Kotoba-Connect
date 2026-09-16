@@ -40,8 +40,12 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
         {toasts.map((toast) => (
           <div
             key={toast.id}
+            // bg-ink-text-header flips from near-black to near-white between
+            // themes, which left white toast text unreadable in dark mode —
+            // pin the success tone to a fixed dark shade instead so white
+            // text stays legible in both themes.
             className={`animate-toast-in max-w-[calc(100vw-2rem)] rounded-full px-4 py-2.5 text-sm font-semibold text-white shadow-xl ${
-              toast.tone === "error" ? "bg-ink-red" : "bg-ink-text-header"
+              toast.tone === "error" ? "bg-ink-red" : "bg-[#1c2218]"
             }`}
           >
             {toast.message}

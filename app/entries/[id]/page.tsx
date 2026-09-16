@@ -35,7 +35,7 @@ export default async function EntryPage({ params }: { params: { id: string } }) 
 
   const { data: entry } = await supabase
     .from("context_entries")
-    .select("*, profiles!context_entries_user_id_fkey(username, display_name, avatar_url)")
+    .select("*, profiles!context_entries_user_id_fkey(username, display_name, avatar_url, is_bot)")
     .eq("id", params.id)
     .single();
 
