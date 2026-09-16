@@ -10,6 +10,8 @@ import AiNuanceCallout from "@/components/AiNuanceCallout";
 import Avatar from "@/components/Avatar";
 import BookmarkButton from "@/components/BookmarkButton";
 import DeleteEntryButton from "@/components/DeleteEntryButton";
+import EditEntryForm from "@/components/EditEntryForm";
+import ShareEntryButton from "@/components/ShareEntryButton";
 import EntryComments from "@/components/EntryComments";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 
@@ -29,6 +31,11 @@ export default function EntryCard({
   const [count, setCount] = useState(entry.upvotes_count);
   const [voting, setVoting] = useState(false);
   const [commentsOpen, setCommentsOpen] = useState(false);
+  const [editing, setEditing] = useState(false);
+  // Local override so a save reflects immediately on pages without a
+  // realtime context_entries subscription (bookmarks, tags, profile) —
+  // not just on the board.
+  const [liveEntry, setLiveEntry] = useState(entry);
 
   async function handleVote() {
     if (!currentUserId || voting) return;
@@ -72,80 +79,107 @@ export default function EntryCard({
             {displayName?.trim() || `@${username}`}
           </Link>
           <span className="text-xs text-ink-text-muted">{timestamp}</span>
-          <FormalityBadge level={entry.formality_level} />
+          <FormalityBadge level={liveEntry.formality_level} />
         </div>
 
-        <Link href={`/entries/${entry.id}`} className="block min-w-0">
-          <p className="font-jp text-lg leading-loose text-ink-text-header">{entry.raw_japanese}</p>
-        </Link>
+        {editing ? (
+          <EditEntryForm
+            entry={liveEntry}
+            onCancel={() => setEditing(false)}
+            onSaved={(patch) => {
+              setLiveEntry((prev) => ({ ...prev, ...patch }));
+              setEditing(false);
+            }}
+          />
+        ) : (
+          <>
+            <Link href={`/entries/${entry.id}`} className="block min-w-0">
+              <p className="font-jp text-lg leading-loose text-ink-text-header">{liveEntry.raw_japanese}</p>
+            </Link>
 
-        <p className="mt-1 text-sm text-ink-text-muted">{entry.primary_translation}</p>
+            <p className="mt-1 text-sm text-ink-text-muted">{liveEntry.primary_translation}</p>
 
-        <AiNuanceCallout
-          summary={entry.ai_nuance_summary}
-          formalitySuggestion={entry.ai_formality_suggestion}
-        />
+            <AiNuanceCallout
+              summary={liveEntry.ai_nuance_summary}
+              formalitySuggestion={liveEntry.ai_formality_suggestion}
+            />
 
-        {!!entry.tags?.length && (
-          <div className="mt-2 flex flex-wrap gap-1.5">
-            {entry.tags.map((tag) => (
-              <Link
-                key={tag}
-                href={`/tags/${encodeURIComponent(tag)}`}
-                className="rounded-full bg-ink-bg-input px-2 py-0.5 text-xs text-ink-text-muted transition hover:text-ink-accent"
+            {!!liveEntry.tags?.length && (
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {liveEntry.tags.map((tag) => (
+                  <Link
+                    key={tag}
+                    href={`/tags/${encodeURIComponent(tag)}`}
+                    className="rounded-full bg-ink-bg-input px-2 py-0.5 text-xs text-ink-text-muted transition hover:text-ink-accent"
+                  >
+                    #{tag}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </>
+        )}
+
+        {!editing && (
+          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs">
+            <button
+              type="button"
+              onClick={handleVote}
+              disabled={!currentUserId || voting}
+              title={currentUserId ? t("card.upvote") : t("card.signInToVote")}
+              className={`flex items-center gap-1.5 font-bold transition active:scale-90 ${
+                hasVoted ? "text-ink-accent" : "text-ink-text-muted hover:text-ink-text"
+              } disabled:cursor-not-allowed disabled:opacity-50`}
+            >
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill={hasVoted ? "currentColor" : "none"}
+                stroke="currentColor"
+                strokeWidth="2"
               >
-                #{tag}
-              </Link>
-            ))}
+                <path d="M12 21s-6.7-4.35-9.3-8.1C1 10.1 1.6 6.6 4.6 5.1c2.4-1.2 5 .1 7.4 3 2.4-2.9 5-4.2 7.4-3 3 1.5 3.6 5 1.9 7.8C18.7 16.65 12 21 12 21z" />
+              </svg>
+              {count}
+            </button>
+            <Link
+              href={`/entries/${entry.id}`}
+              className="font-medium text-ink-text-link hover:underline"
+            >
+              {t("card.annotate")}
+            </Link>
+            <button
+              type="button"
+              onClick={() => setCommentsOpen((o) => !o)}
+              className={`flex items-center gap-1.5 font-bold transition ${
+                commentsOpen ? "text-ink-accent" : "text-ink-text-muted hover:text-ink-text"
+              }`}
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+              </svg>
+              {commentCount > 0 ? `${commentCount} ${t("card.comments")}` : t("comments.title")}
+            </button>
+            <BookmarkButton entryId={entry.id} userId={currentUserId} initialBookmarked={bookmarked} />
+            <ShareEntryButton entryId={entry.id} rawJapanese={liveEntry.raw_japanese} />
+            <ReportButton targetType="entry" targetId={entry.id} userId={currentUserId} />
+            {currentUserId === entry.user_id && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setEditing(true)}
+                  className="rounded px-2 py-1 text-xs font-semibold text-ink-text-muted transition hover:text-ink-text"
+                >
+                  {t("card.edit")}
+                </button>
+                <DeleteEntryButton entryId={entry.id} />
+              </>
+            )}
           </div>
         )}
 
-        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs">
-          <button
-            type="button"
-            onClick={handleVote}
-            disabled={!currentUserId || voting}
-            title={currentUserId ? t("card.upvote") : t("card.signInToVote")}
-            className={`flex items-center gap-1.5 font-bold transition active:scale-90 ${
-              hasVoted ? "text-ink-accent" : "text-ink-text-muted hover:text-ink-text"
-            } disabled:cursor-not-allowed disabled:opacity-50`}
-          >
-            <svg
-              width="15"
-              height="15"
-              viewBox="0 0 24 24"
-              fill={hasVoted ? "currentColor" : "none"}
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M12 21s-6.7-4.35-9.3-8.1C1 10.1 1.6 6.6 4.6 5.1c2.4-1.2 5 .1 7.4 3 2.4-2.9 5-4.2 7.4-3 3 1.5 3.6 5 1.9 7.8C18.7 16.65 12 21 12 21z" />
-            </svg>
-            {count}
-          </button>
-          <Link
-            href={`/entries/${entry.id}`}
-            className="font-medium text-ink-text-link hover:underline"
-          >
-            {t("card.annotate")}
-          </Link>
-          <button
-            type="button"
-            onClick={() => setCommentsOpen((o) => !o)}
-            className={`flex items-center gap-1.5 font-bold transition ${
-              commentsOpen ? "text-ink-accent" : "text-ink-text-muted hover:text-ink-text"
-            }`}
-          >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-            </svg>
-            {commentCount > 0 ? `${commentCount} ${t("card.comments")}` : t("comments.title")}
-          </button>
-          <BookmarkButton entryId={entry.id} userId={currentUserId} initialBookmarked={bookmarked} />
-          <ReportButton targetType="entry" targetId={entry.id} userId={currentUserId} />
-          {currentUserId === entry.user_id && <DeleteEntryButton entryId={entry.id} />}
-        </div>
-
-        {commentsOpen && (
+        {commentsOpen && !editing && (
           <div className="mt-3">
             <EntryComments entryId={entry.id} userId={currentUserId} embedded />
           </div>

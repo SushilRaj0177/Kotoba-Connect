@@ -14,6 +14,8 @@ import Avatar from "@/components/Avatar";
 import UserHandle from "@/components/UserHandle";
 import BookmarkButton from "@/components/BookmarkButton";
 import DeleteEntryButton from "@/components/DeleteEntryButton";
+import EditEntryForm from "@/components/EditEntryForm";
+import ShareEntryButton from "@/components/ShareEntryButton";
 import { spamSignal } from "@/lib/moderation";
 import { errorMessage } from "@/lib/errors";
 import { useLocale } from "@/components/i18n/LocaleProvider";
@@ -36,17 +38,19 @@ export default function EntryDetail({
   const [culturalContext, setCulturalContext] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [editing, setEditing] = useState(false);
+  const [liveEntry, setLiveEntry] = useState(entry);
   const { setEntry: setChatEntry } = useEntryChatContext();
 
   useEffect(() => {
     setChatEntry({
-      raw_japanese: entry.raw_japanese,
-      primary_translation: entry.primary_translation,
-      nuance_summary: entry.ai_nuance_summary,
+      raw_japanese: liveEntry.raw_japanese,
+      primary_translation: liveEntry.primary_translation,
+      nuance_summary: liveEntry.ai_nuance_summary,
     });
     return () => setChatEntry(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [entry.id]);
+  }, [liveEntry]);
 
   useEffect(() => {
     const supabase = createClient();
@@ -135,39 +139,66 @@ export default function EntryDetail({
               <Link href={`/u/${username}`} className="font-display text-sm font-bold text-ink-text-header hover:underline">
                 {displayName?.trim() || `@${username}`}
               </Link>
-              <FormalityBadge level={entry.formality_level} />
+              <FormalityBadge level={liveEntry.formality_level} />
             </div>
-            <TokenizedText
-              tokens={entry.furigana_parsed}
-              onTokenClick={setActiveIndex}
-              activeIndex={activeIndex}
-            />
-            <p className="mt-1 text-sm text-ink-text-muted">{entry.primary_translation}</p>
-            <AiNuanceCallout
-              summary={entry.ai_nuance_summary}
-              formalitySuggestion={entry.ai_formality_suggestion}
-            />
-            {!!entry.tags?.length && (
-              <div className="mt-2 flex flex-wrap gap-1.5">
-                {entry.tags.map((tag) => (
-                  <Link
-                    key={tag}
-                    href={`/tags/${encodeURIComponent(tag)}`}
-                    className="rounded-full bg-ink-bg-input px-2 py-0.5 text-xs text-ink-text-muted transition hover:text-ink-accent"
-                  >
-                    #{tag}
-                  </Link>
-                ))}
-              </div>
+
+            {editing ? (
+              <EditEntryForm
+                entry={liveEntry}
+                onCancel={() => setEditing(false)}
+                onSaved={(patch) => {
+                  setLiveEntry((prev) => ({ ...prev, ...patch }));
+                  setEditing(false);
+                  setActiveIndex(null); // token indices may have shifted after re-tokenizing
+                }}
+              />
+            ) : (
+              <>
+                <TokenizedText
+                  tokens={liveEntry.furigana_parsed}
+                  onTokenClick={setActiveIndex}
+                  activeIndex={activeIndex}
+                />
+                <p className="mt-1 text-sm text-ink-text-muted">{liveEntry.primary_translation}</p>
+                <AiNuanceCallout
+                  summary={liveEntry.ai_nuance_summary}
+                  formalitySuggestion={liveEntry.ai_formality_suggestion}
+                />
+                {!!liveEntry.tags?.length && (
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {liveEntry.tags.map((tag) => (
+                      <Link
+                        key={tag}
+                        href={`/tags/${encodeURIComponent(tag)}`}
+                        className="rounded-full bg-ink-bg-input px-2 py-0.5 text-xs text-ink-text-muted transition hover:text-ink-accent"
+                      >
+                        #{tag}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+                <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs">
+                  <span className="text-ink-text-muted">
+                    {entry.upvotes_count} {t("detail.upvotes")}
+                  </span>
+                  <BookmarkButton entryId={entry.id} userId={userId} initialBookmarked={bookmarked} />
+                  <ShareEntryButton entryId={entry.id} rawJapanese={liveEntry.raw_japanese} />
+                  {userId === entry.user_id && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => setEditing(true)}
+                        className="rounded px-2 py-1 text-xs font-semibold text-ink-text-muted transition hover:text-ink-text"
+                      >
+                        {t("card.edit")}
+                      </button>
+                      <DeleteEntryButton entryId={entry.id} redirectHome />
+                    </>
+                  )}
+                </div>
+                <p className="mt-3 text-xs text-ink-text-muted">{t("detail.clickHint")}</p>
+              </>
             )}
-            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs">
-              <span className="text-ink-text-muted">
-                {entry.upvotes_count} {t("detail.upvotes")}
-              </span>
-              <BookmarkButton entryId={entry.id} userId={userId} initialBookmarked={bookmarked} />
-              {userId === entry.user_id && <DeleteEntryButton entryId={entry.id} redirectHome />}
-            </div>
-            <p className="mt-3 text-xs text-ink-text-muted">{t("detail.clickHint")}</p>
           </div>
         </div>
 
@@ -183,7 +214,7 @@ export default function EntryDetail({
         <div className="rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm sm:p-5">
           <h2 className="mb-3 text-sm font-semibold text-ink-text-header">
             {activeIndex !== null
-              ? `${t("detail.notesOn")} "${entry.furigana_parsed[activeIndex]?.surface_form}"`
+              ? `${t("detail.notesOn")} "${liveEntry.furigana_parsed[activeIndex]?.surface_form}"`
               : t("detail.tokenAnnotations")}
           </h2>
 
