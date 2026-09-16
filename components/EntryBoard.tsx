@@ -40,6 +40,10 @@ export default function EntryBoard({
   const [sortBy, setSortBy] = useState<SortOption>("new");
   const [formalityFilter, setFormalityFilter] = useState<FormalityLevel | "all">("all");
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>(initialCommentCounts ?? {});
+  // Count of new posts that arrived via realtime while the viewer has
+  // already scrolled/paginated — surfaced as a banner instead of silently
+  // reflowing the feed under them (see the realtime subscription below).
+  const [newPostCount, setNewPostCount] = useState(0);
   const blockedIds = useBlockedIds(userId);
   // Skips exactly one redundant client fetch on mount when server data was
   // already provided — sort/filter changes after that still fetch normally.
@@ -176,31 +180,71 @@ export default function EntryBoard({
     return () => observer.disconnect();
   }, [loadMore, searchResults]);
 
-  // Real-time sync: any user's new post, upvote, or edit refreshes everyone's board.
+  // Real-time sync. Previously any insert/update/delete on any of these
+  // tables just re-ran loadEntries(), which replaces the whole list with a
+  // fresh page 1 — so if you'd scrolled down or loaded further pages, a
+  // stranger upvoting or commenting on anything, anywhere, would silently
+  // yank you back to the top and discard everything you'd paginated in.
+  // Now: edits/vote-count/delete patch the affected row in place (no
+  // reflow), and brand-new posts surface as a "new posts" banner the
+  // viewer can choose to load, instead of being spliced in underneath them.
   useEffect(() => {
     const supabase = createClient();
     const channel = supabase
       .channel("context_entries_board")
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "context_entries" },
-        () => loadEntries()
+        { event: "INSERT", schema: "public", table: "context_entries" },
+        (payload) => {
+          const row = payload.new as ContextEntry;
+          if (row.user_id !== userId) {
+            setNewPostCount((c) => c + 1);
+          }
+        }
       )
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "entry_upvotes" },
-        () => loadEntries()
+        { event: "UPDATE", schema: "public", table: "context_entries" },
+        (payload) => {
+          const row = payload.new as ContextEntry;
+          setEntries((prev) => prev.map((e) => (e.id === row.id ? { ...e, ...row } : e)));
+        }
       )
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "entry_comments" },
-        () => loadEntries()
+        { event: "DELETE", schema: "public", table: "context_entries" },
+        (payload) => {
+          const oldId = (payload.old as { id: string }).id;
+          setEntries((prev) => prev.filter((e) => e.id !== oldId));
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "entry_comments" },
+        (payload) => {
+          const entryId = (payload.new as { entry_id: string }).entry_id;
+          setCommentCounts((prev) => ({ ...prev, [entryId]: (prev[entryId] ?? 0) + 1 }));
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "DELETE", schema: "public", table: "entry_comments" },
+        (payload) => {
+          const entryId = (payload.old as { entry_id: string }).entry_id;
+          setCommentCounts((prev) => ({ ...prev, [entryId]: Math.max(0, (prev[entryId] ?? 1) - 1) }));
+        }
       )
       .subscribe();
 
     return () => {
       supabase.removeChannel(channel);
     };
+  }, [userId]);
+
+  const loadNewPosts = useCallback(() => {
+    setNewPostCount(0);
+    loadEntries();
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [loadEntries]);
 
   return (
@@ -225,6 +269,19 @@ export default function EntryBoard({
           formalityFilter={formalityFilter}
           onFormalityChange={setFormalityFilter}
         />
+      )}
+
+      {searchResults === null && newPostCount > 0 && (
+        <button
+          type="button"
+          onClick={loadNewPosts}
+          className="btn-chunky sticky top-2 z-10 flex w-full items-center justify-center gap-1.5 rounded-2xl bg-ink-accent px-4 py-2.5 text-sm font-bold text-white shadow-md animate-toast-in"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path d="M12 19V5M5 12l7-7 7 7" />
+          </svg>
+          {newPostCount === 1 ? t("board.newPost") : t("board.newPosts").replace("{count}", String(newPostCount))}
+        </button>
       )}
 
       {loading ? (
