@@ -110,7 +110,7 @@ export default function LoginPage() {
   const [state, formAction] = useFormState(action, initialState);
 
   return (
-    <main className="flex min-h-screen flex-col items-center px-6 py-8 sm:justify-center sm:py-12">
+    <main className="flex min-h-screen flex-col items-center px-6 py-8 sm:py-12">
       <div className="mb-4 flex w-full max-w-sm items-center justify-end gap-2">
         <ThemeToggle />
         <LanguageToggle />
