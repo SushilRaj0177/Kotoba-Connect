@@ -4,7 +4,10 @@ import { useTheme } from "@/components/theme/ThemeProvider";
 
 export default function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
-  const isDark = theme === "dark";
+  // Edge is dark-like for icon purposes — the toggle button only ever
+  // flips between the two matcha brightness levels (see ThemeProvider),
+  // so from Edge it lands on light, same as clicking it from dark would.
+  const isDark = theme !== "light";
 
   return (
     <button

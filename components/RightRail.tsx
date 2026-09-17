@@ -98,14 +98,15 @@ export default async function RightRail() {
         <p className="text-sm leading-relaxed text-ink-text-muted">{t("rail.aboutBody")}</p>
       </div>
 
-      {/* bg-ink-accent turns much lighter in dark mode (a mid-contrast
+      {/* bg-ink-accent turns much lighter in dark/edge (a mid-contrast
          matcha green there, not the deep one light mode uses), so white
-         text on it stops being readable — pin this widget's text to a
-         fixed dark color instead of following the theme's text tokens. */}
-      <div className="bg-seigaiha relative overflow-hidden rounded-2xl bg-ink-accent p-4 text-white dark:text-[#182015]">
+         text on it stops being readable — --c-on-accent is the text color
+         each theme itself declares as correct for its own accent fill,
+         rather than a value hardcoded here for one specific theme. */}
+      <div className="bg-seigaiha relative overflow-hidden rounded-2xl bg-ink-accent p-4 text-[rgb(var(--c-on-accent))]">
         <Obake size={44} className="float-right ml-3 mb-1" />
         <h2 className="mb-1 font-display text-base font-bold">{t("rail.tipTitle")}</h2>
-        <p className="text-sm leading-relaxed text-white/90 dark:text-[#182015]/80">{t("rail.tipBody")}</p>
+        <p className="text-sm leading-relaxed text-[rgb(var(--c-on-accent)/0.85)]">{t("rail.tipBody")}</p>
       </div>
     </aside>
   );

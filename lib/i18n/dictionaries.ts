@@ -253,6 +253,11 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "profile.unblock": "Unblock",
 
     "settings.title": "Settings",
+    "settings.appearanceTitle": "Appearance",
+    "settings.appearanceHint": "Edge is a separate OLED-black theme built for zero visual clutter — same information, flattened surfaces.",
+    "settings.theme.light": "Matcha (Light)",
+    "settings.theme.dark": "Matcha (Dark)",
+    "settings.theme.edge": "Edge",
     "settings.blockedUsers": "Blocked users",
     "settings.noEmail": "No email on file",
     "settings.profileTitle": "Profile",
@@ -562,6 +567,11 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "profile.unblock": "ブロック解除",
 
     "settings.title": "設定",
+    "settings.appearanceTitle": "外観",
+    "settings.appearanceHint": "Edgeは有機ELの黒を使った、視覚的な雑然さを排したテーマです。情報量は変えず、表面をフラットにします。",
+    "settings.theme.light": "抹茶（ライト）",
+    "settings.theme.dark": "抹茶（ダーク）",
+    "settings.theme.edge": "Edge",
     "settings.blockedUsers": "ブロックしたユーザー",
     "settings.noEmail": "メールアドレス未登録",
     "settings.profileTitle": "プロフィール",
