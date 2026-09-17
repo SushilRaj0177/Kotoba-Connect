@@ -42,10 +42,22 @@ export default function Avatar({
     return (
       <span
         aria-hidden="true"
-        style={{ width: size, height: size, backgroundColor: "#5f7a44", fontSize: size * 0.56 }}
+        style={{ width: size, height: size, backgroundColor: "#5f7a44" }}
         className="flex flex-none items-center justify-center rounded-full"
       >
-        🤖
+        {/* A custom flat robot face, not a stock emoji — antenna, rounded
+           head, simple eyes/mouth, in the same matcha tones the mascot
+           and every bot badge already use. */}
+        <svg width={size * 0.62} height={size * 0.62} viewBox="0 0 40 40" fill="none">
+          <rect x="7" y="3" width="2" height="7" rx="1" fill="#e8e4d4" />
+          <circle cx="8" cy="3" r="2.6" fill="#d9973f" />
+          <rect x="4" y="10" width="32" height="26" rx="10" fill="#e8e4d4" />
+          <circle cx="14" cy="23" r="4" fill="#3a4a2c" />
+          <circle cx="26" cy="23" r="4" fill="#3a4a2c" />
+          <circle cx="15.3" cy="21.7" r="1.1" fill="#e8e4d4" />
+          <circle cx="27.3" cy="21.7" r="1.1" fill="#e8e4d4" />
+          <rect x="13" y="30" width="14" height="2.6" rx="1.3" fill="#3a4a2c" />
+        </svg>
       </span>
     );
   }
