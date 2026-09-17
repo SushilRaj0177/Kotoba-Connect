@@ -85,8 +85,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                       underneath it. */}
                   <SideRail />
                   <div className="hidden w-[72px] flex-none md:block" aria-hidden="true" />
-                  <div className="flex min-h-screen flex-1 flex-col pb-20 md:pb-0">
-                    <div className="flex-1">{children}</div>
+                  {/* min-w-0: without it, a flex item's default min-width:auto
+                     floors this at the min-content width of whatever's
+                     rendered inside it (a header row, a long line of text,
+                     anything) — on a narrow phone that floor can end up
+                     wider than the viewport itself, and since nothing
+                     upstream is what's supposed to shrink, the whole page
+                     renders at that wider floor width and gets silently
+                     clipped by body's overflow-x:hidden instead of actually
+                     fitting the screen. This is what "auto-zoomed" pages
+                     really were: not zoom, a missing min-w-0 letting one
+                     oversized row set the floor for the entire app shell. */}
+                  <div className="flex min-w-0 min-h-screen flex-1 flex-col pb-20 md:pb-0">
+                    <div className="min-w-0 flex-1">{children}</div>
                   </div>
                   <MobileNav />
                   <MascotChat />
