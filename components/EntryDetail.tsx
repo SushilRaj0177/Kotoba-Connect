@@ -7,17 +7,17 @@ import type { ContextEntry, TokenAnnotation } from "@/types/database";
 import FormalityBadge from "@/components/FormalityBadge";
 import TokenizedText from "@/components/TokenizedText";
 import EmptyState from "@/components/EmptyState";
-import ReportButton from "@/components/ReportButton";
 import EntryComments from "@/components/EntryComments";
 import AiNuanceCallout from "@/components/AiNuanceCallout";
 import Avatar from "@/components/Avatar";
-import UserHandle from "@/components/UserHandle";
 import BookmarkButton from "@/components/BookmarkButton";
 import DeleteEntryButton from "@/components/DeleteEntryButton";
 import EditEntryForm from "@/components/EditEntryForm";
 import ShareEntryButton from "@/components/ShareEntryButton";
 import LikeButton from "@/components/LikeButton";
-import TranslateButton from "@/components/TranslateButton";
+import TranslateToggle from "@/components/TranslateToggle";
+import AnnotationNote from "@/components/AnnotationNote";
+import { useTranslate } from "@/lib/use-translate";
 import { spamSignal } from "@/lib/moderation";
 import { errorMessage } from "@/lib/errors";
 import { useLocale } from "@/components/i18n/LocaleProvider";
@@ -45,6 +45,7 @@ export default function EntryDetail({
   const [editing, setEditing] = useState(false);
   const [liveEntry, setLiveEntry] = useState(entry);
   const { setEntry: setChatEntry } = useEntryChatContext();
+  const rawTranslate = useTranslate(liveEntry.raw_japanese);
 
   useEffect(() => {
     setChatEntry({
@@ -167,16 +168,24 @@ export default function EntryDetail({
               />
             ) : (
               <>
-                <TokenizedText
-                  tokens={liveEntry.furigana_parsed}
-                  onTokenClick={setActiveIndex}
-                  activeIndex={activeIndex}
-                />
+                {/* Showing the on-demand translation swaps out the
+                   interactive per-word view (clicking a word to annotate
+                   it doesn't make sense once it's not the original
+                   Japanese on screen) rather than appending below it. */}
+                {rawTranslate.showingTranslation && rawTranslate.translation ? (
+                  <p className="text-lg leading-loose text-ink-text-header">{rawTranslate.translation}</p>
+                ) : (
+                  <TokenizedText
+                    tokens={liveEntry.furigana_parsed}
+                    onTokenClick={setActiveIndex}
+                    activeIndex={activeIndex}
+                  />
+                )}
                 <p className="mt-1 text-sm text-ink-text-muted">{liveEntry.primary_translation}</p>
                 {/* Entries are always Japanese — only useful to translate
                    when viewing the EN UI, otherwise it's Japanese to
                    Japanese. */}
-                {locale === "en" && <TranslateButton text={liveEntry.raw_japanese} className="mt-1" />}
+                {locale === "en" && <TranslateToggle state={rawTranslate} className="mt-1" />}
                 <AiNuanceCallout
                   summary={liveEntry.ai_nuance_summary}
                   formalitySuggestion={liveEntry.ai_formality_suggestion}
@@ -250,26 +259,7 @@ export default function EntryDetail({
           ) : (
             <ul className="mb-4 space-y-3">
               {activeAnnotations.map((a) => (
-                <li key={a.id} className="rounded-2xl bg-ink-bg-input p-3">
-                  <UserHandle
-                    username={a.profiles?.username ?? "unknown"}
-                    displayName={a.profiles?.display_name}
-                    avatarUrl={a.profiles?.avatar_url}
-                    href={`/u/${a.profiles?.username ?? ""}`}
-                    size="sm"
-                  />
-                  <p className="mt-2 text-sm text-ink-text">{a.nuance_note}</p>
-                  {a.cultural_context && (
-                    <p className="mt-1 text-xs text-ink-text-muted">{a.cultural_context}</p>
-                  )}
-                  <TranslateButton
-                    text={a.cultural_context ? `${a.nuance_note}\n${a.cultural_context}` : a.nuance_note}
-                    className="mt-1"
-                  />
-                  <div className="mt-1.5">
-                    <ReportButton targetType="annotation" targetId={a.id} userId={userId} />
-                  </div>
-                </li>
+                <AnnotationNote key={a.id} annotation={a} userId={userId} />
               ))}
             </ul>
           )}
