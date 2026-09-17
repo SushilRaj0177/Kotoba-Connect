@@ -456,9 +456,15 @@ body::before {
    render and clipping/overflowing at the edges the way a transform
    would. Scoped to the same >=768px breakpoint the rest of the app
    already treats as "desktop" (e.g. SideRail's md:flex), so mobile is
-   completely untouched. */
+   *supposed* to be untouched — but some phones/browser modes report a
+   >=768px layout viewport even though they're phones (this has broken
+   before: "Request desktop site", certain split-screen/DeX-style modes,
+   and reportedly others no script running on the page can reliably tell
+   apart from real desktop). Edge is explicitly excluded from this rule
+   entirely (:not([data-theme="edge"])) rather than re-attempting that
+   detection — it never scales, on any device, guaranteed. */
 @media (min-width: 768px) {
-  html {
+  html:not([data-theme="edge"]) {
     zoom: 1.17;
   }
 }
