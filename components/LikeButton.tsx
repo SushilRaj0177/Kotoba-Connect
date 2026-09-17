@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { useVoteState } from "@/lib/use-entry-interaction";
 
 // Shared by EntryCard and EntryDetail so the like/vote toggle behaves
 // identically everywhere it appears — previously EntryDetail only showed
@@ -20,8 +21,14 @@ export default function LikeButton({
   initialVoted: boolean;
 }) {
   const { t } = useLocale();
-  const [hasVoted, setHasVoted] = useState(initialVoted);
-  const [count, setCount] = useState(initialCount);
+  // hasVoted/count live in a shared cross-instance store (see
+  // use-entry-interaction) instead of local state, so liking this entry
+  // here instantly updates every other rendered copy of it — including
+  // ones on a page you haven't navigated to yet.
+  const [{ hasVoted, count }, updateVote] = useVoteState(entryId, {
+    hasVoted: initialVoted,
+    count: initialCount,
+  });
   const [voting, setVoting] = useState(false);
   // Drives a one-shot pop animation on the icon at the moment it's liked —
   // reset back to false right after so it can play again on a future like.
@@ -32,8 +39,7 @@ export default function LikeButton({
     setVoting(true);
 
     const nextVoted = !hasVoted;
-    setHasVoted(nextVoted);
-    setCount((c) => c + (nextVoted ? 1 : -1));
+    updateVote((current) => ({ hasVoted: nextVoted, count: current.count + (nextVoted ? 1 : -1) }));
     if (nextVoted) {
       setJustVoted(true);
       setTimeout(() => setJustVoted(false), 350);
@@ -43,8 +49,7 @@ export default function LikeButton({
     const { error } = await supabase.rpc("toggle_entry_upvote", { p_entry_id: entryId });
 
     if (error) {
-      setHasVoted(!nextVoted);
-      setCount((c) => c + (nextVoted ? -1 : 1));
+      updateVote((current) => ({ hasVoted: !nextVoted, count: current.count + (nextVoted ? -1 : 1) }));
     }
     setVoting(false);
   }

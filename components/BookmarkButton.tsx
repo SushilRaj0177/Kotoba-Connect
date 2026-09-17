@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { useBookmarkState } from "@/lib/use-entry-interaction";
 
 export default function BookmarkButton({
   entryId,
@@ -14,7 +15,10 @@ export default function BookmarkButton({
   initialBookmarked: boolean;
 }) {
   const { t } = useLocale();
-  const [bookmarked, setBookmarked] = useState(initialBookmarked);
+  // Lives in a shared cross-instance store (see use-entry-interaction) so
+  // saving this entry here instantly updates every other rendered copy of
+  // it, including ones on a page you haven't navigated to yet.
+  const [bookmarked, setBookmarked] = useBookmarkState(entryId, initialBookmarked);
   const [busy, setBusy] = useState(false);
 
   if (!userId) return null;
