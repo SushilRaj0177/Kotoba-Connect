@@ -73,7 +73,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                       underneath it. */}
                   <SideRail />
                   <div className="hidden w-[72px] flex-none md:block" aria-hidden="true" />
-                  <div className="flex min-h-screen flex-1 flex-col pb-16 md:pb-0">
+                  <div className="flex min-h-screen flex-1 flex-col pb-20 md:pb-0">
                     <div className="flex-1">{children}</div>
                   </div>
                   <MobileNav />
