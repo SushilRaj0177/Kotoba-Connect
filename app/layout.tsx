@@ -14,6 +14,18 @@ import OnboardingGate from "@/components/auth/OnboardingGate";
 import { EntryChatProvider } from "@/components/EntryChatContext";
 import { ToastProvider } from "@/components/Toast";
 
+// Every page in the app renders theme-dependent output (data-theme on
+// <html>, and now Edge's own layout branch in EntryCard), so any page that
+// slips through as statically cacheable can freeze whichever theme
+// happened to render it into the cached HTML — and worse, can end up
+// referencing a CSS chunk hash from whatever build produced that cached
+// copy, which 404s once a later deploy replaces it (this exact failure
+// mode already hit /u/[username] once — see the dynamic export there).
+// Forcing it here at the root means no page anywhere in the app can be
+// statically cached, full stop, rather than finding and patching each
+// affected route one at a time as it comes up.
+export const dynamic = "force-dynamic";
+
 const inter = Inter({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
