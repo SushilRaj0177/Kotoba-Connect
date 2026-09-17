@@ -10,6 +10,18 @@ import { createClient, getCurrentUser } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
 import type { ContextEntry, Profile } from "@/types/database";
 
+// Force this route to render fresh on every request instead of being
+// eligible for Next.js's static/ISR caching. A profile page cached as
+// static HTML can end up referencing a CSS chunk hash from whatever build
+// produced that cached copy — if a later deploy replaces that chunk, the
+// cached HTML keeps pointing at a file that no longer exists, and the
+// browser falls back to unstyled defaults for this page's own styling
+// (while shared component styles used elsewhere stay fine, since those
+// chunks are still actively referenced). Follow state, entry counts, and
+// streaks are all live data anyway, so this page was never a good caching
+// candidate to begin with.
+export const dynamic = "force-dynamic";
+
 export default async function ProfilePage({ params }: { params: { username: string } }) {
   const supabase = createClient();
   const { t } = getServerTranslator();
@@ -83,11 +95,11 @@ export default async function ProfilePage({ params }: { params: { username: stri
     <>
       <Navbar title={profile.display_name?.trim() || `@${profile.username}`} />
       <main className="mx-auto max-w-3xl px-4 py-6 sm:px-6 lg:max-w-5xl">
-        <div className="mb-6 rounded-2xl bg-ink-bg-secondary p-5 border border-ink-border/70 shadow-sm sm:p-6">
-          <div className="flex items-start gap-4">
-            <Avatar username={profile.username} avatarUrl={profile.avatar_url} size={72} />
+        <div className="mb-6 rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm sm:p-5">
+          <div className="flex items-start gap-3">
+            <Avatar username={profile.username} avatarUrl={profile.avatar_url} size={56} />
             <div className="min-w-0 flex-1 pt-0.5">
-              <h1 className="truncate font-display text-xl font-bold text-ink-text-header sm:text-2xl">
+              <h1 className="truncate font-display text-lg font-bold text-ink-text-header sm:text-xl">
                 {profile.display_name?.trim() || `@${profile.username}`}
               </h1>
               {profile.display_name?.trim() && (
@@ -140,28 +152,28 @@ export default async function ProfilePage({ params }: { params: { username: stri
               effectiveStreak > 0 ? "sm:grid-cols-5" : ""
             }`}
           >
-            <div className="rounded-xl bg-ink-bg-input p-3 text-center">
-              <p className="font-display text-lg font-extrabold text-ink-text-header">{entries?.length ?? 0}</p>
+            <div className="rounded-xl bg-ink-bg-input p-2.5 text-center">
+              <p className="font-display text-base font-extrabold text-ink-text-header">{entries?.length ?? 0}</p>
               <p className="text-xs text-ink-text-muted">{t("profile.entriesPosted")}</p>
             </div>
-            <div className="rounded-xl bg-ink-bg-input p-3 text-center">
-              <p className="font-display text-lg font-extrabold text-ink-accent">{profile.reputation_score}</p>
+            <div className="rounded-xl bg-ink-bg-input p-2.5 text-center">
+              <p className="font-display text-base font-extrabold text-ink-accent">{profile.reputation_score}</p>
               <p className="text-xs text-ink-text-muted">{t("profile.reputation")}</p>
             </div>
-            <div className="rounded-xl bg-ink-bg-input p-3 text-center">
-              <p className="font-display text-lg font-extrabold text-ink-text-header">{followerCount ?? 0}</p>
+            <div className="rounded-xl bg-ink-bg-input p-2.5 text-center">
+              <p className="font-display text-base font-extrabold text-ink-text-header">{followerCount ?? 0}</p>
               <p className="text-xs text-ink-text-muted">{t("profile.followers")}</p>
             </div>
-            <div className="rounded-xl bg-ink-bg-input p-3 text-center">
-              <p className="font-display text-lg font-extrabold text-ink-text-header">{followingCount ?? 0}</p>
+            <div className="rounded-xl bg-ink-bg-input p-2.5 text-center">
+              <p className="font-display text-base font-extrabold text-ink-text-header">{followingCount ?? 0}</p>
               <p className="text-xs text-ink-text-muted">{t("profile.following")}</p>
             </div>
             {effectiveStreak > 0 && (
               <div
-                className="rounded-xl bg-ink-bg-input p-3 text-center"
+                className="rounded-xl bg-ink-bg-input p-2.5 text-center"
                 title={`${t("profile.longestStreak")}: ${typedProfile.longest_streak}`}
               >
-                <p className="font-display text-lg font-extrabold text-ink-text-header">🔥 {effectiveStreak}</p>
+                <p className="font-display text-base font-extrabold text-ink-text-header">🔥 {effectiveStreak}</p>
                 <p className="text-xs text-ink-text-muted">{t("profile.streak")}</p>
               </div>
             )}
