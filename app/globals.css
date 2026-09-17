@@ -469,13 +469,30 @@ body::before {
   }
 }
 
-/* Edge deliberately runs everything ~15% larger, on every viewport width
-   (not gated to desktop like the rule above) — a design choice. This uses
-   root font-size, not `zoom`: every Tailwind spacing/text utility is
-   rem-based, so bumping the root font-size reflows the entire UI through
-   completely standard, universally-supported CSS — no non-standard
-   property, no optical-stretch/clipping risk, nothing for a browser's own
-   zoom state to compound with or be confused for. */
+/* Edge deliberately runs everything larger, on every viewport width (not
+   gated to desktop like the rule above) — a design choice. This uses root
+   font-size, not `zoom`: every Tailwind spacing/text utility is rem-based,
+   so bumping the root font-size reflows the entire UI through completely
+   standard, universally-supported CSS.
+
+   This used to be a flat 117% on every screen. That's wrong by
+   construction: it's a fixed multiplier with no awareness of how much
+   room the screen actually has, so a header row (logo + theme toggle +
+   language pill + bell + avatar) that fits at 100% on a narrow phone no
+   longer fits once every element in it grows 17% — the row can't shrink
+   any further, so it sets a hard floor wider than the viewport, and that
+   floor was what actually produced the "auto-zoomed"/clipped look (see
+   the min-w-0 note in app/layout.tsx for the other half of this bug).
+   A flat percentage literally cannot be correct across phone sizes: it
+   has no viewport term at all.
+
+   clamp() with a vw term fixes that at the source — a real ratio that
+   scales continuously with viewport width instead of a single number
+   applied everywhere: 100% (unchanged from light/dark, guaranteed to fit
+   anything light/dark already fits) on the narrowest phones, rising
+   linearly to 117% by ~430px-wide phones/small tablets, where there's
+   actually room for it.
+   min(width): 100% at <=360px  max: 117% at >=430px */
 :root[data-theme="edge"] {
-  font-size: 117%;
+  font-size: clamp(16px, 2px + 3.9vw, 18.72px);
 }

@@ -35,11 +35,16 @@ export default async function Navbar({ title }: { title?: string } = {}) {
           </span>
         </span>
 
-        <div className="ml-auto flex items-center gap-2.5">
+        {/* Tightened from a flat gap-2.5: at the narrowest phone widths this
+           row's own content (logo + 4 controls) was already right at the
+           edge of what 100% scale fits — see the min-w-0 note in
+           app/layout.tsx for what happens once a row like this can't
+           shrink any further. */}
+        <div className="ml-auto flex min-w-0 items-center gap-1.5 sm:gap-2.5">
           <ThemeToggle />
           <LanguageToggle />
           {user ? (
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-1.5 sm:gap-2.5">
               <NotificationBell userId={user.id} />
               <AccountMenu
                 username={username ?? "user"}
