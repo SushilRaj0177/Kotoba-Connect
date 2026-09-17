@@ -12,9 +12,10 @@ import DeleteEntryButton from "@/components/DeleteEntryButton";
 import EditEntryForm from "@/components/EditEntryForm";
 import ShareEntryButton from "@/components/ShareEntryButton";
 import LikeButton from "@/components/LikeButton";
-import TranslateButton from "@/components/TranslateButton";
+import TranslateToggle from "@/components/TranslateToggle";
 import EntryComments from "@/components/EntryComments";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { useTranslate } from "@/lib/use-translate";
 
 export default function EntryCard({
   entry,
@@ -34,6 +35,7 @@ export default function EntryCard({
   // realtime context_entries subscription (bookmarks, tags, profile) —
   // not just on the board.
   const [liveEntry, setLiveEntry] = useState(entry);
+  const rawTranslate = useTranslate(liveEntry.raw_japanese);
 
   const username = entry.profiles?.username ?? "unknown";
   const displayName = entry.profiles?.display_name;
@@ -81,12 +83,20 @@ export default function EntryCard({
         ) : (
           <>
             <Link href={`/entries/${entry.id}`} className="block min-w-0">
-              <p className="font-jp text-lg leading-loose text-ink-text-header">{liveEntry.raw_japanese}</p>
+              <p
+                className={
+                  rawTranslate.showingTranslation && rawTranslate.translation
+                    ? "text-lg leading-loose text-ink-text-header"
+                    : "font-jp text-lg leading-loose text-ink-text-header"
+                }
+              >
+                {rawTranslate.display}
+              </p>
               <p className="mt-1 text-sm text-ink-text-muted">{liveEntry.primary_translation}</p>
             </Link>
             {/* Entries are always Japanese — only useful to translate when
                viewing the EN UI, otherwise it's Japanese to Japanese. */}
-            {locale === "en" && <TranslateButton text={liveEntry.raw_japanese} className="mt-1" />}
+            {locale === "en" && <TranslateToggle state={rawTranslate} className="mt-1" />}
 
             <AiNuanceCallout
               summary={liveEntry.ai_nuance_summary}

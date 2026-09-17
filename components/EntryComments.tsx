@@ -132,8 +132,7 @@ export default function EntryComments({
                   {new Date(c.created_at).toLocaleDateString()}
                 </span>
               </div>
-              <p className="mt-2 whitespace-pre-wrap text-sm text-ink-text">{c.body}</p>
-              <TranslateButton text={c.body} className="mt-1" />
+              <TranslateButton text={c.body} textClassName="whitespace-pre-wrap text-sm text-ink-text" className="mt-2" />
               <div className="mt-1.5 flex items-center gap-0.5">
                 <ReportButton targetType="comment" targetId={c.id} userId={userId} />
                 {userId === c.user_id && (
