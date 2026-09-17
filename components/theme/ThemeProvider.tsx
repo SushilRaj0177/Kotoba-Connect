@@ -6,6 +6,7 @@ import { THEME_COOKIE, type Theme } from "@/lib/theme-constants";
 interface ThemeContextValue {
   theme: Theme;
   toggleTheme: () => void;
+  setTheme: (next: Theme) => void;
 }
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
@@ -22,18 +23,26 @@ export function ThemeProvider({
   initialTheme: Theme;
   children: React.ReactNode;
 }) {
-  const [theme, setTheme] = useState<Theme>(initialTheme);
+  const [theme, setThemeState] = useState<Theme>(initialTheme);
 
-  const toggleTheme = useCallback(() => {
-    setTheme((prev) => {
-      const next: Theme = prev === "light" ? "dark" : "light";
-      document.documentElement.setAttribute("data-theme", next);
-      document.cookie = `${THEME_COOKIE}=${next}; path=/; max-age=31536000; SameSite=Lax`;
-      return next;
-    });
+  const applyTheme = useCallback((next: Theme) => {
+    document.documentElement.setAttribute("data-theme", next);
+    document.cookie = `${THEME_COOKIE}=${next}; path=/; max-age=31536000; SameSite=Lax`;
+    setThemeState(next);
   }, []);
 
-  const value = useMemo(() => ({ theme, toggleTheme }), [theme, toggleTheme]);
+  // The navbar's quick toggle only ever flips between the two matcha
+  // brightness levels — Edge is a distinct style picked explicitly from
+  // Settings (via setTheme below), not something a one-tap icon should
+  // land on by accident. Toggling while on Edge falls back to light.
+  const toggleTheme = useCallback(() => {
+    applyTheme(theme === "dark" ? "light" : theme === "light" ? "dark" : "light");
+  }, [theme, applyTheme]);
+
+  const value = useMemo(
+    () => ({ theme, toggleTheme, setTheme: applyTheme }),
+    [theme, toggleTheme, applyTheme]
+  );
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }

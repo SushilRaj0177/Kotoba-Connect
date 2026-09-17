@@ -26,6 +26,12 @@
   --c-red: 200 84 74;
   --c-red-hover: 176 66 58;
   --c-yellow: 210 170 60;
+  /* Text color for content sitting directly on a solid --c-accent fill.
+     Light theme's accent is dark enough that white reads fine; dark and
+     edge both use a *lighter* accent (for contrast against their dark
+     backgrounds), which flips the fill light enough that white text on
+     it stops working — see their own --c-on-accent below. */
+  --c-on-accent: 255 255 255;
 }
 
 :root[data-theme="dark"] {
@@ -39,6 +45,7 @@
   --c-bg-input: 33 35 31;
   --c-bg-hover: 42 44 39;
   --c-border: 52 55 48;
+  --c-on-accent: 24 32 21;
   --c-text: 214 216 208;
   --c-text-muted: 158 163 150;
   --c-text-header: 239 240 234;
@@ -50,6 +57,49 @@
   --c-red: 224 118 108;
   --c-red-hover: 232 138 128;
   --c-yellow: 224 190 110;
+  --c-on-accent: 24 32 21;
+}
+
+/*
+  Edge — a separate OLED/minimal theme, not just "matcha but darker".
+  True black (0 0 0, actual power-off pixels on OLED) instead of the
+  near-black-with-a-tint dark theme uses. Card/input/secondary surfaces
+  are set to the *same* black as the page instead of a lighter shade, so
+  boxes stop reading as "boxes" and blend into one flat canvas — the
+  clutter this removes is the stacked shadows/borders/background-shading
+  every card already draws via the shared --c-bg-* tokens, not any actual
+  content, so nothing needs deleting anywhere else to get it. Borders step
+  up in the smallest increment that's still visibly a hairline on pure
+  black. Text is a soft off-white rather than pure #fff — less glare,
+  easier on the eyes in exactly the low-light context an OLED theme gets
+  used in. */
+:root[data-theme="edge"] {
+  --c-bg: 0 0 0;
+  --c-bg-secondary: 0 0 0;
+  --c-bg-input: 16 16 16;
+  --c-bg-hover: 28 28 28;
+  --c-border: 26 26 26;
+  --c-text: 198 198 198;
+  --c-text-muted: 120 120 120;
+  --c-text-header: 240 240 240;
+  --c-accent: 134 178 94;
+  --c-accent-2: 192 160 94;
+  --c-accent-hover: 154 198 114;
+  --c-link: 200 150 112;
+  --c-green: 134 178 94;
+  --c-red: 210 96 88;
+  --c-red-hover: 222 112 100;
+  --c-yellow: 200 168 96;
+  --c-on-accent: 18 24 14;
+  color-scheme: dark;
+}
+/* No paper-grain texture or wave pattern on Edge — the whole point is one
+   flat black surface, not a quieter version of the matcha texture work. */
+:root[data-theme="edge"] body::before {
+  display: none;
+}
+:root[data-theme="edge"] .bg-seigaiha {
+  background-image: none;
 }
 
 :root {
@@ -69,6 +119,7 @@
   --c-red: 200 84 74;
   --c-red-hover: 176 66 58;
   --c-yellow: 210 170 60;
+  --c-on-accent: 255 255 255;
 
   /* --font-sans / --font-display come from next/font (see app/layout.tsx). */
   --font-jp: "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
@@ -76,6 +127,9 @@
 }
 
 :root[data-theme="dark"] {
+  color-scheme: dark;
+}
+:root[data-theme="edge"] {
   color-scheme: dark;
 }
 
