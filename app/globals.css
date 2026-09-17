@@ -468,3 +468,13 @@ body::before {
     zoom: 1.17;
   }
 }
+
+/* Edge deliberately runs everything ~15% larger, on every viewport width
+   (not gated to desktop like the rule above) — a design choice, not the
+   accidental-zoom bug that rule exists to avoid. `zoom` reflows layout at
+   the bigger size instead of optically stretching a fixed render, so
+   nothing clips or needs horizontal scrolling the way a browser's own
+   remembered per-site pinch-zoom level does. */
+:root[data-theme="edge"] {
+  zoom: 1.15;
+}
