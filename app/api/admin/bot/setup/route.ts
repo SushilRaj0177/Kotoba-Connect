@@ -28,11 +28,16 @@ export async function POST(request: Request) {
 
   const { data: existing } = await admin.from("profiles").select("id").eq("username", BOT_USERNAME).maybeSingle();
   if (existing) {
-    await admin
+    const { error: resyncError } = await admin
       .from("profiles")
       .update({ is_bot: true, avatar_url: BOT_AVATAR_TOKEN })
       .eq("id", existing.id);
-    return NextResponse.json({ botUserId: existing.id, created: false });
+    if (resyncError) {
+      console.error("Bot account resync failed", resyncError);
+      Sentry.captureException(resyncError);
+      return NextResponse.json({ error: "Found the bot account but couldn't resync it." }, { status: 500 });
+    }
+    return NextResponse.json({ botUserId: existing.id, created: false, resynced: true });
   }
 
   try {
