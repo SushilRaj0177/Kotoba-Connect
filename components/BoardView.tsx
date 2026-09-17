@@ -12,7 +12,21 @@ import type { ContextEntry } from "@/types/database";
 // identically instead of drifting apart.
 export default async function BoardView() {
   const { t } = getServerTranslator();
-  const user = await getCurrentUser();
+  const supabase = createClient();
+
+  // The entries query doesn't depend on who's viewing, so it doesn't need
+  // to wait behind the auth check — kick both off together instead of
+  // paying for two round trips back to back. (getCurrentProfile still
+  // waits on user since it needs the id, but that's a single indexed
+  // lookup, not the page's bottleneck.)
+  const [user, { data: initialData }] = await Promise.all([
+    getCurrentUser(),
+    supabase
+      .from("context_entries")
+      .select("*, profiles!context_entries_user_id_fkey(username, display_name, avatar_url, is_bot)")
+      .order("created_at", { ascending: false })
+      .range(0, 29), // matches EntryBoard's PAGE_SIZE (30) so "load more" continues seamlessly
+  ]);
   const profile = user ? await getCurrentProfile() : null;
   const username = profile?.username ?? null;
   const avatarUrl = profile?.avatar_url ?? null;
@@ -22,12 +36,6 @@ export default async function BoardView() {
   // EntryBoard's client-side fetch runs after hydration. Any other
   // sort/filter/search the user picks still goes through the normal client
   // fetch — this only covers the page's very first paint.
-  const supabase = createClient();
-  const { data: initialData } = await supabase
-    .from("context_entries")
-    .select("*, profiles!context_entries_user_id_fkey(username, display_name, avatar_url, is_bot)")
-    .order("created_at", { ascending: false })
-    .range(0, 29); // matches EntryBoard's PAGE_SIZE (30) so "load more" continues seamlessly
 
   let initialVotedIds = new Set<string>();
   let initialBookmarkedIds = new Set<string>();
