@@ -1,10 +1,9 @@
 import { parseAvatarPreset } from "@/lib/avatar-presets";
-import Mascot from "@/components/Mascot";
 
 // The official bot account's avatar_url is set to this exact token (see
-// app/api/admin/bot/setup/route.ts) — the brand mascot itself, on the same
-// matcha accent every other bot badge uses, so it reads as "the house
-// account" rather than a user's emoji pick.
+// app/api/admin/bot/setup/route.ts) — a robot face on the same matcha
+// accent every other bot badge uses, so it reads as "the house account"
+// rather than a user's emoji pick.
 const BOT_AVATAR_TOKEN = "bot-mascot";
 
 // Deterministic colored avatar: same username always gets the same color
@@ -43,10 +42,10 @@ export default function Avatar({
     return (
       <span
         aria-hidden="true"
-        style={{ width: size, height: size, backgroundColor: "#5f7a44" }}
-        className="flex flex-none items-center justify-center overflow-hidden rounded-full"
+        style={{ width: size, height: size, backgroundColor: "#5f7a44", fontSize: size * 0.56 }}
+        className="flex flex-none items-center justify-center rounded-full"
       >
-        <Mascot size={size * 0.86} mood="happy" />
+        🤖
       </span>
     );
   }
