@@ -20,6 +20,19 @@ const PALETTE = [
   "#dc2626",
 ];
 
+// Sizes here were always plain px numbers fed straight into inline
+// styles/SVG attributes — that's fine normally, but it means they don't
+// respond to Edge's root font-size scale (app/globals.css) the way every
+// Tailwind rem-based class elsewhere does, so avatars stayed pinned at
+// their exact original size while surrounding text grew, throwing off
+// the proportions Edge is supposed to keep consistent. rem is relative to
+// the root <html> font-size specifically (not the nearest ancestor), so
+// this scales in lockstep with that rule on every theme, including the
+// ones that don't touch font-size at all (where 16px rem = px, unchanged).
+function rem(px: number): string {
+  return `${px / 16}rem`;
+}
+
 function colorFor(username: string): string {
   let hash = 0;
   for (let i = 0; i < username.length; i++) {
@@ -42,13 +55,13 @@ export default function Avatar({
     return (
       <span
         aria-hidden="true"
-        style={{ width: size, height: size, backgroundColor: "#5f7a44" }}
+        style={{ width: rem(size), height: rem(size), backgroundColor: "#5f7a44" }}
         className="flex flex-none items-center justify-center rounded-full"
       >
         {/* A custom flat robot face, not a stock emoji — antenna, rounded
            head, simple eyes/mouth, in the same matcha tones the mascot
            and every bot badge already use. */}
-        <svg width={size * 0.62} height={size * 0.62} viewBox="0 0 40 40" fill="none">
+        <svg width={rem(size * 0.62)} height={rem(size * 0.62)} viewBox="0 0 40 40" fill="none">
           <rect x="7" y="3" width="2" height="7" rx="1" fill="#e8e4d4" />
           <circle cx="8" cy="3" r="2.6" fill="#d9973f" />
           <rect x="4" y="10" width="32" height="26" rx="10" fill="#e8e4d4" />
@@ -68,7 +81,7 @@ export default function Avatar({
     return (
       <span
         aria-hidden="true"
-        style={{ width: size, height: size, backgroundColor: preset.bg, fontSize: size * 0.58 }}
+        style={{ width: rem(size), height: rem(size), backgroundColor: preset.bg, fontSize: rem(size * 0.58) }}
         className="flex flex-none items-center justify-center rounded-full"
       >
         {preset.emoji}
@@ -80,7 +93,7 @@ export default function Avatar({
   return (
     <span
       aria-hidden="true"
-      style={{ width: size, height: size, backgroundColor: colorFor(username), fontSize: size * 0.45 }}
+      style={{ width: rem(size), height: rem(size), backgroundColor: colorFor(username), fontSize: rem(size * 0.45) }}
       className="flex flex-none items-center justify-center rounded-full font-semibold text-white"
     >
       {initial}
