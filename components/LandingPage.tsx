@@ -49,6 +49,7 @@ export default async function LandingPage() {
       supabase
         .from("profiles")
         .select("username, display_name, avatar_url, reputation_score")
+        .eq("is_bot", false)
         .order("reputation_score", { ascending: false })
         .limit(3),
       supabase.from("context_entries").select("tags").order("created_at", { ascending: false }).limit(200),

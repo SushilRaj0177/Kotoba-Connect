@@ -20,7 +20,13 @@ export default async function LeaderboardPage() {
     // the member base ever outgrows it, this tiebreak logic should move
     // into the query itself (ORDER BY reputation_score, entry_count,
     // username) instead of sorting a fetched batch in JS.
-    supabase.from("profiles").select("id, username, display_name, avatar_url, reputation_score").limit(500),
+    // The bot doesn't compete for reputation — it's a content source, not
+    // a community member, so it's excluded from ranking entirely.
+    supabase
+      .from("profiles")
+      .select("id, username, display_name, avatar_url, reputation_score")
+      .eq("is_bot", false)
+      .limit(500),
     supabase.from("context_entries").select("user_id"),
   ]);
 
