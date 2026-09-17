@@ -102,6 +102,68 @@
   background-image: none;
 }
 
+/* Edge goes further than an OLED palette swap: it also cuts down how many
+   *different* visual treatments compete for attention on one card. Same
+   info everywhere, none of it deleted — just fewer simultaneous colored
+   fills, borders, and shadows drawing the eye in different directions.
+
+   1) Formality badges are solid filled pills (bg-violet-500 etc.) — six
+      different saturated blobs is exactly the "too many competing colors"
+      problem. Flattened to plain colored text: still instantly
+      color-coded and scannable, just not six separate filled shapes. */
+:root[data-theme="edge"] .bg-violet-500,
+:root[data-theme="edge"] .bg-indigo-500,
+:root[data-theme="edge"] .bg-sky-500,
+:root[data-theme="edge"] .bg-emerald-500,
+:root[data-theme="edge"] .bg-amber-500,
+:root[data-theme="edge"] .bg-rose-500 {
+  background-color: transparent;
+}
+:root[data-theme="edge"] .bg-violet-500 {
+  color: #a78bfa;
+}
+:root[data-theme="edge"] .bg-indigo-500 {
+  color: #818cf8;
+}
+:root[data-theme="edge"] .bg-sky-500 {
+  color: #38bdf8;
+}
+:root[data-theme="edge"] .bg-emerald-500 {
+  color: #34d399;
+}
+:root[data-theme="edge"] .bg-amber-500 {
+  color: #fbbf24;
+}
+:root[data-theme="edge"] .bg-rose-500 {
+  color: #fb7185;
+}
+
+/* The formality badge's "i" info-dot was designed as a translucent-white
+   circle sitting on a saturated pill — once that pill fill is gone (above)
+   it needs its own faint outline to still read as a tappable dot on black. */
+:root[data-theme="edge"] .bg-white\/25 {
+  background-color: transparent;
+  border: 1px solid currentColor;
+  opacity: 0.7;
+}
+
+/* 2) No soft/colored shadows — shadow-sm is already invisible on true
+   black (its color is black-based), but shadow-md/shadow-xl on buttons
+   and toasts use a colored glow, which is its own extra bit of visual
+   noise on an otherwise flat surface. */
+:root[data-theme="edge"] .shadow-md,
+:root[data-theme="edge"] .shadow-xl,
+:root[data-theme="edge"] .btn-chunky:hover:not(:disabled) {
+  box-shadow: none;
+}
+
+/* 3) The AI-nuance callout's colored left border is the one deliberate
+   accent mark left on a card — thinned down instead of removed, since it
+   is the one piece of "this is AI-generated" signal a reader needs. */
+:root[data-theme="edge"] .border-l-4 {
+  border-left-width: 2px;
+}
+
 :root {
   --c-bg: 251 248 240;
   --c-bg-secondary: 255 253 248;
