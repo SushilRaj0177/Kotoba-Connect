@@ -61,9 +61,9 @@ export default function EntryCard({
   // completely untouched.
   if (theme === "edge") {
     return (
-      <article className="border-b border-ink-border/60 py-5 first:pt-0">
-        <div className="flex items-start gap-3">
-          <Avatar username={username} avatarUrl={avatarUrl} size={36} />
+      <article className="border-b border-ink-border/60 py-4 first:pt-0">
+        <div className="flex items-start gap-2.5">
+          <Avatar username={username} avatarUrl={avatarUrl} size={28} />
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-1.5">
               <Link href={`/u/${username}`} className="font-display text-sm font-bold text-ink-text-header hover:underline">
@@ -80,7 +80,7 @@ export default function EntryCard({
           </div>
         </div>
 
-        <div className="mt-3 min-w-0">
+        <div className="mt-2 min-w-0">
           {editing ? (
             <EditEntryForm
               entry={liveEntry}
@@ -115,7 +115,7 @@ export default function EntryCard({
           )}
 
           {!editing && (
-            <div className="mt-4 flex items-center gap-5">
+            <div className="mt-3 flex items-center gap-4">
               <LikeButton
                 entryId={entry.id}
                 currentUserId={currentUserId}
