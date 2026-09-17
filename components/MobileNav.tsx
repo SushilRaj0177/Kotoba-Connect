@@ -26,7 +26,7 @@ export default function MobileNav() {
       label: t("nav.home"),
       show: true,
       icon: (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M3 11.5 12 4l9 7.5" />
           <path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9" />
         </svg>
@@ -37,7 +37,7 @@ export default function MobileNav() {
       label: t("nav.search"),
       show: true,
       icon: (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <g strokeLinecap="round" strokeLinejoin="round">
             <circle cx="10.5" cy="10.5" r="6.5" />
             <path d="m20 20-3.8-3.8" />
@@ -55,7 +55,7 @@ export default function MobileNav() {
       label: t("nav.leaderboard"),
       show: true,
       icon: (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M7 3h10v5a5 5 0 0 1-10 0V3Z" />
           <path d="M7 4H4.5a2 2 0 0 0 0 4c.5 1.5 1.6 2.7 3 3.3" />
           <path d="M17 4h2.5a2 2 0 0 1 0 4c-.5 1.5-1.6 2.7-3 3.3" />
@@ -69,7 +69,7 @@ export default function MobileNav() {
       label: t("nav.bookmarks"),
       show: !!userId,
       icon: (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z" />
         </svg>
       ),
@@ -79,7 +79,7 @@ export default function MobileNav() {
       label: t("nav.settings"),
       show: !!userId,
       icon: (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <circle cx="12" cy="12" r="3.2" />
           <circle cx="12" cy="12" r="7.3" />
           <path d="M12 1.5v3M12 19.5v3M22.5 12h-3M4.5 12h-3M19.6 4.4l-2.1 2.1M6.5 17.5l-2.1 2.1M19.6 19.6l-2.1-2.1M6.5 6.5 4.4 4.4" />
@@ -99,7 +99,7 @@ export default function MobileNav() {
           <Link
             key={item.href}
             href={item.href}
-            className={`flex flex-1 flex-col items-center gap-0.5 py-2.5 text-[10px] font-semibold transition ${
+            className={`flex flex-1 flex-col items-center gap-1 py-3.5 text-[11px] font-semibold transition ${
               active ? "text-ink-accent" : "text-ink-text-muted"
             }`}
           >
