@@ -25,13 +25,13 @@ export const dynamic = "force-dynamic";
 export default async function ProfilePage({ params }: { params: { username: string } }) {
   const supabase = createClient();
   const { t } = getServerTranslator();
-  const user = await getCurrentUser();
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("username", params.username)
-    .single();
+  // Independent of each other — the profile lookup doesn't need to know
+  // who's viewing, so don't make it wait behind the auth check.
+  const [user, { data: profile }] = await Promise.all([
+    getCurrentUser(),
+    supabase.from("profiles").select("*").eq("username", params.username).single(),
+  ]);
 
   if (!profile) notFound();
 

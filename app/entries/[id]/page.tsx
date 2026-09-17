@@ -31,13 +31,17 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
 export default async function EntryPage({ params }: { params: { id: string } }) {
   const supabase = createClient();
   const { t } = getServerTranslator();
-  const user = await getCurrentUser();
 
-  const { data: entry } = await supabase
-    .from("context_entries")
-    .select("*, profiles!context_entries_user_id_fkey(username, display_name, avatar_url, is_bot)")
-    .eq("id", params.id)
-    .single();
+  // Independent of each other — fetching the entry doesn't need to know
+  // who's viewing, so don't make it wait behind the auth check.
+  const [user, { data: entry }] = await Promise.all([
+    getCurrentUser(),
+    supabase
+      .from("context_entries")
+      .select("*, profiles!context_entries_user_id_fkey(username, display_name, avatar_url, is_bot)")
+      .eq("id", params.id)
+      .single(),
+  ]);
 
   if (!entry) notFound();
 
