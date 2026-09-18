@@ -42,7 +42,7 @@ export default function AccountMenu({
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center rounded-full transition hover:ring-2 hover:ring-ink-accent/40"
+        className="flex items-center rounded-full transition active:scale-90 hover:ring-2 hover:ring-ink-accent/40"
         aria-label={t("nav.profile")}
       >
         <Avatar username={username} avatarUrl={avatarUrl} size={32} />

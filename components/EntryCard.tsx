@@ -125,7 +125,7 @@ export default function EntryCard({
               <Link
                 href={`/entries/${entry.id}`}
                 title={t("card.annotateTitle")}
-                className="text-ink-text-muted transition hover:text-ink-text"
+                className="text-ink-text-muted transition active:scale-90 hover:text-ink-text"
               >
                 <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
                   <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
@@ -136,7 +136,7 @@ export default function EntryCard({
                 type="button"
                 onClick={() => setCommentsOpen((o) => !o)}
                 title={t("comments.title")}
-                className={`flex items-center gap-1.5 text-sm font-bold transition ${commentsOpen ? "text-ink-accent" : "text-ink-text-muted hover:text-ink-text"}`}
+                className={`flex items-center gap-1.5 text-sm font-bold transition active:scale-90 ${commentsOpen ? "text-ink-accent" : "text-ink-text-muted hover:text-ink-text"}`}
               >
                 <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
                   <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
@@ -148,7 +148,7 @@ export default function EntryCard({
               <div className="ml-auto flex items-center gap-3">
                 {currentUserId === entry.user_id ? (
                   <>
-                    <button type="button" onClick={() => setEditing(true)} title={t("card.edit")} className="text-ink-text-muted transition hover:text-ink-text">
+                    <button type="button" onClick={() => setEditing(true)} title={t("card.edit")} className="text-ink-text-muted transition active:scale-90 hover:text-ink-text">
                       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
                         <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
                       </svg>
@@ -255,7 +255,7 @@ export default function EntryCard({
             <Link
               href={`/entries/${entry.id}`}
               title={t("card.annotateTitle")}
-              className="flex h-10 w-10 items-center justify-center rounded-full text-ink-text-muted transition hover:bg-ink-bg-hover hover:text-ink-text"
+              className="flex h-10 w-10 items-center justify-center rounded-full text-ink-text-muted transition active:scale-90 hover:bg-ink-bg-hover hover:text-ink-text"
             >
               <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
@@ -266,7 +266,7 @@ export default function EntryCard({
               type="button"
               onClick={() => setCommentsOpen((o) => !o)}
               title={t("comments.title")}
-              className={`flex h-10 items-center gap-1.5 rounded-full px-3 text-sm font-bold transition ${
+              className={`flex h-10 items-center gap-1.5 rounded-full px-3 text-sm font-bold transition active:scale-90 ${
                 commentsOpen ? "text-ink-accent" : "text-ink-text-muted hover:bg-ink-bg-hover hover:text-ink-text"
               }`}
             >

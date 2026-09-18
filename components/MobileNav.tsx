@@ -99,7 +99,7 @@ export default function MobileNav() {
           <Link
             key={item.href}
             href={item.href}
-            className={`flex flex-1 flex-col items-center gap-1 py-3.5 text-[11px] font-semibold transition ${
+            className={`flex flex-1 flex-col items-center gap-1 py-3.5 text-[11px] font-semibold transition active:scale-90 active:opacity-70 ${
               active ? "text-ink-accent" : "text-ink-text-muted"
             }`}
           >

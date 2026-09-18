@@ -23,7 +23,7 @@ export default function LanguageToggle() {
           type="button"
           onClick={() => setLocale(opt.value)}
           aria-pressed={locale === opt.value}
-          className={`rounded-full px-2.5 py-1 transition ${
+          className={`rounded-full px-2.5 py-1 transition active:scale-90 ${
             locale === opt.value
               ? "bg-ink-accent text-white"
               : "text-ink-text-muted hover:text-ink-text"
