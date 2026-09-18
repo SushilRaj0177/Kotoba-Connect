@@ -16,7 +16,7 @@ export default async function AccountSettingsPage() {
       <Navbar title={t("settings.tabs.account")} />
       <main className="mx-auto max-w-lg px-4 py-6 sm:px-6 lg:max-w-3xl">
         <SettingsSubpageHeader backLabel={t("settings.backToSettings")} title={t("settings.tabs.account")} />
-        <AccountSettings />
+        <AccountSettings email={user.email ?? null} />
       </main>
     </>
   );
