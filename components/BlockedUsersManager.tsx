@@ -37,31 +37,35 @@ export default function BlockedUsersManager({ userId }: { userId: string }) {
     setBlocked((prev) => prev.filter((b) => b.blocked_id !== blockedId));
   }
 
-  if (loading || blocked.length === 0) return null;
+  if (loading) return null;
 
   return (
-    <div className="mt-6 rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm">
-      <h2 className="mb-3 text-sm font-semibold text-ink-text-header">{t("settings.blockedUsers")}</h2>
-      <ul className="space-y-2">
-        {blocked.map((b) => (
-          <li key={b.blocked_id} className="flex items-center justify-between">
-            <UserHandle
-              username={b.profiles?.username ?? "unknown"}
-              displayName={b.profiles?.display_name}
-              avatarUrl={b.profiles?.avatar_url}
-              href={`/u/${b.profiles?.username ?? ""}`}
-              size="sm"
-            />
-            <button
-              type="button"
-              onClick={() => unblock(b.blocked_id)}
-              className="rounded-full bg-ink-bg-input px-3 py-1 text-xs font-semibold text-ink-text transition hover:bg-ink-bg-hover"
-            >
-              {t("profile.unblock")}
-            </button>
-          </li>
-        ))}
-      </ul>
+    <div className="rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm sm:p-5">
+      <h2 className="mb-3 font-display text-base font-bold text-ink-text-header">{t("settings.blockedUsers")}</h2>
+      {blocked.length === 0 ? (
+        <p className="text-sm text-ink-text-muted">{t("settings.blockedUsersEmpty")}</p>
+      ) : (
+        <ul className="space-y-2">
+          {blocked.map((b) => (
+            <li key={b.blocked_id} className="flex items-center justify-between">
+              <UserHandle
+                username={b.profiles?.username ?? "unknown"}
+                displayName={b.profiles?.display_name}
+                avatarUrl={b.profiles?.avatar_url}
+                href={`/u/${b.profiles?.username ?? ""}`}
+                size="sm"
+              />
+              <button
+                type="button"
+                onClick={() => unblock(b.blocked_id)}
+                className="rounded-full bg-ink-bg-input px-3 py-1 text-xs font-semibold text-ink-text transition active:scale-95 hover:bg-ink-bg-hover"
+              >
+                {t("profile.unblock")}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
