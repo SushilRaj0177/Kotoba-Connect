@@ -15,6 +15,7 @@ Live at: https://kotoba-connect-three.vercel.app
 - **Supabase** — Postgres, Auth, Realtime, pgvector, Row Level Security
 - **Kuromoji.js** — server-side Japanese morphological tokenizer (POS, lemma, furigana reading)
 - **Tailwind CSS**
+- **wanakana** — kana/romaji conversion for the furigana/romaji reading-aid toggle
 - **next/og** — dynamically generated Open Graph share images (per-entry and site-wide)
 - Optional: **Groq** (automatic Keigo/nuance classification + the in-app mascot chat bot),
   **OpenAI embeddings** (semantic search), **Upstash Redis** (rate limiting), **Sentry**
@@ -28,7 +29,14 @@ Live at: https://kotoba-connect-three.vercel.app
 - Live collaborative board: new posts, upvotes, comments, and annotations sync to every open
   tab via Supabase Realtime, no refresh needed
 - Sort (New / Popular) and filter by formality register (Sonkeigo, Kenjougo, Teineigo, Casual,
-  Slang, Dialect), plus semantic search by meaning
+  Slang, Dialect), plus semantic search by meaning — sort/filter choice is remembered across
+  visits (localStorage) instead of resetting every time
+- Reading aids: an Off / Furigana / Romaji toggle (Settings → Appearance → Reading aids) that
+  renders each word's Kuromoji-computed reading as `<ruby>` furigana above the kanji, or
+  transliterates the sentence to romaji via `wanakana` — applies everywhere Japanese text
+  renders (board, search, entry detail, the token-annotation view)
+- An official "Kotoba Bot" account (`is_bot` flag) seeds starter entries with real AI nuance +
+  embeddings so the board doesn't read empty for new users; excluded from the leaderboard
 - Atomic upvoting via a Postgres RPC (`toggle_entry_upvote`) backed by a unique
   `(user_id, entry_id)` ledger — prevents duplicate votes under concurrency
 - Token-level annotation canvas: click any word in a sentence to pin cultural-nuance notes to
@@ -38,24 +46,45 @@ Live at: https://kotoba-connect-three.vercel.app
 **Community & profile**
 - Follow other users, block/mute users you'd rather not see (client-side filtered, private to
   the blocker), and a notification inbox (upvotes, annotations, comments, follows, admin/system
-  messages)
+  messages) with per-type mute toggles (Settings → Account → Notifications; `system` messages
+  always come through regardless)
 - Daily posting streaks (🔥, gamed-proof — recomputed from each entry's own timestamp) and
   achievement badges computed from a profile's stats
 - Editable display name (shown instead of your `@handle` app-wide once set) and 40 preset
   avatar icons across 4 themed sets — no image upload/storage needed
-- Password reset flow, account deletion, EN/JP language toggle (cookie-backed, hand-translated
-  — not machine translation, see `lib/i18n/`), light/dark theme toggle
+- Password change requires re-entering your current password first (verified via a real
+  `signInWithPassword` re-auth check before `updateUser` runs) and starts collapsed behind a
+  prompt rather than sitting open by default; account deletion; EN/JP language toggle
+  (cookie-backed, hand-translated — not machine translation, see `lib/i18n/`)
+- Settings is a native-app-style drill-down: a short grouped list (Profile / Account / Privacy /
+  Notifications / Appearance / Reading aids, plus Legal and Sign out) where each row opens its
+  own dedicated page — see `app/settings/`
 
 **Identity & polish**
 - Two hand-drawn SVG mascots (Kokeshi doll + Obake ghost) with equal billing across the app,
   both track the cursor with subtle eye movement; a custom cozy cursor (rounded arrow, bigger
   than system default); a floating mascot chat widget that can answer questions about the app
   and Japanese formality (Groq-backed, feature-flagged, cannot take actions on your behalf)
-- Warm "matcha" design system (rice-paper cream light theme, near-neutral dark theme with
-  matcha-green accents) — CSS-variable driven, see `app/globals.css` + `tailwind.config.ts`
-- Responsive app shell: fixed icon rail on desktop/tablet, bottom tab bar on mobile, with a
-  +20% layout zoom on desktop/tablet only (scoped out of mobile, where CSS `zoom` would shrink
-  the effective viewport)
+- Three themes: Matcha Light, Matcha Dark (rice-paper cream / near-neutral dark, matcha-green
+  accents — CSS-variable driven, see `app/globals.css` + `tailwind.config.ts`), and Edge, a
+  separate true-OLED-black theme built for zero visual clutter (flattened surfaces, no paper
+  texture, formality badges as colored text instead of solid pills) rather than just a darker
+  dark mode
+- A universal +17% type/spacing scale (`:root { font-size: 117% }`) applied to every theme on
+  every screen size — a real viewport-based baseline, not a desktop-only `zoom` hack (an earlier
+  approach that caused a round of "auto-zoomed"-looking pages on narrow phones; root-caused to
+  a missing `min-w-0` letting one oversized row set the width floor for the entire app shell —
+  see the comment in `app/layout.tsx`)
+- Responsive app shell: fixed icon rail on desktop/tablet, bottom tab bar on mobile; a single
+  empty `touchstart` listener (`components/EnableTapFeedback.tsx`) makes every `:active`
+  press-state style in the app actually fire on iOS Safari, which otherwise silently suppresses
+  `:active` entirely unless some element on the page has a touch listener
+- Route-level `loading.tsx` + matching skeletons for every main page, so client-side navigation
+  shows an instant, correctly-shaped placeholder (via Next's automatic Suspense boundary) instead
+  of a frozen screen while the destination page's data fetches
+- Like/bookmark state is kept in sync across every simultaneously-rendered copy of the same
+  entry (board, search results, entry detail, …) via a small cross-instance store
+  (`lib/entry-interaction-store.ts`) instead of each copy's own disconnected local state
 - SEO: per-page metadata, dynamically generated Open Graph/Twitter share images (the actual
   Japanese sentence renders in the image, via a request-time-subsetted Noto Sans JP font),
   `robots.txt`, `sitemap.xml`, PWA manifest, custom 404, generated favicon
@@ -70,9 +99,15 @@ Live at: https://kotoba-connect-three.vercel.app
   `/api/tokenize` and the AI endpoints
 - Row Level Security on every table — reads are public, writes require the authenticated owner
   (or an admin, for moderation deletes); blocks are private to the blocker
-- Middleware forwards the already-validated user id from its own `auth.getUser()` call to the
-  page render via a request header, so Server Components can read the session locally instead
-  of re-validating with a second network round-trip on every navigation
+- Middleware auth check is hybrid: page navigation uses a fast local `auth.getSession()` read
+  (re-verified for real via `auth.getUser()` at most once every 5 minutes, tracked in a cookie),
+  while every `/api/*` route always pays for the real `auth.getUser()` round-trip, since that's
+  the surface where this app's own server-side code makes authorization decisions (account
+  deletion, admin actions). Trades a bounded ~5-minute window (worst case) before a revoked
+  session stops looking signed-in on ordinary pages, for cutting a network round-trip off nearly
+  every request — see `lib/supabase/middleware.ts`. Either way, the resolved user id is forwarded
+  to the page render via a request header so Server Components read it locally instead of calling
+  `auth.getUser()` again themselves
 - Error monitoring via Sentry (server-side), gated entirely on `SENTRY_DSN`
 - Terms of Service and Privacy Policy pages
 
@@ -179,6 +214,10 @@ without them.
 - Blocking is enforced client-side (filtering fetched rows), not via RLS — a blocked user's
   posts/comments are still publicly readable to everyone else; blocking only affects what the
   blocker sees.
+- A revoked session (ban, forced sign-out) can still render as "signed in" on ordinary page
+  navigation for up to ~5 minutes — see the middleware note under Production hardening above.
+  Every actual write still goes through Supabase RLS independently of this, so this window
+  affects what a page *shows*, not what a revoked session can actually *do*.
 - `npm audit` currently flags a Next.js advisory (Image Optimization AVIF RCE) with no patch
   backported to the 14.x line as of this writing — the fix requires Next 16. This app doesn't
   use `next/image` with AVIF, but if that changes, re-evaluate before upgrading.
@@ -195,7 +234,9 @@ app/
   u/[username]/page.tsx             Public profile (follow/block, streak, badges)
   tags/[tag]/page.tsx               Browse entries by tag
   bookmarks/, leaderboard/          Saved entries, reputation ranking
-  settings/page.tsx                 Profile/avatar/password/account settings
+  settings/                         Grouped drill-down list + profile/account/privacy/
+                                     notifications/appearance/reading sub-pages, each with its
+                                     own loading.tsx
   admin/page.tsx                    Moderation queue (admin-only)
   terms/, privacy/                  Legal pages
   not-found.tsx, robots.ts, sitemap.ts, manifest.ts, icon.tsx   SEO/PWA
@@ -209,10 +250,13 @@ app/
   api/reports/[id]/triage/route.ts  AI moderation-severity triage
   api/search/route.ts               Semantic search endpoint (Phase 2)
   api/bot/chat/route.ts             Mascot chat bot (Phase 2)
+  api/admin/bot/setup/, seed/       Create/seed the official bot account
 components/
   EntryBoard.tsx / BoardControls.tsx  Client board: fetch, realtime, sort/filter, search
   EntryForm.tsx                      Create entry — tokenizer preview, AI assist, photo OCR
   EntryCard.tsx / EntryDetail.tsx / EntryComments.tsx   List item / annotation canvas / comments
+  JapaneseText.tsx / TokenizedText.tsx   Reading-aid-aware Japanese text renderers (card preview
+                                     / interactive click-to-annotate — see lib/reading-aid-store.ts)
   FollowButton.tsx / BlockButton.tsx / BlockedUsersManager.tsx   Social graph
   ProfileBadges.tsx / Avatar.tsx / AvatarPicker.tsx   Profile customization
   ReportButton.tsx / AdminQueue.tsx  Moderation UI (AI-triaged severity sort)
@@ -220,8 +264,12 @@ components/
   Mascot.tsx / mascots/candidates.tsx / MascotChat.tsx   Mascots + entry-aware chat bot widget
   EntryChatContext.tsx               Hands the bot "the entry currently being viewed"
   SideRail.tsx / MobileNav.tsx / auth/ClientAuthProvider.tsx   App shell + shared client auth state
+  EnableTapFeedback.tsx              Makes :active press states fire reliably on iOS Safari
   AiNuanceCallout.tsx                Displays Groq's pragmatic read on an entry
-  TokenizedText.tsx                  Renders Kuromoji tokens as clickable word chips
+  BotSeedPanel.tsx                   Admin UI to create/seed the official bot account
+  settings/                         SettingsGroup/Row/SubpageHeader (drill-down list chrome) +
+                                     one form component per settings category
+  skeletons/                        Route-level loading.tsx building blocks
 lib/
   supabase/                         Browser / server / middleware Supabase clients
   tokenizer.ts                      Cached Kuromoji tokenizer builder
@@ -230,6 +278,9 @@ lib/
   moderation.ts                      Spam heuristics + report reasons
   avatar-presets.ts                  40 preset avatar icons (4 sets)
   og-font.ts / site.ts               OG image font loading + site URL constant
+  entry-interaction-store.ts / use-entry-interaction.ts   Cross-instance like/bookmark sync
+  reading-aid-store.ts / use-reading-aid.ts / kana.ts   Furigana/romaji preference + conversion
+  bot-entries.ts / bot-auth.ts       Starter entry bank + auth guard for the bot admin endpoints
   use-blocked-ids.ts / cursor-tracker.ts / use-mascot-gaze.ts   Small client hooks
   i18n/                              EN/JP dictionary + server/client locale helpers
 supabase/
@@ -254,6 +305,9 @@ types/database.ts                   Shared TypeScript types
 | `0010_streaks.sql` | Daily posting streaks |
 | `0011_profile_customization.sql` | Display names, preset avatar icons |
 | `0012_moderation_triage.sql` | `ai_severity`/`ai_reasoning` on `report_flags` |
+| `0013_mandatory_display_name.sql` | Backfills/enforces a display name at signup |
+| `0014_bot_account.sql` | `is_bot` flag on `profiles` (official bot account) |
+| `0015_notification_preferences.sql` | `notification_prefs` jsonb on `profiles` + updates the four notification-producing trigger functions to check it |
 
 ## Roadmap
 
@@ -261,6 +315,9 @@ types/database.ts                   Shared TypeScript types
 - Media embeds in posts
 - Onboarding tour for first-time users
 - Client-side Sentry tracing (run the Sentry wizard once a real project exists)
+- Stale-while-revalidate client-side caching (SWR/React Query) for feed/search/profile data, so
+  a revisited page renders instantly from cache instead of a fresh fetch every time — the main
+  remaining lever for faster-feeling navigation on repeat visits
 
 ---
 

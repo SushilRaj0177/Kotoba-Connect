@@ -29,14 +29,13 @@ export function createClient() {
   );
 }
 
-// auth.getUser() is a real network round-trip to Supabase's auth server —
-// middleware (lib/supabase/middleware.ts) already makes exactly this call
-// on every request to refresh/validate the session, and used to be
-// immediately followed by a second, identical round-trip here on every
-// single navigation. Middleware now forwards the verified id via the
-// x-kotoba-user-id request header, so when it's present we can trust the
-// session cookie (already validated this request) and read it locally via
-// getSession() — no network call — instead of re-verifying from scratch.
+// Middleware (lib/supabase/middleware.ts) already resolved who's signed in
+// for this request — via a real auth.getUser() round-trip on API routes and
+// on the periodic revalidation it does for page navigation, or a fast local
+// getSession() read otherwise — and forwards the result via the
+// x-kotoba-user-id request header. Reading it here via getSession() (no
+// network call) instead of calling auth.getUser() again avoids a second,
+// redundant round-trip on every single navigation for the same request.
 // React's cache() still memoizes this per request on top of that, so no
 // matter how many components call getCurrentUser(), the work happens once.
 export const getCurrentUser = cache(async () => {
