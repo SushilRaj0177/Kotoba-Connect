@@ -13,6 +13,7 @@ import { ClientAuthProvider } from "@/components/auth/ClientAuthProvider";
 import OnboardingGate from "@/components/auth/OnboardingGate";
 import { EntryChatProvider } from "@/components/EntryChatContext";
 import { ToastProvider } from "@/components/Toast";
+import EnableTapFeedback from "@/components/EnableTapFeedback";
 
 // Every page in the app renders theme-dependent output (data-theme on
 // <html>, and now Edge's own layout branch in EntryCard), so any page that
@@ -79,6 +80,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <OnboardingGate />
               <EntryChatProvider>
                 <ToastProvider>
+                  <EnableTapFeedback />
                   {/* The rail is fixed to the real left edge (so it can't be
                       dragged along when the page scrolls) and a matching-width
                       spacer takes its place in flow so content doesn't render

@@ -69,7 +69,7 @@ export default function NotificationBell({ userId }: { userId: string }) {
         type="button"
         onClick={() => setOpen((o) => !o)}
         title={t("nav.notifications")}
-        className="relative flex h-9 w-9 items-center justify-center rounded-full text-ink-text-muted transition hover:bg-ink-bg-hover hover:text-ink-text"
+        className="relative flex h-9 w-9 items-center justify-center rounded-full text-ink-text-muted transition active:scale-90 hover:bg-ink-bg-hover hover:text-ink-text"
       >
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M6 8a6 6 0 0 1 12 0c0 4.5 1.5 6 2 7H4c.5-1 2-2.5 2-7Z" />

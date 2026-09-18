@@ -103,7 +103,7 @@ export default function SearchBar({
         <button
           type="submit"
           disabled={searching}
-          className="rounded-full bg-ink-bg-input px-4 py-2 text-sm font-semibold text-ink-text transition hover:bg-ink-bg-hover disabled:opacity-60"
+          className="rounded-full bg-ink-bg-input px-4 py-2 text-sm font-semibold text-ink-text transition active:scale-90 hover:bg-ink-bg-hover disabled:opacity-60"
         >
           {searching ? t("board.searching") : t("board.searchButton")}
         </button>
