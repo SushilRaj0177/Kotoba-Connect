@@ -1,6 +1,11 @@
 "use client";
 
+import * as wanakana from "wanakana";
+import { katakanaToHiragana } from "@/lib/kana";
+import { useReadingAid } from "@/lib/use-reading-aid";
 import type { KuromojiToken } from "@/types/database";
+
+const KANJI_RE = /[一-龯㐀-䶿]/;
 
 export default function TokenizedText({
   tokens,
@@ -11,6 +16,7 @@ export default function TokenizedText({
   onTokenClick?: (index: number) => void;
   activeIndex?: number | null;
 }) {
+  const [readingAid] = useReadingAid();
   if (!tokens.length) return null;
 
   return (
@@ -26,7 +32,18 @@ export default function TokenizedText({
             onTokenClick ? "cursor-pointer hover:bg-ink-bg-hover" : "cursor-default"
           } ${activeIndex === i ? "bg-ink-accent text-white hover:bg-ink-accent" : ""}`}
         >
-          {token.surface_form}
+          {readingAid === "furigana" && token.reading && KANJI_RE.test(token.surface_form) ? (
+            <ruby>
+              {token.surface_form}
+              <rt className="text-[0.5em]">{katakanaToHiragana(token.reading)}</rt>
+            </ruby>
+          ) : readingAid === "romaji" ? (
+            // pronunciation (not reading) accounts for sound shifts like
+            // the topic marker は being spoken "wa".
+            wanakana.toRomaji(token.pronunciation || token.reading || token.surface_form)
+          ) : (
+            token.surface_form
+          )}
         </button>
       ))}
     </div>

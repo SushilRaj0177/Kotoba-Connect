@@ -12,6 +12,17 @@ import { useLocale } from "@/components/i18n/LocaleProvider";
 import { useBlockedIds } from "@/lib/use-blocked-ids";
 
 const PAGE_SIZE = 30;
+const SORT_STORAGE_KEY = "kotoba-feed-sort";
+const FORMALITY_STORAGE_KEY = "kotoba-feed-formality";
+
+function readStoredPref<T extends string>(key: string, valid: readonly T[], fallback: T): T {
+  try {
+    const stored = window.localStorage.getItem(key);
+    return (valid as readonly string[]).includes(stored ?? "") ? (stored as T) : fallback;
+  } catch {
+    return fallback;
+  }
+}
 
 // Search + sort/register filtering, split out of the home feed so the
 // home page can stay a decluttered "just the posts" feed and this page
@@ -26,8 +37,21 @@ export default function SearchView({ userId }: { userId: string | null }) {
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchResults, setSearchResults] = useState<ContextEntry[] | null>(null);
+  // Remembered across visits (not synced/shared — this is a per-device
+  // browsing preference, not something that needs the cross-instance
+  // store the vote/bookmark/reading-aid preferences use) so the feed
+  // doesn't reset to "New" / "All registers" on every single visit.
+  // Starts at the plain default rather than reading localStorage in the
+  // initializer: this component is server-rendered for the first paint,
+  // and localStorage isn't available there, so seeding state from it
+  // synchronously would make the client's first render disagree with
+  // the server's and trigger a hydration mismatch. The stored value is
+  // applied in the effect below instead, gated behind `initialized` so
+  // the first real data fetch waits for it rather than firing once with
+  // the default and again once the real preference loads.
   const [sortBy, setSortBy] = useState<SortOption>("new");
   const [formalityFilter, setFormalityFilter] = useState<FormalityLevel | "all">("all");
+  const [initialized, setInitialized] = useState(false);
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
   const blockedIds = useBlockedIds(userId);
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -128,9 +152,36 @@ export default function SearchView({ userId }: { userId: string | null }) {
     setLoadingMore(false);
   }, [entries, loadingMore, hasMore, sortBy, formalityFilter, enrichBatch]);
 
+  // Applies the stored sort/filter preference (if any) before the first
+  // fetch fires, so that fetch goes out with the right values instead of
+  // the plain default followed immediately by a second, corrected one.
   useEffect(() => {
+    setSortBy(readStoredPref(SORT_STORAGE_KEY, ["new", "popular"] as const, "new"));
+    setFormalityFilter(
+      readStoredPref(
+        FORMALITY_STORAGE_KEY,
+        ["all", "Sonkeigo", "Kenjougo", "Teineigo", "Casual", "Slang", "Dialect"] as const,
+        "all"
+      )
+    );
+    setInitialized(true);
+  }, []);
+
+  useEffect(() => {
+    if (!initialized) return;
     loadEntries();
-  }, [loadEntries]);
+  }, [loadEntries, initialized]);
+
+  useEffect(() => {
+    if (!initialized) return;
+    try {
+      window.localStorage.setItem(SORT_STORAGE_KEY, sortBy);
+      window.localStorage.setItem(FORMALITY_STORAGE_KEY, formalityFilter);
+    } catch {
+      // Private browsing/storage disabled — the preference just won't
+      // survive a reload, which is a harmless degradation here.
+    }
+  }, [sortBy, formalityFilter, initialized]);
 
   const visibleEntries = entries.filter((e) => !blockedIds.has(e.user_id));
   const visibleSearchResults = searchResults?.filter((e) => !blockedIds.has(e.user_id)) ?? null;

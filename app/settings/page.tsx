@@ -56,6 +56,16 @@ export default async function SettingsPage() {
               </svg>
             }
           />
+          <SettingsRow
+            href="/settings/notifications"
+            label={t("settings.rows.notifications")}
+            icon={
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+                <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+              </svg>
+            }
+          />
         </SettingsGroup>
 
         <SettingsGroup title={t("settings.section.appearance")}>
@@ -66,6 +76,16 @@ export default async function SettingsPage() {
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="4" />
                 <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+              </svg>
+            }
+          />
+          <SettingsRow
+            href="/settings/reading"
+            label={t("settings.rows.readingAid")}
+            icon={
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v17H6.5A2.5 2.5 0 0 0 4 21.5v-17Z" />
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
               </svg>
             }
           />

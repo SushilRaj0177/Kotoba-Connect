@@ -15,6 +15,7 @@ import LikeButton from "@/components/LikeButton";
 import TranslateToggle from "@/components/TranslateToggle";
 import EntryComments from "@/components/EntryComments";
 import AiInsightEdge from "@/components/edge/AiInsightEdge";
+import JapaneseText from "@/components/JapaneseText";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { useTranslate } from "@/lib/use-translate";
 import { useTheme } from "@/components/theme/ThemeProvider";
@@ -94,7 +95,11 @@ export default function EntryCard({
             <>
               <Link href={`/entries/${entry.id}`} className="block min-w-0">
                 <p className={rawTranslate.showingTranslation && rawTranslate.translation ? "text-lg leading-relaxed text-ink-text-header" : "font-jp text-lg leading-relaxed text-ink-text-header"}>
-                  {rawTranslate.display}
+                  {rawTranslate.showingTranslation && rawTranslate.translation ? (
+                    rawTranslate.translation
+                  ) : (
+                    <JapaneseText text={rawTranslate.display} tokens={liveEntry.furigana_parsed} />
+                  )}
                 </p>
                 <p className="mt-1 text-sm text-ink-text-muted">{liveEntry.primary_translation}</p>
               </Link>
@@ -215,7 +220,11 @@ export default function EntryCard({
                     : "font-jp text-lg leading-loose text-ink-text-header"
                 }
               >
-                {rawTranslate.display}
+                {rawTranslate.showingTranslation && rawTranslate.translation ? (
+                  rawTranslate.translation
+                ) : (
+                  <JapaneseText text={rawTranslate.display} tokens={liveEntry.furigana_parsed} />
+                )}
               </p>
               <p className="mt-1 text-sm text-ink-text-muted">{liveEntry.primary_translation}</p>
             </Link>
