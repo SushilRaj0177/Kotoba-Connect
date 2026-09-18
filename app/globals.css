@@ -448,51 +448,24 @@ body::before {
 .m-whoosh-out { display: inline-block; animation: m-whoosh-out 0.34s ease-in forwards; }
 .m-whoosh-in { display: inline-block; animation: m-whoosh-in 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
 
-/* Desktop-only +17% scale across the entire UI. `zoom` (not
-   `transform: scale`) actually reflows layout at the larger size —
-   spacing, wrapping, and fixed-position elements all recompute against
-   the bigger effective pixel grid, the same way the browser's own
-   ctrl/cmd-+ zoom works — instead of just stretching a fixed-size
-   render and clipping/overflowing at the edges the way a transform
-   would. Scoped to the same >=768px breakpoint the rest of the app
-   already treats as "desktop" (e.g. SideRail's md:flex), so mobile is
-   *supposed* to be untouched — but some phones/browser modes report a
-   >=768px layout viewport even though they're phones (this has broken
-   before: "Request desktop site", certain split-screen/DeX-style modes,
-   and reportedly others no script running on the page can reliably tell
-   apart from real desktop). Edge is explicitly excluded from this rule
-   entirely (:not([data-theme="edge"])) rather than re-attempting that
-   detection — it never scales, on any device, guaranteed. */
-@media (min-width: 768px) {
-  html:not([data-theme="edge"]) {
-    zoom: 1.17;
-  }
-}
+/* A universal +17% scale across the entire UI, on every theme and every
+   screen size — a deliberate design choice (bigger type, bigger touch
+   targets, more presence), not scoped to desktop or to Edge like earlier
+   attempts at this were. This uses root font-size, not `zoom`: every
+   Tailwind spacing/text utility is rem-based, so bumping the root
+   font-size reflows the entire UI through completely standard,
+   universally-supported CSS instead of a non-standard property.
 
-/* Edge deliberately runs everything larger, on every viewport width (not
-   gated to desktop like the rule above) — a design choice. This uses root
-   font-size, not `zoom`: every Tailwind spacing/text utility is rem-based,
-   so bumping the root font-size reflows the entire UI through completely
-   standard, universally-supported CSS.
-
-   This used to be a flat 117% on every screen. That's wrong by
-   construction: it's a fixed multiplier with no awareness of how much
-   room the screen actually has, so a header row (logo + theme toggle +
-   language pill + bell + avatar) that fits at 100% on a narrow phone no
-   longer fits once every element in it grows 17% — the row can't shrink
-   any further, so it sets a hard floor wider than the viewport, and that
-   floor was what actually produced the "auto-zoomed"/clipped look (see
-   the min-w-0 note in app/layout.tsx for the other half of this bug).
-   A flat percentage literally cannot be correct across phone sizes: it
-   has no viewport term at all.
-
-   clamp() with a vw term fixes that at the source — a real ratio that
-   scales continuously with viewport width instead of a single number
-   applied everywhere: 100% (unchanged from light/dark, guaranteed to fit
-   anything light/dark already fits) on the narrowest phones, rising
-   linearly to 117% by ~430px-wide phones/small tablets, where there's
-   actually room for it.
-   min(width): 100% at <=360px  max: 117% at >=430px */
-:root[data-theme="edge"] {
-  font-size: clamp(16px, 2px + 3.9vw, 18.72px);
+   The actual bug in every earlier "distortion" report was never the
+   scale itself — it was that nothing upstream had min-w-0 (see the note
+   in app/layout.tsx), so one unshrinkable row (the navbar's icon
+   cluster) could set a width floor for the entire page, which
+   overflow-x:hidden on body then silently clipped. That's fixed at the
+   source now, and the navbar's own row is tightened (see Navbar.tsx) to
+   actually fit the narrowest phones at this scale — so there's no
+   longer a reason to shrink the scale itself back down on small
+   screens; that was a workaround for a bug that's now fixed properly,
+   not something to keep. */
+:root {
+  font-size: 117%;
 }
