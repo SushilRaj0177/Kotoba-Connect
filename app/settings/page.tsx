@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import SettingsGroup from "@/components/settings/SettingsGroup";
 import SettingsRow from "@/components/settings/SettingsRow";
+import SignOutRow from "@/components/settings/SignOutRow";
 import { getCurrentUser, getCurrentProfile } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
 
@@ -69,6 +70,34 @@ export default async function SettingsPage() {
             }
           />
         </SettingsGroup>
+
+        <SettingsGroup title={t("settings.section.legal")}>
+          <SettingsRow
+            href="/terms"
+            label={t("settings.rows.terms")}
+            icon={
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
+                <path d="M14 3v5h5" />
+                <path d="M9 13h6M9 17h6" />
+              </svg>
+            }
+          />
+          <SettingsRow
+            href="/privacy"
+            label={t("settings.rows.privacy")}
+            icon={
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 3 4 6v6c0 4.4 3.4 8.5 8 9.5 4.6-1 8-5.1 8-9.5V6l-8-3z" />
+                <path d="m9 12 2 2 4-4" />
+              </svg>
+            }
+          />
+        </SettingsGroup>
+
+        <div className="mb-6 overflow-hidden rounded-2xl border border-ink-red/40 bg-ink-red/5">
+          <SignOutRow label={t("nav.signOut")} />
+        </div>
       </main>
     </>
   );
