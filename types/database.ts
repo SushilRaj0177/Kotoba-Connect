@@ -17,6 +17,13 @@ export interface KuromojiToken {
   pronunciation?: string;
 }
 
+export type NotificationPrefs = {
+  upvote: boolean;
+  annotation: boolean;
+  comment: boolean;
+  follow: boolean;
+};
+
 export interface Profile {
   id: string;
   username: string;
@@ -30,6 +37,7 @@ export interface Profile {
   current_streak: number;
   longest_streak: number;
   last_post_date: string | null;
+  notification_prefs: NotificationPrefs;
   created_at: string;
 }
 
