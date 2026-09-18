@@ -20,7 +20,7 @@ export default function ThemeSettings() {
   const { t } = useLocale();
 
   return (
-    <div className="mt-5 rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm sm:p-5">
+    <div className="rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm sm:p-5">
       <h2 className="font-display text-base font-bold text-ink-text-header">{t("settings.appearanceTitle")}</h2>
       <p className="mt-1 text-sm text-ink-text-muted">{t("settings.appearanceHint")}</p>
 
@@ -31,7 +31,7 @@ export default function ThemeSettings() {
             type="button"
             onClick={() => setTheme(opt.value)}
             aria-pressed={theme === opt.value}
-            className={`flex flex-col items-center gap-2 rounded-xl border p-3 transition ${
+            className={`flex flex-col items-center gap-2 rounded-xl border p-3 transition active:scale-95 ${
               theme === opt.value
                 ? "border-ink-accent bg-ink-accent/10"
                 : "border-ink-border/70 hover:bg-ink-bg-hover"

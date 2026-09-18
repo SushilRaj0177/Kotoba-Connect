@@ -253,6 +253,11 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "profile.unblock": "Unblock",
 
     "settings.title": "Settings",
+    "settings.tabs.profile": "Profile",
+    "settings.tabs.account": "Account",
+    "settings.tabs.privacy": "Privacy",
+    "settings.tabs.appearance": "Appearance",
+    "settings.blockedUsersEmpty": "You haven't blocked anyone.",
     "settings.appearanceTitle": "Appearance",
     "settings.appearanceHint": "Edge is a separate OLED-black theme built for zero visual clutter — same information, flattened surfaces.",
     "settings.theme.light": "Matcha (Light)",
@@ -567,6 +572,11 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "profile.unblock": "ブロック解除",
 
     "settings.title": "設定",
+    "settings.tabs.profile": "プロフィール",
+    "settings.tabs.account": "アカウント",
+    "settings.tabs.privacy": "プライバシー",
+    "settings.tabs.appearance": "外観",
+    "settings.blockedUsersEmpty": "ブロックしたユーザーはいません。",
     "settings.appearanceTitle": "外観",
     "settings.appearanceHint": "Edgeは有機ELの黒を使った、視覚的な雑然さを排したテーマです。情報量は変えず、表面をフラットにします。",
     "settings.theme.light": "抹茶（ライト）",
