@@ -88,6 +88,12 @@ Live at: https://kotoba-connect-three.vercel.app
 - SEO: per-page metadata, dynamically generated Open Graph/Twitter share images (the actual
   Japanese sentence renders in the image, via a request-time-subsetted Noto Sans JP font),
   `robots.txt`, `sitemap.xml`, PWA manifest, custom 404, generated favicon
+- Installable as a PWA (a dismissible "Add to home screen" prompt on browsers that support
+  `beforeinstallprompt`; no-op by design on iOS Safari, which has no programmatic install), and
+  Web Push notifications (`public/sw.js`, `lib/push.ts`, `lib/use-push-subscription.ts`) — a
+  per-device opt-in from Settings → Notifications that re-delivers the same activity types
+  (likes, annotations, comments, follows) even when the tab isn't open, feature-flagged on VAPID
+  keys being configured
 
 **Production hardening**
 - Email/password auth + Google OAuth (Supabase Auth), with an auto-created `profiles` row per
@@ -148,8 +154,8 @@ Live at: https://kotoba-connect-three.vercel.app
    1. [`supabase/schema.sql`](./supabase/schema.sql) — base tables, RLS, upvote RPC
    2. Every file in [`supabase/migrations/`](./supabase/migrations), in filename order —
       moderation/admin, DB rate limits, AI columns, pgvector search, platform features
-      (bookmarks/notifications), the mascot bot, comments, follows, blocks, streaks, and
-      profile customization (display names/avatars)
+      (bookmarks/notifications), the mascot bot, comments, follows, blocks, streaks, profile
+      customization (display names/avatars), notification preferences, and push subscriptions
 
 3. **Configure environment variables**
 
@@ -186,6 +192,7 @@ Live at: https://kotoba-connect-three.vercel.app
 | Semantic search, duplicate-entry nudge | `OPENAI_API_KEY` | [platform.openai.com](https://platform.openai.com) |
 | Correct Open Graph image URLs in production | `NEXT_PUBLIC_SITE_URL` | your deployed domain, e.g. `https://kotoba-connect-three.vercel.app` |
 | Account deletion, AI moderation triage persistence | `SUPABASE_SERVICE_ROLE_KEY` | Supabase Project Settings → API → `service_role` |
+| Web Push notifications | `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` (a `mailto:` address) | Generate a pair with `npx web-push generate-vapid-keys`; also requires running `supabase/migrations/0016_push_subscriptions.sql` and, to actually fire a push when a `notifications` row is inserted (not just the self-test button in Settings), a Supabase Database Webhook on `public.notifications` (insert) pointed at a route that calls `sendPushToUser` from `lib/push.ts` — not wired up yet, since that's a dashboard-side config this repo can't express in a migration |
 
 Each is independently optional — the app degrades gracefully (features just don't activate)
 without them.
@@ -240,8 +247,10 @@ app/
   admin/page.tsx                    Moderation queue (admin-only)
   terms/, privacy/                  Legal pages
   not-found.tsx, robots.ts, sitemap.ts, manifest.ts, icon.tsx   SEO/PWA
+  about/page.tsx                    Credibility page — why it exists, AI's role, who built it
   auth/actions.ts                   Server actions for sign in/up/out/resend/reset
   auth/callback/route.ts            OAuth + email-confirmation redirect handler
+  api/push/subscribe/, unsubscribe/, send-test/   Web Push subscription CRUD + self-test send
   api/tokenize/route.ts             Kuromoji tokenization endpoint (rate-limited)
   api/entries/[id]/analyze/route.ts Groq pragmatic classification (Phase 2)
   api/entries/[id]/embed/route.ts   OpenAI embedding for semantic search (Phase 2)
@@ -265,7 +274,9 @@ components/
   EntryChatContext.tsx               Hands the bot "the entry currently being viewed"
   SideRail.tsx / MobileNav.tsx / auth/ClientAuthProvider.tsx   App shell + shared client auth state
   EnableTapFeedback.tsx              Makes :active press states fire reliably on iOS Safari
-  AiNuanceCallout.tsx                Displays Groq's pragmatic read on an entry
+  InstallPrompt.tsx                  Dismissible "Add to home screen" banner (beforeinstallprompt)
+  AiNuanceCallout.tsx                Displays Groq's pragmatic read on an entry (+ a trust-hint
+                                     line framing it as a starting point, not a settled fact)
   BotSeedPanel.tsx                   Admin UI to create/seed the official bot account
   settings/                         SettingsGroup/Row/SubpageHeader (drill-down list chrome) +
                                      one form component per settings category
@@ -281,8 +292,11 @@ lib/
   entry-interaction-store.ts / use-entry-interaction.ts   Cross-instance like/bookmark sync
   reading-aid-store.ts / use-reading-aid.ts / kana.ts   Furigana/romaji preference + conversion
   bot-entries.ts / bot-auth.ts       Starter entry bank + auth guard for the bot admin endpoints
+  push.ts / use-push-subscription.ts   Server-side Web Push send helper + client subscribe hook
   use-blocked-ids.ts / cursor-tracker.ts / use-mascot-gaze.ts   Small client hooks
   i18n/                              EN/JP dictionary + server/client locale helpers
+public/sw.js                        Service worker — push + notificationclick handlers only, no
+                                     offline caching
 supabase/
   schema.sql                        Base schema (fresh install)
   migrations/                       Incremental SQL — see list below
@@ -308,6 +322,7 @@ types/database.ts                   Shared TypeScript types
 | `0013_mandatory_display_name.sql` | Backfills/enforces a display name at signup |
 | `0014_bot_account.sql` | `is_bot` flag on `profiles` (official bot account) |
 | `0015_notification_preferences.sql` | `notification_prefs` jsonb on `profiles` + updates the four notification-producing trigger functions to check it |
+| `0016_push_subscriptions.sql` | `push_subscriptions` table (one row per subscribed browser/device), RLS scoped to the owning user |
 
 ## Roadmap
 
