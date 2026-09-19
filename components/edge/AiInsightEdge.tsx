@@ -63,6 +63,7 @@ export default function AiInsightEdge({
                     : t("translate.action")}
             </button>
           )}
+          <p className="mt-1.5 text-xs text-ink-text-muted">{t("ai.trustHint")}</p>
         </div>
       )}
     </div>
