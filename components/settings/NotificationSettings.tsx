@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import PushNotificationRow from "@/components/settings/PushNotificationRow";
 import type { NotificationPrefs, Profile } from "@/types/database";
 
 const TYPES: (keyof NotificationPrefs)[] = ["upvote", "annotation", "comment", "follow"];
@@ -82,6 +83,8 @@ export default function NotificationSettings({ profile }: { profile: Profile }) 
 
       {error && <p className="mt-3 text-sm text-ink-red">{error}</p>}
       {saving && <p className="mt-3 text-xs text-ink-text-muted">{t("settings.saving")}</p>}
+
+      <PushNotificationRow />
     </div>
   );
 }

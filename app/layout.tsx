@@ -14,6 +14,7 @@ import OnboardingGate from "@/components/auth/OnboardingGate";
 import { EntryChatProvider } from "@/components/EntryChatContext";
 import { ToastProvider } from "@/components/Toast";
 import EnableTapFeedback from "@/components/EnableTapFeedback";
+import InstallPrompt from "@/components/InstallPrompt";
 
 // Every page in the app renders theme-dependent output (data-theme on
 // <html>, and now Edge's own layout branch in EntryCard), so any page that
@@ -103,6 +104,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   </div>
                   <MobileNav />
                   <MascotChat />
+                  <InstallPrompt />
                 </ToastProvider>
               </EntryChatProvider>
             </ClientAuthProvider>
