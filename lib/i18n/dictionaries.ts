@@ -29,10 +29,13 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "landing.heroTitle": "Understand what Japanese actually means",
     "landing.heroSubtitle":
       "A community board for the cultural nuance dictionaries miss — annotate real sentences, word by word, with people who actually know.",
+    "landing.audienceLine":
+      "For learners past the basics — Google Translate gives you a definition; this is for the \"okay but would a real person actually say it that way\" question it can't answer.",
     "landing.ctaSignIn": "Get started",
     "landing.ctaBrowse": "Browse without an account →",
     "landing.statsEntries": "sentences annotated",
     "landing.statsMembers": "members",
+    "landing.earlyBadge": "Early days — small community, growing fast. Your first post will actually stand out here.",
     "landing.featuresTitle": "Why 言葉",
     "landing.feature1Title": "Word-by-word nuance",
     "landing.feature1Body":
@@ -378,6 +381,9 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "home.subtitle": "実際の日本語文をトークンに分解し、辞書にはない文化的ニュアンスを注釈します。",
 
     "landing.heroTitle": "日本語の本当の意味を理解する",
+    "landing.audienceLine":
+      "初級を終えた学習者へ。Google翻訳は定義を教えてくれますが、「実際にネイティブはそう言うのか？」という問いには答えてくれません。ここはその問いのための場所です。",
+    "landing.earlyBadge": "まだ小さなコミュニティですが、急成長中です。今投稿すれば、きっと目立ちます。",
     "landing.heroSubtitle":
       "辞書には載っていない文化的ニュアンスのためのコミュニティボード。実際の文を、言葉が分かる人たちと一緒に語ごとに注釈しよう。",
     "landing.ctaSignIn": "はじめる",

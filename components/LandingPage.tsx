@@ -15,6 +15,8 @@ import type { KuromojiToken } from "@/types/database";
 // visitor sees exactly what posting and annotating looks like before
 // being asked to sign in. The abstract "word-by-word nuance" feature
 // blurb doesn't land nearly as well as actually seeing it.
+const EARLY_STAGE_THRESHOLD = 25;
+
 const EXAMPLE_TOKENS: KuromojiToken[] = [
   { word_id: 1, word_type: "KNOWN", surface_form: "お疲れ様", pos: "名詞", pos_detail_1: "*", basic_form: "お疲れ様", reading: "オツカレサマ" },
   { word_id: 2, word_type: "KNOWN", surface_form: "でした", pos: "助動詞", pos_detail_1: "*", basic_form: "です", reading: "デシタ" },
@@ -121,6 +123,7 @@ export default async function LandingPage() {
             {t("landing.heroTitle")}
           </h1>
           <p className="max-w-xl text-base text-ink-text-muted sm:text-lg">{t("landing.heroSubtitle")}</p>
+          <p className="max-w-xl text-sm text-ink-text-muted/90">{t("landing.audienceLine")}</p>
           <div className="mt-2 flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/login"
@@ -135,17 +138,28 @@ export default async function LandingPage() {
               {t("landing.ctaBrowse")}
             </Link>
           </div>
-          <div className="mt-1 flex items-center gap-6 text-sm text-ink-text-muted">
-            <span>
-              <strong className="font-display text-ink-text-header">{entryCount ?? 0}</strong>{" "}
-              {t("landing.statsEntries")}
-            </span>
-            <span aria-hidden="true">·</span>
-            <span>
-              <strong className="font-display text-ink-text-header">{userCount ?? 0}</strong>{" "}
-              {t("landing.statsMembers")}
-            </span>
-          </div>
+          {/* A raw "3 entries · 2 members" reads as a dead site, not an
+             early one — the exact opposite of the intended trust signal.
+             Below a credibility threshold, lean into the "early and
+             growing" framing (which the About page also uses) instead of
+             showing numbers small enough to undercut themselves. */}
+          {(entryCount ?? 0) >= EARLY_STAGE_THRESHOLD && (userCount ?? 0) >= EARLY_STAGE_THRESHOLD ? (
+            <div className="mt-1 flex items-center gap-6 text-sm text-ink-text-muted">
+              <span>
+                <strong className="font-display text-ink-text-header">{entryCount ?? 0}</strong>{" "}
+                {t("landing.statsEntries")}
+              </span>
+              <span aria-hidden="true">·</span>
+              <span>
+                <strong className="font-display text-ink-text-header">{userCount ?? 0}</strong>{" "}
+                {t("landing.statsMembers")}
+              </span>
+            </div>
+          ) : (
+            <p className="mt-1 max-w-sm rounded-full bg-ink-accent/10 px-4 py-1.5 text-xs font-semibold text-ink-accent">
+              {t("landing.earlyBadge")}
+            </p>
+          )}
         </section>
 
         {/* Concrete example — a static illustration of what a real entry
