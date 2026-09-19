@@ -177,7 +177,9 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
 
     "ai.label": "AI pragmatic read",
     "ai.suggests": "suggests",
+    "ai.trustHint": "A starting point, not the final word — open the entry to add your own note if you'd explain it differently.",
 
+    "footer.about": "About",
     "footer.terms": "Terms",
     "footer.privacy": "Privacy",
     "footer.source": "Source",
@@ -524,7 +526,9 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
 
     "ai.label": "AIによる語用論的解釈",
     "ai.suggests": "推定される丁寧さ",
+    "ai.trustHint": "これはあくまで出発点です — もっと良い説明があれば、投稿を開いて自分の注釈を追加してください。",
 
+    "footer.about": "概要",
     "footer.terms": "利用規約",
     "footer.privacy": "プライバシー",
     "footer.source": "ソースコード",

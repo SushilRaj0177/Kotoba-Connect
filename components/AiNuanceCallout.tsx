@@ -33,6 +33,12 @@ export default function AiNuanceCallout({
       ) : (
         <p className="mt-0.5 text-sm text-ink-text">{summary}</p>
       )}
+      {/* Presenting this as a settled fact rather than a starting point is
+         exactly the kind of thing that erodes trust in an AI explanation
+         of subtle cultural nuance — this makes the honest framing explicit
+         and points at the actual differentiator (community annotation)
+         instead of asking for blind trust in the model. */}
+      <p className="mt-1 text-xs text-ink-text-muted">{t("ai.trustHint")}</p>
     </div>
   );
 }

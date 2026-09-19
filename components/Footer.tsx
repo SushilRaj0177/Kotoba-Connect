@@ -16,6 +16,9 @@ export default function Footer() {
         <span className="flex-none font-display font-bold">
           言葉<span className="hidden sm:inline"> Kotoba Engine</span>
         </span>
+        <Link href="/about" className="hover:text-ink-text hover:underline">
+          {t("footer.about")}
+        </Link>
         <Link href="/terms" className="hover:text-ink-text hover:underline">
           {t("footer.terms")}
         </Link>

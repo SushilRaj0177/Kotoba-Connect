@@ -10,7 +10,12 @@ import { BOT_ENTRY_SEEDS } from "@/lib/bot-entries";
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
-const DEFAULT_BATCH = 5;
+// Lower than it used to be (5) — at 5/day the bank exhausted in under two
+// weeks and the daily cron silently became a no-op forever after. A
+// slower, steadier trickle also just reads better: a board that visibly
+// gains a couple of new posts every day looks alive in a way five at once
+// followed by nothing doesn't.
+const DEFAULT_BATCH = 2;
 const MAX_BATCH = 15;
 
 // Posts starter entries as the bot account, using the exact same enrichment
