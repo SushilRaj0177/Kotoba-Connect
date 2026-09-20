@@ -33,20 +33,25 @@ export default async function LeaderboardPage() {
   const counts = new Map<string, number>();
   (entryCounts ?? []).forEach((e) => counts.set(e.user_id, (counts.get(e.user_id) ?? 0) + 1));
 
-  profiles?.sort((a, b) => {
+  // A rank is earned by having posted, not just by existing — someone who
+  // signed up and never wrote a sentence has nothing to rank on and
+  // showing them at 0 rep/0 entries only pads the board with noise.
+  const ranked = profiles?.filter((p) => (counts.get(p.id) ?? 0) > 0);
+
+  ranked?.sort((a, b) => {
     if (b.reputation_score !== a.reputation_score) return b.reputation_score - a.reputation_score;
     const entryDiff = (counts.get(b.id) ?? 0) - (counts.get(a.id) ?? 0);
     if (entryDiff !== 0) return entryDiff;
     return a.username.localeCompare(b.username);
   });
-  profiles?.splice(50);
+  ranked?.splice(50);
 
   const RANK_RING = ["ring-yellow-400/60 bg-yellow-400/5", "ring-gray-300/60 bg-gray-300/5", "ring-amber-600/60 bg-amber-600/5"];
   const RANK_TEXT = ["text-yellow-400", "text-gray-300", "text-amber-600"];
   const RANK_MEDAL = ["🥇", "🥈", "🥉"];
 
-  const top3 = profiles?.slice(0, 3) ?? [];
-  const rest = profiles?.slice(3) ?? [];
+  const top3 = ranked?.slice(0, 3) ?? [];
+  const rest = ranked?.slice(3) ?? [];
 
   return (
     <>
@@ -54,7 +59,7 @@ export default async function LeaderboardPage() {
       <main className="mx-auto max-w-4xl px-4 py-6 sm:px-6">
         <p className="mb-6 text-sm text-ink-text-muted">{t("leaderboard.subtitle")}</p>
 
-        {!profiles?.length ? (
+        {!ranked?.length ? (
           <EmptyState title={t("leaderboard.empty")} description="" />
         ) : (
           <>

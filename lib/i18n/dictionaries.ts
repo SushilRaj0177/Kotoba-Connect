@@ -353,10 +353,11 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "tags.empty": "No entries with this tag yet.",
 
     "leaderboard.title": "Leaderboard",
-    "leaderboard.subtitle": "Top contributors, ranked by reputation earned from likes on their entries.",
+    "leaderboard.subtitle":
+      "Top contributors, ranked by reputation earned from likes on their entries. Post at least one sentence to enter the ranking.",
     "leaderboard.entries": "entries",
     "leaderboard.rep": "rep",
-    "leaderboard.empty": "No members yet.",
+    "leaderboard.empty": "No one's posted yet — be the first, and you'll be the first name here too.",
 
     "bookmarks.title": "Saved entries",
     "bookmarks.emptyTitle": "Nothing saved yet",
@@ -718,10 +719,10 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "tags.empty": "このタグの投稿はまだありません。",
 
     "leaderboard.title": "ランキング",
-    "leaderboard.subtitle": "投稿への「いいね」から得た評判値による、貢献度の高いユーザーランキングです。",
+    "leaderboard.subtitle": "投稿への「いいね」から得た評判値による、貢献度の高いユーザーランキングです。ランクインするには、最低1件の投稿が必要です。",
     "leaderboard.entries": "件の投稿",
     "leaderboard.rep": "評判値",
-    "leaderboard.empty": "メンバーがまだいません。",
+    "leaderboard.empty": "まだ誰も投稿していません — 最初の投稿者になれば、ここに載る最初の名前にもなれます。",
 
     "bookmarks.title": "保存したエントリー",
     "bookmarks.emptyTitle": "まだ何も保存されていません",
