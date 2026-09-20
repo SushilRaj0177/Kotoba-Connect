@@ -192,7 +192,7 @@ Live at: https://kotoba-connect-three.vercel.app
 | Semantic search, duplicate-entry nudge | `OPENAI_API_KEY` | [platform.openai.com](https://platform.openai.com) |
 | Correct Open Graph image URLs in production | `NEXT_PUBLIC_SITE_URL` | your deployed domain, e.g. `https://kotoba-connect-three.vercel.app` |
 | Account deletion, AI moderation triage persistence | `SUPABASE_SERVICE_ROLE_KEY` | Supabase Project Settings → API → `service_role` |
-| Web Push notifications | `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` (a `mailto:` address) | Generate a pair with `npx web-push generate-vapid-keys`; also requires running `supabase/migrations/0016_push_subscriptions.sql` and, to actually fire a push when a `notifications` row is inserted (not just the self-test button in Settings), a Supabase Database Webhook on `public.notifications` (insert) pointed at a route that calls `sendPushToUser` from `lib/push.ts` — not wired up yet, since that's a dashboard-side config this repo can't express in a migration |
+| Web Push notifications | `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` (a `mailto:` address), `SUPABASE_WEBHOOK_SECRET` | Generate a VAPID pair with `npx web-push generate-vapid-keys`; also requires running `supabase/migrations/0016_push_subscriptions.sql`. To actually fire a push when a `notifications` row is inserted (not just the self-test button in Settings): pick any random string for `SUPABASE_WEBHOOK_SECRET`, then in the Supabase Dashboard go to Database → Webhooks → Create a new hook — table `notifications`, event `Insert`, type `HTTP Request`, method `POST`, URL `https://<your-domain>/api/push/notify`, and add an HTTP header `x-webhook-secret` set to that same string |
 
 Each is independently optional — the app degrades gracefully (features just don't activate)
 without them.
@@ -250,7 +250,9 @@ app/
   about/page.tsx                    Credibility page — why it exists, AI's role, who built it
   auth/actions.ts                   Server actions for sign in/up/out/resend/reset
   auth/callback/route.ts            OAuth + email-confirmation redirect handler
-  api/push/subscribe/, unsubscribe/, send-test/   Web Push subscription CRUD + self-test send
+  api/push/subscribe/, unsubscribe/, send-test/, notify/   Web Push subscription CRUD,
+                                     self-test send, and the Database Webhook receiver that
+                                     turns a new notifications row into a real push
   api/tokenize/route.ts             Kuromoji tokenization endpoint (rate-limited)
   api/entries/[id]/analyze/route.ts Groq pragmatic classification (Phase 2)
   api/entries/[id]/embed/route.ts   OpenAI embedding for semantic search (Phase 2)
