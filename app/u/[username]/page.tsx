@@ -99,11 +99,11 @@ export default async function ProfilePage({ params }: { params: { username: stri
           <div className="flex items-start gap-3">
             <Avatar username={profile.username} avatarUrl={profile.avatar_url} size={56} />
             <div className="min-w-0 flex-1 pt-0.5">
-              <h1 className="truncate font-display text-lg font-bold text-ink-text-header sm:text-xl">
+              <h1 className="break-words font-display text-lg font-bold text-ink-text-header sm:text-xl">
                 {profile.display_name?.trim() || `@${profile.username}`}
               </h1>
               {profile.display_name?.trim() && (
-                <p className="truncate text-sm text-ink-text-muted">@{profile.username}</p>
+                <p className="break-words text-sm text-ink-text-muted">@{profile.username}</p>
               )}
             </div>
             <div className="flex-none">

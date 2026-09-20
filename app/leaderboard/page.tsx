@@ -73,7 +73,7 @@ export default async function LeaderboardPage() {
                   <span className="flex-none text-lg">{RANK_MEDAL[i]}</span>
                   <Avatar username={p.username} avatarUrl={p.avatar_url} size={40} />
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate font-display text-sm font-bold text-ink-text-header">
+                    <span className="block break-words font-display text-sm font-bold text-ink-text-header">
                       {p.display_name?.trim() || `@${p.username}`}
                     </span>
                     <span className="block text-xs text-ink-text-muted">
@@ -99,7 +99,7 @@ export default async function LeaderboardPage() {
                         {i + 4}
                       </span>
                       <Avatar username={p.username} avatarUrl={p.avatar_url} size={40} />
-                      <span className="min-w-0 flex-1 truncate font-display text-base font-bold text-ink-text-header">
+                      <span className="min-w-0 flex-1 break-words font-display text-base font-bold text-ink-text-header">
                         {p.display_name?.trim() || `@${p.username}`}
                       </span>
                       <span className="flex-none text-xs text-ink-text-muted">

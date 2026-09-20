@@ -1,19 +1,45 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { useClientAuth } from "@/components/auth/ClientAuthProvider";
 import Mascot from "@/components/Mascot";
+import Avatar from "@/components/Avatar";
+import AvatarPicker from "@/components/AvatarPicker";
+import { avatarPresetToken } from "@/lib/avatar-presets";
 
+// A brand-new profile already gets a random preset avatar from the DB
+// trigger (handle_new_user, see 0017_default_avatar.sql) rather than
+// landing here with a null avatar_url — this step is about giving the
+// person a chance to swap that random pick for one they actually like,
+// not about avoiding the old colored-initial fallback (that fallback
+// should now never be the first thing a real user sees).
 export default function OnboardingNamePage() {
   const { t } = useLocale();
   const { userId } = useClientAuth();
   const router = useRouter();
   const [displayName, setDisplayName] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [showPicker, setShowPicker] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!userId) return;
+    const supabase = createClient();
+    supabase
+      .from("profiles")
+      .select("avatar_url")
+      .eq("id", userId)
+      .single()
+      .then(({ data }) => {
+        // Fallback only matters for an account created before the random-
+        // avatar trigger existed; every new signup already has one.
+        setAvatarUrl(data?.avatar_url ?? avatarPresetToken(0, 0));
+      });
+  }, [userId]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -29,7 +55,7 @@ export default function OnboardingNamePage() {
     const supabase = createClient();
     const { error: updateError } = await supabase
       .from("profiles")
-      .update({ display_name: trimmed })
+      .update({ display_name: trimmed, avatar_url: avatarUrl })
       .eq("id", userId);
 
     if (updateError) {
@@ -51,6 +77,29 @@ export default function OnboardingNamePage() {
           <p className="mt-1 text-sm text-ink-text-muted">{t("onboarding.subtitle")}</p>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4 px-8 pb-8">
+          <div>
+            <p className="mb-1 block text-xs font-semibold uppercase text-ink-text-muted">
+              {t("onboarding.avatarLabel")}
+            </p>
+            <div className="flex items-center gap-3">
+              <Avatar username={displayName || "you"} avatarUrl={avatarUrl} size={56} />
+              <div className="min-w-0 flex-1">
+                <p className="text-xs text-ink-text-muted">{t("onboarding.avatarHint")}</p>
+                <button
+                  type="button"
+                  onClick={() => setShowPicker((v) => !v)}
+                  className="mt-1 text-xs font-semibold text-ink-text-link hover:underline"
+                >
+                  {showPicker ? t("settings.avatarClose") : t("settings.avatarChoose")}
+                </button>
+              </div>
+            </div>
+            {showPicker && (
+              <div className="mt-3">
+                <AvatarPicker value={avatarUrl} onChange={setAvatarUrl} />
+              </div>
+            )}
+          </div>
           <div>
             <label htmlFor="onboardingDisplayName" className="mb-1 block text-xs font-semibold uppercase text-ink-text-muted">
               {t("login.displayName")}
