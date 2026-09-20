@@ -5,16 +5,51 @@ import { useLocale } from "@/components/i18n/LocaleProvider";
 
 const DISMISSED_KEY = "kotoba-install-dismissed-at";
 const DISMISS_SNOOZE_MS = 14 * 24 * 60 * 60 * 1000; // 2 weeks
+const SHOWN_THIS_SESSION_KEY = "kotoba-install-shown-this-session";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 }
 
+function recentlyDismissed() {
+  try {
+    const dismissedAt = Number(localStorage.getItem(DISMISSED_KEY) ?? 0);
+    return Date.now() - dismissedAt < DISMISS_SNOOZE_MS;
+  } catch {
+    return false;
+  }
+}
+
+function alreadyShownThisSession() {
+  try {
+    return sessionStorage.getItem(SHOWN_THIS_SESSION_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function markShownThisSession() {
+  try {
+    sessionStorage.setItem(SHOWN_THIS_SESSION_KEY, "1");
+  } catch {
+    // Not persisting just means it could show again later this tab — fine.
+  }
+}
+
 // Chrome/Edge/Android fire beforeinstallprompt and let us defer + trigger
 // it ourselves; iOS Safari never fires it at all (there's no programmatic
 // install there — only the manual Share -> Add to Home Screen flow), so
 // this banner is a no-op on iOS by design rather than something broken.
+//
+// Chrome can dispatch beforeinstallprompt more than once in a single tab
+// (e.g. after a bfcache restore or certain navigations) — the previous
+// version only checked the dismissal/snooze once, at mount, so a second
+// firing re-showed the banner even right after the visitor dismissed it.
+// Gating on a sessionStorage flag (in addition to the localStorage
+// snooze) makes "Not now" and a completed/declined install prompt both
+// mean "not again this tab", regardless of how many times the browser
+// re-fires the event.
 export default function InstallPrompt() {
   const { t } = useLocale();
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
@@ -26,17 +61,11 @@ export default function InstallPrompt() {
       (navigator as unknown as { standalone?: boolean }).standalone === true;
     if (isStandalone) return;
 
-    let dismissedAt = 0;
-    try {
-      dismissedAt = Number(localStorage.getItem(DISMISSED_KEY) ?? 0);
-    } catch {
-      // localStorage unavailable (private mode etc.) — just don't snooze.
-    }
-    if (Date.now() - dismissedAt < DISMISS_SNOOZE_MS) return;
-
     function handler(event: Event) {
       event.preventDefault();
       setDeferredPrompt(event as BeforeInstallPromptEvent);
+      if (recentlyDismissed() || alreadyShownThisSession()) return;
+      markShownThisSession();
       setVisible(true);
     }
     window.addEventListener("beforeinstallprompt", handler);
@@ -45,6 +74,7 @@ export default function InstallPrompt() {
 
   function dismiss() {
     setVisible(false);
+    markShownThisSession();
     try {
       localStorage.setItem(DISMISSED_KEY, String(Date.now()));
     } catch {
@@ -54,6 +84,7 @@ export default function InstallPrompt() {
 
   async function install() {
     if (!deferredPrompt) return;
+    markShownThisSession();
     await deferredPrompt.prompt();
     await deferredPrompt.userChoice;
     setDeferredPrompt(null);
