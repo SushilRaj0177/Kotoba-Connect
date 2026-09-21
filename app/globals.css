@@ -508,6 +508,14 @@ html[lang="ja"] {
   letter-spacing: 0.03em;
 }
 
+/* Furigana (<rt>) sits flush against its kanji base by default — padding
+   on the ruby-text box itself is what pushes it away from the base text
+   below it, since the browser then has to allocate the extra room as
+   part of the ruby annotation's own box rather than the line above. */
+rt {
+  padding-bottom: 0.2em;
+}
+
 /* For short, self-contained blurbs (a card title, a promo line) balance
    evens out every line's length instead of just avoiding the worst
    orphan the way pretty does — a better fit than pretty specifically
