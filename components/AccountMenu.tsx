@@ -84,6 +84,15 @@ export default function AccountMenu({
                 {t("nav.moderation")}
               </Link>
             )}
+            <a
+              href="https://github.com/SushilRaj0177/Kotoba-Connect/issues/new"
+              target="_blank"
+              rel="noreferrer"
+              onClick={() => setOpen(false)}
+              className="block rounded-xl px-3 py-2 text-sm text-ink-text transition hover:bg-ink-bg-hover"
+            >
+              {t("nav.reportBug")}
+            </a>
           </div>
           <form action={signOut} className="border-t border-ink-border p-1.5">
             <button

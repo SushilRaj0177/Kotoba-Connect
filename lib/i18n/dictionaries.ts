@@ -12,6 +12,7 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "app.tagline": "Sign in to annotate real Japanese pragmatics.",
 
     "nav.moderation": "Moderation",
+    "nav.reportBug": "Report a bug",
     "nav.signIn": "Sign in",
     "nav.signOut": "Sign out",
     "nav.home": "Board",
@@ -394,6 +395,7 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "app.tagline": "サインインして、日本語の語用論を注釈しよう。",
 
     "nav.moderation": "モデレーション",
+    "nav.reportBug": "不具合を報告",
     "nav.signIn": "サインイン",
     "nav.signOut": "サインアウト",
     "nav.home": "ボード",
