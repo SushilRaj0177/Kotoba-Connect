@@ -9,7 +9,7 @@ import TokenizedText from "@/components/TokenizedText";
 import AiNuanceCallout from "@/components/AiNuanceCallout";
 import { createClient } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
-import type { KuromojiToken } from "@/types/database";
+import type { KuromojiToken, TopContributor } from "@/types/database";
 
 // A static, illustrative example entry — not live data — so a first-time
 // visitor sees exactly what posting and annotating looks like before
@@ -48,12 +48,9 @@ export default async function LandingPage() {
     await Promise.all([
       supabase.from("context_entries").select("id", { count: "exact", head: true }),
       supabase.from("profiles").select("id", { count: "exact", head: true }),
-      supabase
-        .from("profiles")
-        .select("username, display_name, avatar_url, reputation_score")
-        .eq("is_bot", false)
-        .order("reputation_score", { ascending: false })
-        .limit(3),
+      // Weighted, time-decayed engagement score rather than a raw
+      // reputation_score ordering — see 0019_engagement_score.sql.
+      supabase.rpc("get_top_contributors", { p_limit: 3 }),
       supabase.from("context_entries").select("tags").order("created_at", { ascending: false }).limit(200),
     ]);
 
@@ -244,7 +241,7 @@ export default async function LandingPage() {
                   </Link>
                 </div>
                 <ul className="space-y-2">
-                  {topProfiles.map((p) => (
+                  {(topProfiles as TopContributor[]).map((p) => (
                     <li key={p.username}>
                       <UserHandle
                         username={p.username}
@@ -253,11 +250,6 @@ export default async function LandingPage() {
                         href={`/u/${p.username}`}
                         size="sm"
                         className="w-full"
-                        trailing={
-                          <span className="ml-auto flex-none text-xs font-bold text-ink-accent">
-                            {p.reputation_score}
-                          </span>
-                        }
                       />
                     </li>
                   ))}

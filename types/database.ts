@@ -170,6 +170,22 @@ export interface Database {
         Args: { p_entry_id: string };
         Returns: boolean;
       };
+      get_top_contributors: {
+        Args: { p_limit?: number };
+        Returns: TopContributor[];
+      };
     };
   };
+}
+
+// Row shape returned by get_top_contributors (0019_engagement_score.sql)
+// — a weighted, time-decayed engagement score, not the plain
+// reputation_score column. See the migration for the exact weights.
+export interface TopContributor {
+  id: string;
+  username: string;
+  display_name: string | null;
+  avatar_url: string | null;
+  reputation_score: number;
+  score: number;
 }

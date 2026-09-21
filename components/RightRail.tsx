@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
 import UserHandle from "@/components/UserHandle";
 import { Obake } from "@/components/mascots/candidates";
+import type { TopContributor } from "@/types/database";
 
 // Real supplementary content, not decoration — every reference app keeps
 // this column populated (stats, trending, promos) so the page never reads
@@ -15,12 +16,12 @@ export default async function RightRail() {
     await Promise.all([
       supabase.from("context_entries").select("id", { count: "exact", head: true }),
       supabase.from("profiles").select("id", { count: "exact", head: true }),
-      supabase
-        .from("profiles")
-        .select("username, display_name, avatar_url, reputation_score")
-        .eq("is_bot", false)
-        .order("reputation_score", { ascending: false })
-        .limit(3),
+      // A weighted, time-decayed engagement score (posting, annotating,
+      // commenting, voting, being followed) rather than a raw ordering by
+      // reputation_score — see 0019_engagement_score.sql. Sorting only by
+      // upvotes received let someone who posted twice and vanished
+      // outrank someone actively engaging every day.
+      supabase.rpc("get_top_contributors", { p_limit: 3 }),
       supabase.from("context_entries").select("tags").order("created_at", { ascending: false }).limit(200),
     ]);
 
@@ -55,7 +56,7 @@ export default async function RightRail() {
             </Link>
           </div>
           <ul className="space-y-2">
-            {topProfiles.map((p) => (
+            {(topProfiles as TopContributor[]).map((p) => (
               <li key={p.username}>
                 <UserHandle
                   username={p.username}
@@ -64,11 +65,6 @@ export default async function RightRail() {
                   href={`/u/${p.username}`}
                   size="sm"
                   className="w-full"
-                  trailing={
-                    <span className="ml-auto flex-none text-xs font-bold text-ink-accent">
-                      {p.reputation_score}
-                    </span>
-                  }
                 />
               </li>
             ))}

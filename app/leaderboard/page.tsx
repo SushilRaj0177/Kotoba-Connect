@@ -4,47 +4,30 @@ import Avatar from "@/components/Avatar";
 import EmptyState from "@/components/EmptyState";
 import { createClient } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
+import type { TopContributor } from "@/types/database";
 
 export default async function LeaderboardPage() {
   const supabase = createClient();
   const { t } = getServerTranslator();
 
-  // Ordering by reputation_score alone leaves every tie (very common —
-  // most members sit at 0 rep) to whatever order Postgres happens to
-  // return them in, which is unstable and looks arbitrary to a user (a
-  // member with zero entries outranking one who's actually posted). Pull
-  // both signals and break ties with entry count, then username, so the
-  // result is fully deterministic and never looks random.
-  const [{ data: profiles }, { data: entryCounts }] = await Promise.all([
-    // 500 candidates is a generous ceiling for a community this size; if
-    // the member base ever outgrows it, this tiebreak logic should move
-    // into the query itself (ORDER BY reputation_score, entry_count,
-    // username) instead of sorting a fetched batch in JS.
-    // The bot doesn't compete for reputation — it's a content source, not
-    // a community member, so it's excluded from ranking entirely.
-    supabase
-      .from("profiles")
-      .select("id, username, display_name, avatar_url, reputation_score")
-      .eq("is_bot", false)
-      .limit(500),
+  // Ranking comes from get_top_contributors (0019_engagement_score.sql) —
+  // a weighted, time-decayed engagement score across every action type
+  // (posting, annotating, commenting, voting, being followed), not just
+  // reputation_score (a plain running count of upvotes received, which
+  // let someone who posted twice, got lucky, and vanished outrank someone
+  // actively annotating and commenting every day). The RPC already
+  // excludes the bot, requires at least one scored action, and returns
+  // rows pre-sorted by score — see the migration for the exact weights
+  // and the 21-day half-life. reputation_score is still fetched for
+  // display (a real, legible "likes earned" number) — it just no longer
+  // decides the order.
+  const [{ data: ranked }, { data: entryCounts }] = await Promise.all([
+    supabase.rpc("get_top_contributors", { p_limit: 50 }) as unknown as PromiseLike<{ data: TopContributor[] | null }>,
     supabase.from("context_entries").select("user_id"),
   ]);
 
   const counts = new Map<string, number>();
   (entryCounts ?? []).forEach((e) => counts.set(e.user_id, (counts.get(e.user_id) ?? 0) + 1));
-
-  // A rank is earned by having posted, not just by existing — someone who
-  // signed up and never wrote a sentence has nothing to rank on and
-  // showing them at 0 rep/0 entries only pads the board with noise.
-  const ranked = profiles?.filter((p) => (counts.get(p.id) ?? 0) > 0);
-
-  ranked?.sort((a, b) => {
-    if (b.reputation_score !== a.reputation_score) return b.reputation_score - a.reputation_score;
-    const entryDiff = (counts.get(b.id) ?? 0) - (counts.get(a.id) ?? 0);
-    if (entryDiff !== 0) return entryDiff;
-    return a.username.localeCompare(b.username);
-  });
-  ranked?.splice(50);
 
   const RANK_RING = ["ring-yellow-400/60 bg-yellow-400/5", "ring-gray-300/60 bg-gray-300/5", "ring-amber-600/60 bg-amber-600/5"];
   const RANK_TEXT = ["text-yellow-400", "text-gray-300", "text-amber-600"];
