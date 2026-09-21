@@ -105,9 +105,20 @@ export default async function RightRail() {
          each theme itself declares as correct for its own accent fill,
          rather than a value hardcoded here for one specific theme. */}
       <div className="bg-seigaiha relative overflow-hidden rounded-2xl bg-ink-accent p-4 text-[rgb(var(--c-on-accent))]">
-        <Obake size={44} className="float-right ml-3 mb-1" />
-        <h2 className="mb-1 font-display text-base font-bold">{t("rail.tipTitle")}</h2>
-        <p className="text-sm leading-relaxed text-[rgb(var(--c-on-accent)/0.85)]">{t("rail.tipBody")}</p>
+        {/* flex instead of float-right: a float narrows only the lines
+           beside it, so the paragraph wraps at one width for its first
+           couple of lines and a wider one once it clears the mascot —
+           that irregular per-line width is exactly what produces an
+           orphaned word/character stranded alone on the last line, no
+           matter what text-wrap setting is applied. A flex row gives the
+           paragraph one consistent width for every line instead. */}
+        <div className="flex items-start gap-3">
+          <div className="min-w-0 flex-1">
+            <h2 className="mb-1 font-display text-base font-bold">{t("rail.tipTitle")}</h2>
+            <p className="text-balance text-sm leading-relaxed text-[rgb(var(--c-on-accent)/0.85)]">{t("rail.tipBody")}</p>
+          </div>
+          <Obake size={44} className="flex-none" />
+        </div>
       </div>
     </aside>
   );

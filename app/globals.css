@@ -495,3 +495,11 @@ h2,
 h3 {
   text-wrap: pretty;
 }
+
+/* For short, self-contained blurbs (a card title, a promo line) balance
+   evens out every line's length instead of just avoiding the worst
+   orphan the way pretty does — a better fit than pretty specifically
+   when there are only a couple of lines to work with. */
+.text-balance {
+  text-wrap: balance;
+}
