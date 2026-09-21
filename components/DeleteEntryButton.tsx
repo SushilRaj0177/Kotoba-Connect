@@ -22,8 +22,14 @@ export default function DeleteEntryButton({
   async function handleDelete() {
     setBusy(true);
     const supabase = createClient();
-    await supabase.from("context_entries").delete().eq("id", entryId);
+    const { error } = await supabase.from("context_entries").delete().eq("id", entryId);
     setBusy(false);
+
+    if (error) {
+      showToast(t("profile.actionError"), "error");
+      return;
+    }
+
     showToast(t("toast.deleted"));
     if (redirectHome) router.push("/");
   }

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import UserHandle from "@/components/UserHandle";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { useToast } from "@/components/Toast";
 
 interface BlockedUser {
   blocked_id: string;
@@ -12,6 +13,7 @@ interface BlockedUser {
 
 export default function BlockedUsersManager({ userId }: { userId: string }) {
   const { t } = useLocale();
+  const { showToast } = useToast();
   const [blocked, setBlocked] = useState<BlockedUser[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -33,7 +35,11 @@ export default function BlockedUsersManager({ userId }: { userId: string }) {
 
   async function unblock(blockedId: string) {
     const supabase = createClient();
-    await supabase.from("user_blocks").delete().eq("blocker_id", userId).eq("blocked_id", blockedId);
+    const { error } = await supabase.from("user_blocks").delete().eq("blocker_id", userId).eq("blocked_id", blockedId);
+    if (error) {
+      showToast(t("profile.actionError"), "error");
+      return;
+    }
     setBlocked((prev) => prev.filter((b) => b.blocked_id !== blockedId));
   }
 

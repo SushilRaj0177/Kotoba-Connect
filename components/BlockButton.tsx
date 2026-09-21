@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { useToast } from "@/components/Toast";
 
 export default function BlockButton({
   profileId,
@@ -14,6 +15,7 @@ export default function BlockButton({
   initialBlocked: boolean;
 }) {
   const { t } = useLocale();
+  const { showToast } = useToast();
   const [blocked, setBlocked] = useState(initialBlocked);
   const [pending, setPending] = useState(false);
 
@@ -24,10 +26,14 @@ export default function BlockButton({
     const supabase = createClient();
     const next = !blocked;
 
-    if (next) {
-      await supabase.from("user_blocks").insert({ blocker_id: currentUserId, blocked_id: profileId });
-    } else {
-      await supabase.from("user_blocks").delete().eq("blocker_id", currentUserId).eq("blocked_id", profileId);
+    const { error } = next
+      ? await supabase.from("user_blocks").insert({ blocker_id: currentUserId, blocked_id: profileId })
+      : await supabase.from("user_blocks").delete().eq("blocker_id", currentUserId).eq("blocked_id", profileId);
+
+    if (error) {
+      showToast(t("profile.actionError"), "error");
+      setPending(false);
+      return;
     }
 
     setBlocked(next);

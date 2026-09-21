@@ -10,6 +10,7 @@ import { spamSignal } from "@/lib/moderation";
 import { errorMessage } from "@/lib/errors";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { useBlockedIds } from "@/lib/use-blocked-ids";
+import { useToast } from "@/components/Toast";
 
 export default function EntryComments({
   entryId,
@@ -26,6 +27,7 @@ export default function EntryComments({
   embedded?: boolean;
 }) {
   const { t } = useLocale();
+  const { showToast } = useToast();
   const [comments, setComments] = useState<EntryComment[]>([]);
   const [loading, setLoading] = useState(true);
   const [body, setBody] = useState("");
@@ -97,7 +99,8 @@ export default function EntryComments({
 
   async function handleDelete(commentId: string) {
     const supabase = createClient();
-    await supabase.from("entry_comments").delete().eq("id", commentId);
+    const { error } = await supabase.from("entry_comments").delete().eq("id", commentId);
+    if (error) showToast(t("profile.actionError"), "error");
   }
 
   return (

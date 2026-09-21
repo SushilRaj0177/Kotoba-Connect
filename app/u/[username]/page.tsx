@@ -5,6 +5,7 @@ import EntryCard from "@/components/EntryCard";
 import EmptyState from "@/components/EmptyState";
 import FollowButton from "@/components/FollowButton";
 import BlockButton from "@/components/BlockButton";
+import FollowerCount from "@/components/FollowerCount";
 import ProfileBadges from "@/components/ProfileBadges";
 import { createClient, getCurrentUser } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
@@ -160,10 +161,7 @@ export default async function ProfilePage({ params }: { params: { username: stri
               <p className="font-display text-base font-extrabold text-ink-accent">{profile.reputation_score}</p>
               <p className="text-xs text-ink-text-muted">{t("profile.reputation")}</p>
             </div>
-            <div className="rounded-xl bg-ink-bg-input p-2.5 text-center">
-              <p className="font-display text-base font-extrabold text-ink-text-header">{followerCount ?? 0}</p>
-              <p className="text-xs text-ink-text-muted">{t("profile.followers")}</p>
-            </div>
+            <FollowerCount profileId={profile.id} initialCount={followerCount ?? 0} label={t("profile.followers")} />
             <div className="rounded-xl bg-ink-bg-input p-2.5 text-center">
               <p className="font-display text-base font-extrabold text-ink-text-header">{followingCount ?? 0}</p>
               <p className="text-xs text-ink-text-muted">{t("profile.following")}</p>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { useToast } from "@/components/Toast";
 
 export default function FollowButton({
   profileId,
@@ -16,6 +17,7 @@ export default function FollowButton({
   onChange?: (following: boolean) => void;
 }) {
   const { t } = useLocale();
+  const { showToast } = useToast();
   const [following, setFollowing] = useState(initialFollowing);
   const [pending, setPending] = useState(false);
 
@@ -26,14 +28,20 @@ export default function FollowButton({
     const supabase = createClient();
     const next = !following;
 
-    if (next) {
-      await supabase.from("user_follows").insert({ follower_id: currentUserId, following_id: profileId });
-    } else {
-      await supabase
-        .from("user_follows")
-        .delete()
-        .eq("follower_id", currentUserId)
-        .eq("following_id", profileId);
+    // Previously this discarded the result entirely — a failed insert
+    // (RLS rejection, network blip, anything) still flipped the button to
+    // "Following" client-side, which then silently reverted on the next
+    // real page load once server-rendered data showed the row was never
+    // actually written. Only trust the optimistic flip once Supabase
+    // confirms the write went through.
+    const { error } = next
+      ? await supabase.from("user_follows").insert({ follower_id: currentUserId, following_id: profileId })
+      : await supabase.from("user_follows").delete().eq("follower_id", currentUserId).eq("following_id", profileId);
+
+    if (error) {
+      showToast(t("profile.actionError"), "error");
+      setPending(false);
+      return;
     }
 
     setFollowing(next);

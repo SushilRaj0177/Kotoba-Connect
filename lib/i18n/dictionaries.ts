@@ -258,6 +258,7 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "profile.unfollow": "Following",
     "profile.block": "Block",
     "profile.unblock": "Unblock",
+    "profile.actionError": "Couldn't do that — try again.",
 
     "settings.title": "Settings",
     "settings.tabs.profile": "Profile",
@@ -627,6 +628,7 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "profile.unfollow": "フォロー中",
     "profile.block": "ブロック",
     "profile.unblock": "ブロック解除",
+    "profile.actionError": "実行できませんでした。もう一度お試しください。",
 
     "settings.title": "設定",
     "settings.tabs.profile": "プロフィール",
