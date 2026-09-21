@@ -250,6 +250,11 @@ export default async function LandingPage() {
                         href={`/u/${p.username}`}
                         size="sm"
                         className="w-full"
+                        trailing={
+                          <span className="ml-auto flex-none rounded-full bg-ink-accent/15 px-2 py-0.5 text-[11px] font-bold text-ink-accent">
+                            {p.reputation_score}
+                          </span>
+                        }
                       />
                     </li>
                   ))}
