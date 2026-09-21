@@ -290,22 +290,29 @@ export default function EntryCard({
             </button>
             <BookmarkButton entryId={entry.id} userId={currentUserId} initialBookmarked={bookmarked} />
             <ShareEntryButton entryId={entry.id} rawJapanese={liveEntry.raw_japanese} />
-            <ReportButton targetType="entry" targetId={entry.id} userId={currentUserId} />
-            {currentUserId === entry.user_id && (
-              <>
-                <button
-                  type="button"
-                  onClick={() => setEditing(true)}
-                  title={t("card.edit")}
-                  className="flex h-10 w-10 items-center justify-center rounded-full text-ink-text-muted transition hover:bg-ink-bg-hover hover:text-ink-text"
-                >
-                  <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                  </svg>
-                </button>
-                <DeleteEntryButton entryId={entry.id} />
-              </>
-            )}
+            {/* Report/edit/delete pinned to the right with ml-auto instead of
+               sitting in the same left-to-right run as the social actions —
+               when this row wraps on a narrow phone, the wrapped line reads
+               as its own deliberate right-aligned group instead of a loose
+               extra row of icons. */}
+            <div className="ml-auto flex items-center gap-0.5">
+              <ReportButton targetType="entry" targetId={entry.id} userId={currentUserId} />
+              {currentUserId === entry.user_id && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setEditing(true)}
+                    title={t("card.edit")}
+                    className="flex h-10 w-10 items-center justify-center rounded-full text-ink-text-muted transition hover:bg-ink-bg-hover hover:text-ink-text"
+                  >
+                    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                    </svg>
+                  </button>
+                  <DeleteEntryButton entryId={entry.id} />
+                </>
+              )}
+            </div>
           </div>
         )}
 

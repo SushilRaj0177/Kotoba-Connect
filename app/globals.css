@@ -477,3 +477,21 @@ body::before {
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+/* Prevents the classic "one orphaned character stranded alone on its own
+   line" look — most visible in Japanese text (no spaces to wrap at, so a
+   narrow container can leave a single trailing 文字 by itself) but it
+   happens with English/CJK-mixed text too. text-wrap: pretty asks the
+   browser to look ahead across the whole block and choose break points
+   that avoid short orphan lines, instead of the default greedy algorithm
+   that just fills each line and wraps whatever's left over — this is a
+   general fix that self-corrects at any container width or font size,
+   not a per-component patch for one screen. Falls back silently to the
+   normal wrapping behavior in browsers that don't support it yet. */
+p,
+.font-jp,
+h1,
+h2,
+h3 {
+  text-wrap: pretty;
+}

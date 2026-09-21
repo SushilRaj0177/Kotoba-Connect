@@ -191,16 +191,25 @@ export default function MascotChat() {
         </div>
       )}
 
+      {/* Sized with clamp() on mobile — a fixed 56px button reads as
+         oversized on a small phone and undersized on a large one relative
+         to everything else on screen; clamp() scales it continuously with
+         viewport width between a sensible floor and ceiling instead.
+         Desktop keeps the original fixed 56px (md:) unchanged. */}
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
         title={t("bot.name")}
-        className="btn-chunky flex h-14 w-14 items-center justify-center rounded-full bg-ink-accent shadow-xl"
+        className="btn-chunky flex h-[clamp(2.75rem,13vw,3.5rem)] w-[clamp(2.75rem,13vw,3.5rem)] items-center justify-center rounded-full bg-ink-accent shadow-xl md:h-14 md:w-14"
       >
         {open ? (
           <span className="text-xl text-white">✕</span>
         ) : (
-          <Mascot size={40} mood="excited" />
+          <Mascot
+            size={40}
+            mood="excited"
+            className="!h-[clamp(2rem,9.5vw,2.5rem)] !w-[clamp(2rem,9.5vw,2.5rem)] md:!h-10 md:!w-10"
+          />
         )}
       </button>
     </div>
