@@ -93,8 +93,12 @@ export default function SideRail() {
 
       {isAdmin && (
         <RailIcon href="/admin" title={t("nav.moderation")}>
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M12 3 4 6v6c0 4.4 3.4 8.5 8 9.5 4.6-1 8-5.1 8-9.5V6l-8-3z" />
+          {/* A symmetric shield (the old outline wasn't actually mirrored
+             left-to-right, which read as subtly lopsided at small sizes)
+             with a checkmark for "reviewed/kept safe" rather than a bare
+             shield. */}
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
             <path d="m9 12 2 2 4-4" />
           </svg>
         </RailIcon>
