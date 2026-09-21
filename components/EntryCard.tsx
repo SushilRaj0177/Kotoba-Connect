@@ -64,7 +64,9 @@ export default function EntryCard({
     return (
       <article className="border-b border-ink-border/60 py-4 first:pt-0">
         <div className="flex items-start gap-2.5">
-          <Avatar username={username} avatarUrl={avatarUrl} size={28} />
+          <Link href={`/u/${username}`} className="flex-none">
+            <Avatar username={username} avatarUrl={avatarUrl} size={28} />
+          </Link>
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-1.5">
               <Link href={`/u/${username}`} className="font-display text-sm font-bold text-ink-text-header hover:underline">
@@ -184,7 +186,9 @@ export default function EntryCard({
          several times taller, leaving the rest of that column as dead space
          running down the whole card. */}
       <div className="mb-1 flex flex-wrap items-center gap-2">
-        <Avatar username={username} avatarUrl={avatarUrl} size={28} />
+        <Link href={`/u/${username}`} className="flex-none">
+          <Avatar username={username} avatarUrl={avatarUrl} size={28} />
+        </Link>
         <Link
           href={`/u/${username}`}
           className="font-display text-sm font-bold text-ink-text-header hover:underline"

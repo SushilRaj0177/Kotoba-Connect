@@ -187,6 +187,7 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "footer.privacy": "Privacy",
     "footer.source": "Source",
 
+    "login.back": "Back",
     "login.title": "Sign in to annotate real Japanese pragmatics.",
     "login.tabSignIn": "Sign in",
     "login.tabSignUp": "Create account",
@@ -558,6 +559,7 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "footer.privacy": "プライバシー",
     "footer.source": "ソースコード",
 
+    "login.back": "戻る",
     "login.title": "サインインして、日本語の語用論を注釈しよう。",
     "login.tabSignIn": "サインイン",
     "login.tabSignUp": "アカウント作成",

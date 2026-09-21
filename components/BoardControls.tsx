@@ -40,12 +40,12 @@ export default function BoardControls({
   const { t } = useLocale();
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
-      <div className="flex rounded-full bg-ink-bg-input p-1 text-xs font-semibold">
+    <div className="space-y-2">
+      <div className="flex rounded-full bg-ink-bg-input p-1 text-xs font-semibold sm:inline-flex">
         <button
           type="button"
           onClick={() => onSortChange("new")}
-          className={`rounded-full px-3 py-1.5 transition ${
+          className={`flex-1 rounded-full px-3 py-1.5 transition sm:flex-none ${
             sortBy === "new" ? "bg-ink-accent text-white" : "text-ink-text-muted hover:text-ink-text"
           }`}
         >
@@ -54,7 +54,7 @@ export default function BoardControls({
         <button
           type="button"
           onClick={() => onSortChange("popular")}
-          className={`rounded-full px-3 py-1.5 transition ${
+          className={`flex-1 rounded-full px-3 py-1.5 transition sm:flex-none ${
             sortBy === "popular" ? "bg-ink-accent text-white" : "text-ink-text-muted hover:text-ink-text"
           }`}
         >
@@ -62,11 +62,15 @@ export default function BoardControls({
         </button>
       </div>
 
-      <div className="flex flex-wrap items-center gap-1.5">
+      {/* A single scrollable row on mobile instead of letting 7 pills wrap
+         across 2-3 lines and push the feed down before it even starts —
+         the same controls, just laid out horizontally where space is
+         tight. Reverts to a normal wrapping row once there's room. */}
+      <div className="no-scrollbar -mx-1 flex items-center gap-1.5 overflow-x-auto px-1 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
         <button
           type="button"
           onClick={() => onFormalityChange("all")}
-          className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
+          className={`flex-none rounded-full px-3 py-1.5 text-xs font-semibold transition ${
             formalityFilter === "all"
               ? "bg-ink-text-header text-ink-bg"
               : "bg-ink-bg-input text-ink-text-muted hover:text-ink-text"
@@ -79,7 +83,7 @@ export default function BoardControls({
             key={level}
             type="button"
             onClick={() => onFormalityChange(formalityFilter === level ? "all" : level)}
-            className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
+            className={`flex-none rounded-full px-3 py-1.5 text-xs font-semibold transition ${
               formalityFilter === level
                 ? FORMALITY_RING[level]
                 : "bg-ink-bg-input text-ink-text-muted hover:text-ink-text"

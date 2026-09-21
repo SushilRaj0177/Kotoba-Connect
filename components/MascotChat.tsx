@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import Mascot from "@/components/Mascot";
 import ChatMessageText from "@/components/ChatMessageText";
 import FormalityBadge from "@/components/FormalityBadge";
@@ -31,6 +32,7 @@ interface ChatMessage {
 // admin queue (see AdminQueue.tsx) and show up in the notification bell.
 export default function MascotChat() {
   const { t } = useLocale();
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
@@ -42,6 +44,16 @@ export default function MascotChat() {
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, sending]);
+
+  // Not useful mid-conversation on a profile page (self, bot, or anyone
+  // else's) — profiles are about the person, not a place to chat with the
+  // mascot. On the login/signup page it stays for desktop (plenty of
+  // room) but is dropped on mobile, where the auth card already fills the
+  // screen and the floating bubble just sits on top of the form.
+  const isProfilePage = pathname?.startsWith("/u/") ?? false;
+  const isAuthPage = pathname === "/login";
+
+  if (isProfilePage) return null;
 
   async function send(e: React.FormEvent) {
     e.preventDefault();
@@ -74,7 +86,9 @@ export default function MascotChat() {
   }
 
   return (
-    <div className="fixed bottom-[calc(4.5rem+env(safe-area-inset-bottom)+0.75rem)] right-5 z-30 flex flex-col items-end md:bottom-5">
+    <div
+      className={`fixed bottom-[calc(4.5rem+env(safe-area-inset-bottom)+0.75rem)] right-5 z-30 ${isAuthPage ? "hidden md:flex" : "flex"} flex-col items-end md:bottom-5`}
+    >
       {open && (
         <div className="mb-3 flex h-[28rem] w-80 max-w-[calc(100vw-2.5rem)] flex-col overflow-hidden rounded-2xl bg-ink-bg-secondary border border-ink-border/70 shadow-2xl">
           <div className="flex items-center gap-2.5 border-b border-ink-border p-3">

@@ -97,15 +97,17 @@ export default async function ProfilePage({ params }: { params: { username: stri
       <Navbar title={profile.display_name?.trim() || `@${profile.username}`} />
       <main className="mx-auto max-w-3xl px-4 py-6 sm:px-6 lg:max-w-5xl">
         <div className="mb-6 rounded-2xl bg-ink-bg-secondary p-4 border border-ink-border/70 shadow-sm sm:p-5">
-          <div className="flex items-start gap-3">
-            <Avatar username={profile.username} avatarUrl={profile.avatar_url} size={56} />
-            <div className="min-w-0 flex-1 pt-0.5">
-              <h1 className="break-words font-display text-lg font-bold text-ink-text-header sm:text-xl">
-                {profile.display_name?.trim() || `@${profile.username}`}
-              </h1>
-              {profile.display_name?.trim() && (
-                <p className="break-words text-sm text-ink-text-muted">@{profile.username}</p>
-              )}
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div className="flex min-w-0 items-start gap-3">
+              <Avatar username={profile.username} avatarUrl={profile.avatar_url} size={56} />
+              <div className="min-w-0 flex-1 pt-0.5">
+                <h1 className="truncate font-display text-lg font-bold text-ink-text-header sm:text-xl">
+                  {profile.display_name?.trim() || `@${profile.username}`}
+                </h1>
+                {profile.display_name?.trim() && (
+                  <p className="truncate text-sm text-ink-text-muted">@{profile.username}</p>
+                )}
+              </div>
             </div>
             <div className="flex-none">
               {user?.id === profile.id ? (

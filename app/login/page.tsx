@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useFormState, useFormStatus } from "react-dom";
 import { signIn, signUp, resendConfirmation, type AuthState } from "@/app/auth/actions";
 import { createClient } from "@/lib/supabase/client";
@@ -105,15 +106,28 @@ function ConfirmationPending({ email }: { email: string }) {
 
 export default function LoginPage() {
   const { t } = useLocale();
+  const router = useRouter();
   const [mode, setMode] = useState<"signIn" | "signUp">("signIn");
   const action = mode === "signIn" ? signIn : signUp;
   const [state, formAction] = useFormState(action, initialState);
 
   return (
     <main className="flex min-h-screen flex-col items-center px-6 pb-8 pt-4">
-      <div className="mb-4 flex w-full max-w-sm items-center justify-end gap-2">
-        <ThemeToggle />
-        <LanguageToggle />
+      <div className="mb-4 flex w-full max-w-sm items-center justify-between gap-2">
+        <button
+          type="button"
+          onClick={() => router.back()}
+          aria-label={t("login.back")}
+          className="flex h-9 w-9 items-center justify-center rounded-full bg-ink-bg-input text-ink-text transition hover:bg-ink-bg-hover"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M19 12H5M12 19l-7-7 7-7" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <LanguageToggle />
+        </div>
       </div>
 
       <div className="w-full max-w-sm overflow-hidden rounded-2xl bg-ink-bg-secondary border border-ink-border/70 shadow-sm">

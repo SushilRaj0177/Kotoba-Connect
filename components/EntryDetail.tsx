@@ -143,7 +143,9 @@ export default function EntryDetail({
              full-height left column that would sit empty beside the rest
              of the entry, the annotation hint, and the action row below it. */}
           <div className="mb-1 flex flex-wrap items-center gap-2">
-            <Avatar username={username} avatarUrl={entry.profiles?.avatar_url} size={28} />
+            <Link href={`/u/${username}`} className="flex-none">
+              <Avatar username={username} avatarUrl={entry.profiles?.avatar_url} size={28} />
+            </Link>
             <Link href={`/u/${username}`} className="font-display text-sm font-bold text-ink-text-header hover:underline">
               {displayName?.trim() || `@${username}`}
             </Link>
