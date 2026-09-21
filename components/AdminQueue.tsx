@@ -4,12 +4,14 @@ import { useCallback, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { ReportFlag } from "@/types/database";
 import EmptyState from "@/components/EmptyState";
+import { useToast } from "@/components/Toast";
 
 interface ReportWithPreview extends ReportFlag {
   preview: string | null;
 }
 
 export default function AdminQueue() {
+  const { showToast } = useToast();
   const [reports, setReports] = useState<ReportWithPreview[]>([]);
   const [loading, setLoading] = useState(true);
   const [actingOn, setActingOn] = useState<string | null>(null);
@@ -83,10 +85,20 @@ export default function AdminQueue() {
   async function dismiss(report: ReportWithPreview) {
     setActingOn(report.id);
     const supabase = createClient();
-    await supabase
+    const { error } = await supabase
       .from("report_flags")
       .update({ status: "dismissed", reviewed_at: new Date().toISOString() })
       .eq("id", report.id);
+
+    if (error) {
+      showToast("Couldn't dismiss that report — try again.", "error");
+      setActingOn(null);
+      return;
+    }
+
+    // Best-effort — the report itself is already dismissed either way, so
+    // a failure notifying the reporter isn't worth blocking or reporting
+    // as an error for.
     await supabase.from("notifications").insert({
       user_id: report.reporter_id,
       actor_id: null,
@@ -108,7 +120,13 @@ export default function AdminQueue() {
 
     const { data: content } = await supabase.from(table).select("user_id").eq("id", report.target_id).single();
 
-    await supabase.from(table).delete().eq("id", report.target_id);
+    const { error: deleteError } = await supabase.from(table).delete().eq("id", report.target_id);
+    if (deleteError) {
+      showToast("Couldn't delete that content — try again.", "error");
+      setActingOn(null);
+      return;
+    }
+
     await supabase
       .from("report_flags")
       .update({ status: "resolved", reviewed_at: new Date().toISOString() })

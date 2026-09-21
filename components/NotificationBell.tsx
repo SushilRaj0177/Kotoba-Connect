@@ -53,14 +53,27 @@ export default function NotificationBell({ userId }: { userId: string }) {
 
   async function markAllRead() {
     const supabase = createClient();
-    await supabase.from("notifications").update({ read: true }).eq("user_id", userId).eq("read", false);
+    const { error } = await supabase
+      .from("notifications")
+      .update({ read: true })
+      .eq("user_id", userId)
+      .eq("read", false);
+    // Only marked-INSERT triggers a re-fetch (see the channel subscription
+    // above), so a failed update here would otherwise show "read" forever
+    // with nothing to ever correct it — refetch on failure instead of
+    // trusting the optimistic flip.
+    if (error) {
+      load();
+      return;
+    }
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
   }
 
   async function markRead(id: string) {
     setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
     const supabase = createClient();
-    await supabase.from("notifications").update({ read: true }).eq("id", id);
+    const { error } = await supabase.from("notifications").update({ read: true }).eq("id", id);
+    if (error) load();
   }
 
   return (
