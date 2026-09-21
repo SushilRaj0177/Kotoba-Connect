@@ -496,6 +496,18 @@ h3 {
   text-wrap: pretty;
 }
 
+/* Japanese has no spaces between words, so without any letter-spacing at
+   all a block of it reads as one dense, unbroken wall of characters —
+   this applies whenever the UI language is Japanese (html[lang="ja"],
+   set in app/layout.tsx from the locale cookie), not just to posted
+   entries, since UI copy (nav labels, card titles, body text) has the
+   same crowding problem. A small value on purpose: enough to give each
+   character room to breathe without stretching multi-character words
+   apart or breaking natural kerning. */
+html[lang="ja"] {
+  letter-spacing: 0.03em;
+}
+
 /* For short, self-contained blurbs (a card title, a promo line) balance
    evens out every line's length instead of just avoiding the worst
    orphan the way pretty does — a better fit than pretty specifically
