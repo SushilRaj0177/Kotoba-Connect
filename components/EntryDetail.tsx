@@ -9,6 +9,8 @@ import TokenizedText from "@/components/TokenizedText";
 import EmptyState from "@/components/EmptyState";
 import EntryComments from "@/components/EntryComments";
 import AiNuanceCallout from "@/components/AiNuanceCallout";
+import AiInsightEdge from "@/components/edge/AiInsightEdge";
+import { useDensity } from "@/components/theme/DensityProvider";
 import Avatar from "@/components/Avatar";
 import BookmarkButton from "@/components/BookmarkButton";
 import DeleteEntryButton from "@/components/DeleteEntryButton";
@@ -34,6 +36,7 @@ export default function EntryDetail({
   bookmarked?: boolean;
 }) {
   const { t, locale } = useLocale();
+  const { density } = useDensity();
   const { showToast } = useToast();
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [annotations, setAnnotations] = useState<TokenAnnotation[]>([]);
@@ -188,10 +191,17 @@ export default function EntryDetail({
                    when viewing the EN UI, otherwise it's Japanese to
                    Japanese. */}
                 {locale === "en" && <TranslateToggle state={rawTranslate} className="mt-1" />}
-                <AiNuanceCallout
-                  summary={liveEntry.ai_nuance_summary}
-                  formalitySuggestion={liveEntry.ai_formality_suggestion}
-                />
+                {density === "compact" ? (
+                  <AiInsightEdge
+                    summary={liveEntry.ai_nuance_summary}
+                    formalitySuggestion={liveEntry.ai_formality_suggestion}
+                  />
+                ) : (
+                  <AiNuanceCallout
+                    summary={liveEntry.ai_nuance_summary}
+                    formalitySuggestion={liveEntry.ai_formality_suggestion}
+                  />
+                )}
                 {!!liveEntry.tags?.length && (
                   <div className="mt-2 flex flex-wrap gap-1.5">
                     {liveEntry.tags.map((tag) => (

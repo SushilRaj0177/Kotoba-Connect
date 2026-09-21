@@ -8,6 +8,8 @@ import { LocaleProvider } from "@/components/i18n/LocaleProvider";
 import { getServerLocale } from "@/lib/i18n/server";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { getServerTheme } from "@/lib/theme";
+import { DensityProvider } from "@/components/theme/DensityProvider";
+import { getServerDensity } from "@/lib/density";
 import { SITE_URL } from "@/lib/site";
 import { ClientAuthProvider } from "@/components/auth/ClientAuthProvider";
 import OnboardingGate from "@/components/auth/OnboardingGate";
@@ -71,11 +73,13 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const locale = getServerLocale();
   const theme = getServerTheme();
+  const density = getServerDensity();
 
   return (
     <html lang={locale} data-theme={theme} className={`${inter.variable} ${zenMaru.variable}`}>
       <body className="flex min-h-screen bg-ink-bg">
         <ThemeProvider initialTheme={theme}>
+        <DensityProvider initialDensity={density}>
           <LocaleProvider initialLocale={locale}>
             <ClientAuthProvider>
               <OnboardingGate />
@@ -109,6 +113,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </EntryChatProvider>
             </ClientAuthProvider>
           </LocaleProvider>
+        </DensityProvider>
         </ThemeProvider>
       </body>
     </html>

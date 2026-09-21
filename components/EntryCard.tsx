@@ -19,6 +19,7 @@ import JapaneseText from "@/components/JapaneseText";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { useTranslate } from "@/lib/use-translate";
 import { useTheme } from "@/components/theme/ThemeProvider";
+import { useDensity } from "@/components/theme/DensityProvider";
 
 export default function EntryCard({
   entry,
@@ -33,6 +34,7 @@ export default function EntryCard({
 }) {
   const { t, locale } = useLocale();
   const { theme } = useTheme();
+  const { density } = useDensity();
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [editing, setEditing] = useState(false);
   // Local override so a save reflects immediately on pages without a
@@ -236,10 +238,23 @@ export default function EntryCard({
                viewing the EN UI, otherwise it's Japanese to Japanese. */}
             {locale === "en" && <TranslateToggle state={rawTranslate} className="mt-1" />}
 
-            <AiNuanceCallout
-              summary={liveEntry.ai_nuance_summary}
-              formalitySuggestion={liveEntry.ai_formality_suggestion}
-            />
+            {/* Density is a separate preference from color theme (see
+               Settings → Appearance) — Edge always gets the collapsed,
+               click-to-expand insight regardless of this setting, but
+               someone on light/dark can now opt into the same "collapsed
+               by default" behavior without switching their whole color
+               theme to get it. */}
+            {density === "compact" ? (
+              <AiInsightEdge
+                summary={liveEntry.ai_nuance_summary}
+                formalitySuggestion={liveEntry.ai_formality_suggestion}
+              />
+            ) : (
+              <AiNuanceCallout
+                summary={liveEntry.ai_nuance_summary}
+                formalitySuggestion={liveEntry.ai_formality_suggestion}
+              />
+            )}
 
             {!!liveEntry.tags?.length && (
               <div className="mt-2 flex flex-wrap gap-1.5">
