@@ -11,6 +11,7 @@ import EntryComments from "@/components/EntryComments";
 import AiNuanceCallout from "@/components/AiNuanceCallout";
 import AiInsightEdge from "@/components/edge/AiInsightEdge";
 import { useDensity } from "@/components/theme/DensityProvider";
+import SpeakButton from "@/components/SpeakButton";
 import Avatar from "@/components/Avatar";
 import BookmarkButton from "@/components/BookmarkButton";
 import DeleteEntryButton from "@/components/DeleteEntryButton";
@@ -222,6 +223,7 @@ export default function EntryDetail({
                     initialCount={liveEntry.upvotes_count}
                     initialVoted={!!liveEntry.has_voted}
                   />
+                  <SpeakButton text={liveEntry.raw_japanese} />
                   <BookmarkButton entryId={entry.id} userId={userId} initialBookmarked={bookmarked} />
                   <ShareEntryButton entryId={entry.id} rawJapanese={liveEntry.raw_japanese} />
                   {userId === entry.user_id && (

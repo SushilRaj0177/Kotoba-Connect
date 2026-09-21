@@ -20,10 +20,11 @@ export default function SideRail() {
   const { userId, isAdmin } = useClientAuth();
 
   const user = !!userId;
-  // Signed out, "/" is the marketing landing page rather than the board —
-  // send Home to "/board" instead so navigating away and back (e.g. while
-  // browsing without an account) doesn't bounce back to the pitch.
-  const homeHref = user ? "/" : "/board";
+  // "/" already renders the board for a signed-in user and the marketing
+  // landing page for a signed-out one (see app/page.tsx), so this
+  // doubles as the one universal way back to the landing page from any
+  // other page (settings, an entry, /leaderboard, ...) while signed out.
+  const homeHref = "/";
 
   return (
     <nav className="fixed inset-y-0 left-0 z-30 hidden w-[72px] flex-none flex-col items-center gap-3 overflow-y-auto bg-ink-bg-secondary py-6 shadow-[1px_0_0_0_rgb(var(--c-border)/0.6)] md:flex">

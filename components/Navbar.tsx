@@ -17,10 +17,12 @@ export default async function Navbar({ title }: { title?: string } = {}) {
   return (
     <header className="sticky top-0 z-10 bg-ink-bg/90 shadow-[0_1px_0_0_rgb(var(--c-border)/0.6)] backdrop-blur">
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3.5 sm:px-6">
-        {/* Signed out, "/" is the marketing landing page rather than the
-           board — send the logo to "/board" instead so tapping it while
-           browsing without an account doesn't bounce back to the pitch. */}
-        <Link href={user ? "/" : "/board"} className="flex-none md:hidden">
+        {/* "/" already renders the board for a signed-in user and the
+           marketing landing page for a signed-out one (see app/page.tsx) —
+           so this is also the one universal way back to the landing page
+           from any other page (settings, an entry, /leaderboard, ...)
+           while signed out, where nothing else in the app links there. */}
+        <Link href="/" className="flex-none md:hidden">
           <span className="font-display text-2xl font-black text-ink-accent">言葉</span>
         </Link>
 

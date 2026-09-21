@@ -15,6 +15,7 @@ import LikeButton from "@/components/LikeButton";
 import TranslateToggle from "@/components/TranslateToggle";
 import EntryComments from "@/components/EntryComments";
 import AiInsightEdge from "@/components/edge/AiInsightEdge";
+import SpeakButton from "@/components/SpeakButton";
 import JapaneseText from "@/components/JapaneseText";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { useTranslate } from "@/lib/use-translate";
@@ -131,6 +132,7 @@ export default function EntryCard({
                 initialCount={entry.upvotes_count}
                 initialVoted={!!entry.has_voted}
               />
+              <SpeakButton text={liveEntry.raw_japanese} variant="bare" />
               <Link
                 href={`/entries/${entry.id}`}
                 title={t("card.annotateTitle")}
@@ -280,6 +282,7 @@ export default function EntryCard({
               initialCount={entry.upvotes_count}
               initialVoted={!!entry.has_voted}
             />
+            <SpeakButton text={liveEntry.raw_japanese} />
             <Link
               href={`/entries/${entry.id}`}
               title={t("card.annotateTitle")}

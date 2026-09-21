@@ -126,6 +126,7 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "form.errorGeneric": "Could not save the entry. Try again.",
 
     "card.annotateTitle": "Annotate tokens",
+    "card.listen": "Listen to pronunciation",
     "card.comments": "comments",
     "card.hideComments": "Hide",
     "card.report": "Report",
@@ -503,6 +504,7 @@ export const dictionaries: Record<Locale, Record<string, string>> = {
     "form.errorGeneric": "エントリーを保存できませんでした。もう一度お試しください。",
 
     "card.annotateTitle": "トークンを注釈する",
+    "card.listen": "発音を聞く",
     "card.comments": "コメント",
     "card.hideComments": "閉じる",
     "card.report": "報告",

@@ -15,10 +15,11 @@ export default function MobileNav() {
   const pathname = usePathname();
   const { userId } = useClientAuth();
 
-  // Signed out, "/" is the marketing landing page rather than the board —
-  // send Home to "/board" instead so navigating away and back (e.g. while
-  // browsing without an account) doesn't bounce back to the pitch.
-  const homeHref = userId ? "/" : "/board";
+  // "/" already renders the board for a signed-in user and the marketing
+  // landing page for a signed-out one (see app/page.tsx), so this doubles
+  // as the one universal way back to the landing page from any other page
+  // (settings, an entry, /leaderboard, ...) while signed out.
+  const homeHref = "/";
 
   const items = [
     {
