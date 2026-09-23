@@ -44,20 +44,31 @@ export async function POST(request: Request) {
     }
 
     const supabase = createClient();
-    // 0.4 was tuned for OpenAI's embedding space; Gemini's clusters
-    // same-register Japanese phrases (politeness level, business/social
-    // topic) close enough together that 0.4 let through a lot of results
-    // that share a register with the query but aren't actually about the
-    // same thing. Raised until only genuinely close matches pass.
+    // A single fixed floor doesn't work well in Gemini's embedding space:
+    // it clusters same-register Japanese (politeness level, sentence
+    // pattern like "I'm ___") close enough together that a floor loose
+    // enough to admit a real match (e.g. "I'm cooked" -> 詰んだ) also lets
+    // in same-pattern noise ("I'm hungry", "I'm too sleepy") sitting just
+    // below it — and a floor tight enough to exclude the noise risks
+    // cutting real matches elsewhere that just happen to score lower.
+    // Fetched loose (0.5) and re-filtered relative to the best match
+    // instead: only keep results within RELATIVE_GAP of the top
+    // similarity, which adapts to how confident the best match actually
+    // is rather than guessing one absolute number for every query.
+    const RELATIVE_GAP = 0.08;
     const { data, error } = await supabase.rpc("match_entries", {
       query_embedding: embedding,
-      match_threshold: 0.6,
-      match_count: 12,
+      match_threshold: 0.5,
+      match_count: 15,
     });
 
     if (error) throw error;
 
-    return NextResponse.json({ results: data ?? [] });
+    const rows = (data ?? []) as { similarity: number }[];
+    const topSimilarity = rows[0]?.similarity ?? 0;
+    const results = rows.filter((r) => r.similarity >= topSimilarity - RELATIVE_GAP).slice(0, 8);
+
+    return NextResponse.json({ results });
   } catch (err) {
     console.error("Semantic search failed", err);
     Sentry.captureException(err);
