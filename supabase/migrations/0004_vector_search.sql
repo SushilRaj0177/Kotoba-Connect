@@ -1,8 +1,9 @@
 -- Phase 2: pgvector semantic search.
--- Feature-flagged in the app on OPENAI_API_KEY being set (used only for
--- embeddings, via text-embedding-3-small at 1536 dimensions). Entries
--- posted before this ran, or with no API key configured, simply have a
--- null embedding and are excluded from search results until re-embedded.
+-- Feature-flagged in the app on GEMINI_API_KEY being set (used only for
+-- embeddings, via gemini-embedding-001 truncated to 1536 dimensions via
+-- outputDimensionality — see lib/embeddings.ts). Entries posted before
+-- this ran, or with no API key configured, simply have a null embedding
+-- and are excluded from search results until re-embedded.
 
 create extension if not exists vector;
 

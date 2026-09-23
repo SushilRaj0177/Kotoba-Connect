@@ -189,7 +189,7 @@ Live at: https://kotoba-connect-three.vercel.app
 | Rate limiting | `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN` | [upstash.com](https://upstash.com) (free tier) |
 | Error monitoring | `SENTRY_DSN` (+ `SENTRY_ORG`/`SENTRY_PROJECT`/`SENTRY_AUTH_TOKEN` for source maps) | [sentry.io](https://sentry.io) |
 | AI nuance classification, mascot chat bot, compose-time assist, OCR-from-photo, moderation triage | `GROQ_API_KEY` | [console.groq.com](https://console.groq.com) (free tier) |
-| Semantic search, duplicate-entry nudge | `OPENAI_API_KEY` | [platform.openai.com](https://platform.openai.com) |
+| Semantic search, duplicate-entry nudge | `GEMINI_API_KEY` | [aistudio.google.com](https://aistudio.google.com) (free tier — no card required) |
 | Correct Open Graph image URLs in production | `NEXT_PUBLIC_SITE_URL` | your deployed domain, e.g. `https://kotoba-connect-three.vercel.app` |
 | Account deletion, AI moderation triage persistence | `SUPABASE_SERVICE_ROLE_KEY` | Supabase Project Settings → API → `service_role` |
 | Web Push notifications | `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` (a `mailto:` address), `SUPABASE_WEBHOOK_SECRET` | Generate a VAPID pair with `npx web-push generate-vapid-keys`; also requires running `supabase/migrations/0016_push_subscriptions.sql`. To actually fire a push when a `notifications` row is inserted (not just the self-test button in Settings): pick any random string for `SUPABASE_WEBHOOK_SECRET`, then in the Supabase Dashboard go to Database → Webhooks → Create a new hook — table `notifications`, event `Insert`, type `HTTP Request`, method `POST`, URL `https://<your-domain>/api/push/notify`, and add an HTTP header `x-webhook-secret` set to that same string |

@@ -38,7 +38,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const embedding = await embedText(query.trim());
+    const embedding = await embedText(query.trim(), "RETRIEVAL_QUERY");
     if (!embedding) {
       return NextResponse.json({ error: "Could not process that search query." }, { status: 500 });
     }

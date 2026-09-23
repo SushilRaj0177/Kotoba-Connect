@@ -7,7 +7,7 @@ import { checkRateLimit } from "@/lib/rate-limit";
 export const runtime = "nodejs";
 
 // Fire-and-forget, same pattern as /analyze: computes and stores the entry's
-// embedding for semantic search. No-ops without OPENAI_API_KEY.
+// embedding for semantic search. No-ops without GEMINI_API_KEY.
 export async function POST(request: Request, { params }: { params: { id: string } }) {
   if (!embeddingsEnabled()) {
     return NextResponse.json({ skipped: true });

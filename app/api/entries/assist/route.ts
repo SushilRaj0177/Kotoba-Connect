@@ -12,10 +12,10 @@ export const runtime = "nodejs";
 // AI-assist features behind one round trip:
 //   - suggested tags (Groq)
 //   - a translation draft, only when the user hasn't written one yet (Groq)
-//   - a "similar entries already exist" nudge (OpenAI embeddings + the
+//   - a "similar entries already exist" nudge (Gemini embeddings + the
 //     same match_entries RPC semantic search already uses)
 // Each half degrades independently: missing GROQ_API_KEY just skips tags/
-// translation, missing OPENAI_API_KEY just skips the duplicate check.
+// translation, missing GEMINI_API_KEY just skips the duplicate check.
 export async function POST(request: Request) {
   const rateLimit = await checkRateLimit(request, "entry-assist");
   if (!rateLimit.allowed) {
@@ -63,7 +63,7 @@ export async function POST(request: Request) {
 }
 
 async function findSimilarEntries(supabase: ReturnType<typeof createClient>, text: string) {
-  const embedding = await embedText(text);
+  const embedding = await embedText(text, "RETRIEVAL_QUERY");
   if (!embedding) return [];
 
   const { data, error } = await supabase.rpc("match_entries", {

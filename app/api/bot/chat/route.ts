@@ -49,7 +49,7 @@ export async function POST(request: Request) {
   const lastUserMessage = [...cleaned].reverse().find((m) => m.role === "user")?.content;
   if (embeddingsEnabled() && lastUserMessage) {
     try {
-      const embedding = await embedText(lastUserMessage);
+      const embedding = await embedText(lastUserMessage, "RETRIEVAL_QUERY");
       if (embedding) {
         const supabase = createClient();
         const { data } = await supabase.rpc("match_entries", {
