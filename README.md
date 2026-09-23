@@ -18,8 +18,8 @@ Live at: https://kotoba-connect-three.vercel.app
 - **wanakana** — kana/romaji conversion for the furigana/romaji reading-aid toggle
 - **next/og** — dynamically generated Open Graph share images (per-entry and site-wide)
 - Optional: **Groq** (automatic Keigo/nuance classification + the in-app mascot chat bot),
-  **OpenAI embeddings** (semantic search), **Upstash Redis** (rate limiting), **Sentry**
-  (error monitoring)
+  **Gemini embeddings** (hybrid semantic + full-text search), **Upstash Redis** (rate limiting),
+  **Sentry** (error monitoring)
 
 ## Features
 
@@ -229,6 +229,31 @@ without them.
   backported to the 14.x line as of this writing — the fix requires Next 16. This app doesn't
   use `next/image` with AVIF, but if that changes, re-evaluate before upgrading.
 
+## Architecture decisions
+
+A running log of the non-obvious engineering calls in this project, in the order they were
+made — what was chosen, why, and what was rejected instead. Kept honest: including the one
+listed as "decided against" below, and the embeddings-provider switch that reversed an earlier
+choice once its real tradeoffs showed up in production.
+
+| # | Decision | Why | Rejected instead |
+|---|---|---|---|
+| 1 | Next.js 14 App Router + Supabase (Postgres, Auth, Realtime, RLS) as the entire backend | One platform covers relational data, auth, live subscriptions, and row-level authorization — no separate API server to design, deploy, or keep in sync | A custom Node/Express API layer in front of Postgres — more moving parts for no capability this app actually needed |
+| 2 | Groq for all LLM inference (pragmatic-read generation, OCR-from-photo, the mascot chat bot, moderation triage) | Fast inference on a genuinely usable free tier, for a project with no revenue to fund a paid API from day one | OpenAI/Anthropic chat APIs — better output quality on some tasks, but no free tier that survives real traffic |
+| 3 | pgvector for semantic search, inside the same Postgres database | No second system to run, back up, or keep consistent with the primary data | A dedicated vector database (Pinecone, Weaviate, etc.) — unjustified operational overhead at this scale |
+| 4 | RLS is the actual security boundary, not the Next.js API routes | Entry/vote/follow/block/report writes go straight from the browser to Supabase; a route that *looked* like the enforcement point would be a false sense of security if RLS itself weren't sound | Funneling all writes through API routes to "check permissions in application code" — redundant with RLS and easy to let drift out of sync with it |
+| 5 | No profanity/slang filtering | Annotating rude, informal, and slang registers is the product itself — a word-list filter would produce false positives against the app's own purpose. Abuse is handled via user reports + admin review instead | Automated word-list blocking, the default choice for most community platforms |
+| 6 | Blocking enforced client-side (filtered out of fetched rows), not via RLS | A blocked user's posts stay publicly visible to everyone else; blocking only changes what the *blocker* personally sees, which is the actual product intent | RLS-level blocking — would make a blocked user's content invisible platform-wide, which is a ban, not a personal block |
+| 7 | Middleware auth check uses `getUser()`, not `getSession()` | `getUser()` re-verifies against the Supabase Auth server on every request; `getSession()` trusts a locally-decoded JWT that can still look "valid" for a session that's actually been revoked | `getSession()` — faster (no network round-trip) but capable of showing a revoked session as signed-in for up to its token lifetime |
+| 8 | Decided **against** adding SWR/React Query for client-side data caching | The product's actual requirement is that nothing ever renders stale-then-corrects — a follow count, a new comment, a notification should be right immediately. A cache-then-revalidate library's whole value proposition (instant render from a possibly-stale cache) works against that. Realtime Postgres subscriptions + optimistic local state cover the "feels instant" goal without a stale-data window | SWR/React Query — the default reach for "make repeat navigation feel faster" in most React apps, correctly identified as valuable in general, rejected specifically for this app's realtime-correctness requirement |
+| 9 | Live updates via Supabase's `postgres_changes` realtime subscriptions everywhere social state changes (follower counts, notifications, live annotations/votes/comments) | State changes made by *other* users need to appear without the viewer refreshing — this is a live community board, not a static feed | Polling on an interval — simpler, but either wastes requests polling for nothing or feels laggy waiting for the next tick |
+| 10 | Custom weighted, time-decayed engagement score (`get_top_contributors`, `0019_engagement_score.sql`) replacing a raw `reputation_score`/upvote-count sort for "Top contributors" | A raw upvote count lets someone who posted twice and got lucky outrank someone who annotates, comments, and votes daily. Modeled on Reddit/HN-style recency decay combined with Stack-Overflow-style per-action weighting (posting > annotating > commenting > voting), computed as one SQL function | Sorting by `reputation_score` directly — the original, simpler approach, replaced once it visibly rewarded the wrong behavior |
+| 11 | Semantic search embeddings: started on OpenAI (`text-embedding-3-small`), **migrated to Gemini** (`gemini-embedding-001`, truncated to 1536 dimensions via Matryoshka `outputDimensionality` so no schema migration was needed) | Checked current terms directly rather than assuming: OpenAI has no standing free tier; Cohere's free key is trial-only and explicitly disallowed in production; Jina's published free-tier numbers disagreed across sources. Gemini's free tier is both ongoing (not a one-time trial credit) and explicitly production-allowed | Staying on OpenAI (real money for a project with no revenue) or Cohere (would've meant paying the moment this stopped being a demo) |
+| 12 | Hybrid search — Postgres full-text search (`tsvector`/`ts_rank`) fused with vector similarity via Reciprocal Rank Fusion (`hybrid_search`, `0020_hybrid_search.sql`) — replacing a single cosine-similarity threshold | A fixed threshold couldn't be tuned well in Gemini's embedding space: loose enough to admit a real match, it also admitted same-register noise (a query like "I'm cooked" pulling in "I'm hungry", "I'm too sleepy" — same casual sentence shape, wrong meaning). RRF merges *rank positions* from two independent signals instead of thresholding one score, which sidesteps the tuning problem rather than chasing a better magic number. Followed Supabase's own published pattern for this exact stack; reported to move retrieval precision from ~62% (vector-only) to ~84% (hybrid + RRF) in published benchmarks | A single similarity threshold (tried first at 0.4, then 0.6, then a relative-gap heuristic) — each pass fixed one query's results while breaking another's, which is the actual signal that the fixed-threshold approach was the wrong tool, not that the number was wrong |
+| 13 | Text-to-speech via the browser's built-in `SpeechSynthesis` API | Free, no backend, no API key, ships immediately — and good enough as a first pass for "how is this pronounced" | VOICEVOX — also genuinely free (open-source), but self-hosted: it needs an always-on server, which is real infrastructure this project doesn't otherwise require. Documented as the upgrade path if browser voice quality turns out to be a real complaint, not ruled out |
+| 14 | "Card density" (how much of a card's content shows by default vs. behind a tap-to-expand) split out as its own setting, independent of color theme | The collapsed/expandable insight box was originally only reachable by switching to the all-black "Edge" theme — bundling a *layout density* preference into a *color* choice meant someone who liked Edge's information density but not its color had no way to get one without the other | Leaving density as an Edge-only behavior — simpler, but forces an unrelated tradeoff on anyone who wants just one of the two |
+| 15 | Web Push delivery via a Supabase Database Webhook (fires on `notifications` insert) calling a Next.js route, rather than a polling job | A push should fire the moment a notification is created, not on the next tick of a cron job | A scheduled job scanning for unsent notifications — adds latency and a job to keep running for no benefit over a webhook that already exists |
+
 ## Project structure
 
 ```
@@ -255,7 +280,9 @@ app/
                                      turns a new notifications row into a real push
   api/tokenize/route.ts             Kuromoji tokenization endpoint (rate-limited)
   api/entries/[id]/analyze/route.ts Groq pragmatic classification (Phase 2)
-  api/entries/[id]/embed/route.ts   OpenAI embedding for semantic search (Phase 2)
+  api/entries/[id]/embed/route.ts   Gemini embedding for hybrid search (Phase 2)
+  api/admin/backfill-embeddings/route.ts   Admin-triggered batch catch-up for entries
+                                     whose embedding is still null (see Architecture decisions)
   api/entries/assist/route.ts       Compose-time AI assist: tags, translation draft, duplicates
   api/entries/ocr/route.ts          OCR-from-photo transcription (Groq vision)
   api/reports/[id]/triage/route.ts  AI moderation-severity triage
@@ -312,7 +339,7 @@ types/database.ts                   Shared TypeScript types
 | `0001_moderation.sql` | `report_flags`, `is_admin` |
 | `0002_db_rate_limits.sql` | Postgres-trigger rate limits |
 | `0003_ai_pragmatics.sql` | Groq nuance/formality columns on entries |
-| `0004_vector_search.sql` | pgvector embedding column + `match_entries` RPC |
+| `0004_vector_search.sql` | pgvector embedding column + `match_entries` RPC (superseded by `hybrid_search` in `0020`) |
 | `0005_platform_features.sql` | bio/website, bookmarks, notifications, tag index |
 | `0006_bot.sql` | System-typed bot notifications, welcome message |
 | `0007_comments.sql` | General (non-token-pinned) comment threads |
@@ -325,16 +352,16 @@ types/database.ts                   Shared TypeScript types
 | `0014_bot_account.sql` | `is_bot` flag on `profiles` (official bot account) |
 | `0015_notification_preferences.sql` | `notification_prefs` jsonb on `profiles` + updates the four notification-producing trigger functions to check it |
 | `0016_push_subscriptions.sql` | `push_subscriptions` table (one row per subscribed browser/device), RLS scoped to the owning user |
+| `0017_default_avatar.sql` | New profiles get a random preset icon instead of a null `avatar_url`; backfills existing ones |
+| `0018_follows_realtime.sql` | Adds `user_follows` to the `supabase_realtime` publication — without this, follower counts could only ever update on a page reload, never live |
+| `0019_engagement_score.sql` | `get_top_contributors` RPC — weighted, time-decayed engagement score replacing a raw `reputation_score` sort |
+| `0020_hybrid_search.sql` | `fts` tsvector column + GIN index, and `hybrid_search` RPC (full-text + vector fused via Reciprocal Rank Fusion) |
 
 ## Roadmap
 
-- Full-text fallback search alongside semantic search
 - Media embeds in posts
 - Onboarding tour for first-time users
 - Client-side Sentry tracing (run the Sentry wizard once a real project exists)
-- Stale-while-revalidate client-side caching (SWR/React Query) for feed/search/profile data, so
-  a revisited page renders instantly from cache instead of a fresh fetch every time — the main
-  remaining lever for faster-feeling navigation on repeat visits
 
 ---
 

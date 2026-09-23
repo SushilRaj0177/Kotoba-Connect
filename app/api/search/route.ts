@@ -44,31 +44,22 @@ export async function POST(request: Request) {
     }
 
     const supabase = createClient();
-    // A single fixed floor doesn't work well in Gemini's embedding space:
-    // it clusters same-register Japanese (politeness level, sentence
-    // pattern like "I'm ___") close enough together that a floor loose
-    // enough to admit a real match (e.g. "I'm cooked" -> 詰んだ) also lets
-    // in same-pattern noise ("I'm hungry", "I'm too sleepy") sitting just
-    // below it — and a floor tight enough to exclude the noise risks
-    // cutting real matches elsewhere that just happen to score lower.
-    // Fetched loose (0.5) and re-filtered relative to the best match
-    // instead: only keep results within RELATIVE_GAP of the top
-    // similarity, which adapts to how confident the best match actually
-    // is rather than guessing one absolute number for every query.
-    const RELATIVE_GAP = 0.08;
-    const { data, error } = await supabase.rpc("match_entries", {
+    // Hybrid search (full-text keyword search + vector similarity, fused
+    // by Reciprocal Rank Fusion — see supabase/migrations/0020_hybrid_search.sql)
+    // replaces a single cosine-similarity threshold, which couldn't be
+    // tuned well in Gemini's embedding space: loose enough to admit a
+    // real match, it also admitted same-register/same-sentence-pattern
+    // noise. RRF merges rank positions from both signals instead of
+    // thresholding one score, so there's no similarity number to guess.
+    const { data, error } = await supabase.rpc("hybrid_search", {
+      query_text: query.trim(),
       query_embedding: embedding,
-      match_threshold: 0.5,
-      match_count: 15,
+      match_count: 10,
     });
 
     if (error) throw error;
 
-    const rows = (data ?? []) as { similarity: number }[];
-    const topSimilarity = rows[0]?.similarity ?? 0;
-    const results = rows.filter((r) => r.similarity >= topSimilarity - RELATIVE_GAP).slice(0, 8);
-
-    return NextResponse.json({ results });
+    return NextResponse.json({ results: data ?? [] });
   } catch (err) {
     console.error("Semantic search failed", err);
     Sentry.captureException(err);
