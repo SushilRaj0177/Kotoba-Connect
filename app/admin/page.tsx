@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import AdminQueue from "@/components/AdminQueue";
 import BotSeedPanel from "@/components/BotSeedPanel";
+import AdminUsersList from "@/components/AdminUsersList";
 import { getCurrentUser, getCurrentProfile } from "@/lib/supabase/server";
 
 export default async function AdminPage() {
@@ -23,6 +24,7 @@ export default async function AdminPage() {
           breaks the rules.
         </p>
         <BotSeedPanel />
+        <AdminUsersList />
         <AdminQueue />
       </main>
     </>
