@@ -44,10 +44,15 @@ export async function POST(request: Request) {
     }
 
     const supabase = createClient();
+    // 0.4 was tuned for OpenAI's embedding space; Gemini's clusters
+    // same-register Japanese phrases (politeness level, business/social
+    // topic) close enough together that 0.4 let through a lot of results
+    // that share a register with the query but aren't actually about the
+    // same thing. Raised until only genuinely close matches pass.
     const { data, error } = await supabase.rpc("match_entries", {
       query_embedding: embedding,
-      match_threshold: 0.4,
-      match_count: 20,
+      match_threshold: 0.6,
+      match_count: 12,
     });
 
     if (error) throw error;
