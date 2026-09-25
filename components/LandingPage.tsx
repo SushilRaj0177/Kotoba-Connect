@@ -215,7 +215,7 @@ export default async function LandingPage() {
                 key={s.title}
                 className="rounded-2xl bg-ink-bg-secondary p-5 border border-ink-border/70 shadow-sm"
               >
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-ink-accent font-display text-sm font-black text-white">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-ink-accent font-display text-sm font-black text-[rgb(var(--c-on-accent))]">
                   {i + 1}
                 </div>
                 <h3 className="mt-3 font-display text-base font-bold text-ink-text-header">{s.title}</h3>
@@ -283,7 +283,7 @@ export default async function LandingPage() {
         )}
 
         {/* Closing CTA — text-[rgb(var(--c-on-accent))], not a hardcoded
-           text-white: bg-ink-accent is a much lighter fill in dark/edge
+           text-[rgb(var(--c-on-accent))]: bg-ink-accent is a much lighter fill in dark/edge
            (needed for contrast against their dark page background), which
            flips white text on it to nearly unreadable. --c-on-accent is
            the text color each theme itself declares as correct for its

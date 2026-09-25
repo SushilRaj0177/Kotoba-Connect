@@ -46,7 +46,7 @@ export default function BoardControls({
           type="button"
           onClick={() => onSortChange("new")}
           className={`flex-1 rounded-full px-3 py-1.5 transition sm:flex-none ${
-            sortBy === "new" ? "bg-ink-accent text-white" : "text-ink-text-muted hover:text-ink-text"
+            sortBy === "new" ? "bg-ink-accent text-[rgb(var(--c-on-accent))]" : "text-ink-text-muted hover:text-ink-text"
           }`}
         >
           {t("board.sortNew")}
@@ -55,7 +55,7 @@ export default function BoardControls({
           type="button"
           onClick={() => onSortChange("popular")}
           className={`flex-1 rounded-full px-3 py-1.5 transition sm:flex-none ${
-            sortBy === "popular" ? "bg-ink-accent text-white" : "text-ink-text-muted hover:text-ink-text"
+            sortBy === "popular" ? "bg-ink-accent text-[rgb(var(--c-on-accent))]" : "text-ink-text-muted hover:text-ink-text"
           }`}
         >
           {t("board.sortPopular")}

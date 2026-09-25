@@ -25,7 +25,7 @@ export default function LanguageToggle() {
           aria-pressed={locale === opt.value}
           className={`rounded-full px-2.5 py-1 transition active:scale-90 ${
             locale === opt.value
-              ? "bg-ink-accent text-white"
+              ? "bg-ink-accent text-[rgb(var(--c-on-accent))]"
               : "text-ink-text-muted hover:text-ink-text"
           }`}
         >

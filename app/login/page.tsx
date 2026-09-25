@@ -19,7 +19,7 @@ function SubmitButton({ label, pendingLabel }: { label: string; pendingLabel: st
     <button
       type="submit"
       disabled={pending}
-      className="btn-chunky w-full rounded-2xl bg-ink-accent px-3 py-3 text-sm font-bold text-white disabled:opacity-60"
+      className="btn-chunky w-full rounded-2xl bg-ink-accent px-3 py-3 text-sm font-bold text-[rgb(var(--c-on-accent))] disabled:opacity-60"
     >
       {pending ? pendingLabel : label}
     </button>
@@ -151,7 +151,7 @@ export default function LoginPage() {
                 onClick={() => setMode("signIn")}
                 className={`flex-1 rounded-full py-2 transition ${
                   mode === "signIn"
-                    ? "bg-ink-accent text-white"
+                    ? "bg-ink-accent text-[rgb(var(--c-on-accent))]"
                     : "text-ink-text-muted hover:text-ink-text"
                 }`}
               >
@@ -162,7 +162,7 @@ export default function LoginPage() {
                 onClick={() => setMode("signUp")}
                 className={`flex-1 rounded-full py-2 transition ${
                   mode === "signUp"
-                    ? "bg-ink-accent text-white"
+                    ? "bg-ink-accent text-[rgb(var(--c-on-accent))]"
                     : "text-ink-text-muted hover:text-ink-text"
                 }`}
               >

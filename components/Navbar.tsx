@@ -64,7 +64,7 @@ export default async function Navbar({ title }: { title?: string } = {}) {
           ) : (
             <Link
               href="/login"
-              className="btn-chunky rounded-xl bg-ink-accent px-4 py-1.5 text-sm font-bold text-white"
+              className="btn-chunky rounded-xl bg-ink-accent px-4 py-1.5 text-sm font-bold text-[rgb(var(--c-on-accent))]"
             >
               {t("nav.signIn")}
             </Link>

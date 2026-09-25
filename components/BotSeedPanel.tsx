@@ -73,7 +73,7 @@ export default function BotSeedPanel() {
           type="button"
           onClick={handleSeed}
           disabled={seeding}
-          className="btn-chunky rounded-2xl bg-ink-accent px-4 py-1.5 text-xs font-bold text-white disabled:opacity-60"
+          className="btn-chunky rounded-2xl bg-ink-accent px-4 py-1.5 text-xs font-bold text-[rgb(var(--c-on-accent))] disabled:opacity-60"
         >
           {seeding ? "Posting…" : "Post bot entries"}
         </button>

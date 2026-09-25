@@ -174,7 +174,7 @@ export default function EntryComments({
           <button
             type="submit"
             disabled={submitting || !body.trim()}
-            className="btn-chunky rounded-2xl bg-ink-accent px-6 py-3 text-sm font-bold text-white disabled:opacity-60"
+            className="btn-chunky rounded-2xl bg-ink-accent px-6 py-3 text-sm font-bold text-[rgb(var(--c-on-accent))] disabled:opacity-60"
           >
             {submitting ? t("comments.posting") : t("comments.post")}
           </button>

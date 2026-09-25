@@ -25,7 +25,7 @@ export default function AvatarPicker({
             type="button"
             onClick={() => setActiveSet(i)}
             className={`flex-1 rounded-full py-1.5 transition ${
-              activeSet === i ? "bg-ink-accent text-white" : "text-ink-text-muted hover:text-ink-text"
+              activeSet === i ? "bg-ink-accent text-[rgb(var(--c-on-accent))]" : "text-ink-text-muted hover:text-ink-text"
             }`}
           >
             {t(`avatarPicker.set.${set.name}`)}

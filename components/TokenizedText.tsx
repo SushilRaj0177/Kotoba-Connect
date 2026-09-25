@@ -30,7 +30,7 @@ export default function TokenizedText({
           title={`${token.pos} · ${token.basic_form}${token.reading ? ` · ${token.reading}` : ""}`}
           className={`rounded px-0.5 transition ${
             onTokenClick ? "cursor-pointer hover:bg-ink-bg-hover" : "cursor-default"
-          } ${activeIndex === i ? "bg-ink-accent text-white hover:bg-ink-accent" : ""}`}
+          } ${activeIndex === i ? "bg-ink-accent text-[rgb(var(--c-on-accent))] hover:bg-ink-accent" : ""}`}
         >
           {readingAid === "furigana" && token.reading && KANJI_RE.test(token.surface_form) ? (
             <ruby>

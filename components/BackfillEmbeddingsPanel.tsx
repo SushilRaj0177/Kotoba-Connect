@@ -52,7 +52,7 @@ export default function BackfillEmbeddingsPanel() {
         type="button"
         onClick={handleRun}
         disabled={running}
-        className="btn-chunky mt-3 rounded-2xl bg-ink-accent px-4 py-1.5 text-xs font-bold text-white disabled:opacity-60"
+        className="btn-chunky mt-3 rounded-2xl bg-ink-accent px-4 py-1.5 text-xs font-bold text-[rgb(var(--c-on-accent))] disabled:opacity-60"
       >
         {running ? "Backfilling…" : "Run backfill"}
       </button>

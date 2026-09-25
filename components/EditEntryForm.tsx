@@ -142,7 +142,7 @@ export default function EditEntryForm({
         <button
           type="submit"
           disabled={saving}
-          className="btn-chunky rounded-xl bg-ink-accent px-4 py-2 text-xs font-bold text-white disabled:opacity-60"
+          className="btn-chunky rounded-xl bg-ink-accent px-4 py-2 text-xs font-bold text-[rgb(var(--c-on-accent))] disabled:opacity-60"
         >
           {saving ? t("settings.saving") : t("card.saveEdit")}
         </button>

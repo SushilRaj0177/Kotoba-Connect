@@ -15,7 +15,7 @@ export default function NotFound() {
         </p>
         <Link
           href="/"
-          className="btn-chunky mt-6 rounded-2xl bg-ink-accent px-6 py-3 text-sm font-bold text-white"
+          className="btn-chunky mt-6 rounded-2xl bg-ink-accent px-6 py-3 text-sm font-bold text-[rgb(var(--c-on-accent))]"
         >
           Back to the board
         </Link>

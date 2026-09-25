@@ -169,7 +169,7 @@ export default function AccountSettings({ email }: { email: string | null }) {
               <button
                 type="submit"
                 disabled={passwordSaving || !currentPassword || !newPassword}
-                className="rounded-full bg-ink-accent px-4 py-2 text-sm font-bold text-white transition active:scale-95 disabled:opacity-60"
+                className="rounded-full bg-ink-accent px-4 py-2 text-sm font-bold text-[rgb(var(--c-on-accent))] transition active:scale-95 disabled:opacity-60"
               >
                 {passwordSaving ? t("settings.saving") : t("settings.changePassword")}
               </button>

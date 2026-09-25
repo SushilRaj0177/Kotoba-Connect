@@ -252,7 +252,7 @@ export default function EntryBoard({
         <button
           type="button"
           onClick={loadNewPosts}
-          className="btn-chunky sticky top-2 z-10 flex w-full items-center justify-center gap-1.5 rounded-2xl bg-ink-accent px-4 py-2.5 text-sm font-bold text-white shadow-md animate-toast-in"
+          className="btn-chunky sticky top-2 z-10 flex w-full items-center justify-center gap-1.5 rounded-2xl bg-ink-accent px-4 py-2.5 text-sm font-bold text-[rgb(var(--c-on-accent))] shadow-md animate-toast-in"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <path d="M12 19V5M5 12l7-7 7 7" />

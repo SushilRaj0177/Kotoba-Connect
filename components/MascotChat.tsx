@@ -126,7 +126,7 @@ export default function MascotChat() {
               m.role === "user" ? (
                 <p
                   key={i}
-                  className="ml-auto max-w-[85%] rounded-2xl rounded-tr-sm bg-ink-accent px-3 py-2 text-sm text-white"
+                  className="ml-auto max-w-[85%] rounded-2xl rounded-tr-sm bg-ink-accent px-3 py-2 text-sm text-[rgb(var(--c-on-accent))]"
                 >
                   {m.content}
                 </p>
@@ -180,7 +180,7 @@ export default function MascotChat() {
             <button
               type="submit"
               disabled={sending || !input.trim()}
-              className="flex h-9 w-9 flex-none items-center justify-center rounded-full bg-ink-accent text-white disabled:opacity-50"
+              className="flex h-9 w-9 flex-none items-center justify-center rounded-full bg-ink-accent text-[rgb(var(--c-on-accent))] disabled:opacity-50"
               aria-label="Send"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">

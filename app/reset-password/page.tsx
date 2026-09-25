@@ -97,7 +97,7 @@ export default function ResetPasswordPage() {
               <button
                 type="submit"
                 disabled={saving || !password}
-                className="btn-chunky w-full rounded-2xl bg-ink-accent px-3 py-3 text-sm font-bold text-white disabled:opacity-60"
+                className="btn-chunky w-full rounded-2xl bg-ink-accent px-3 py-3 text-sm font-bold text-[rgb(var(--c-on-accent))] disabled:opacity-60"
               >
                 {saving ? t("settings.saving") : t("settings.changePassword")}
               </button>

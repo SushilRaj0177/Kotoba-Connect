@@ -57,7 +57,7 @@ export default function FollowButton({
       className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition disabled:opacity-60 ${
         following
           ? "bg-ink-bg-input text-ink-text hover:bg-ink-red/10 hover:text-ink-red"
-          : "bg-ink-accent text-white hover:opacity-90"
+          : "bg-ink-accent text-[rgb(var(--c-on-accent))] hover:opacity-90"
       }`}
     >
       {following ? t("profile.unfollow") : t("profile.follow")}

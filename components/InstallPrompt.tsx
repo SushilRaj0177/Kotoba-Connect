@@ -104,7 +104,7 @@ export default function InstallPrompt() {
           <button
             type="button"
             onClick={install}
-            className="rounded-xl bg-ink-accent px-3 py-1.5 text-xs font-bold text-white active:scale-95"
+            className="rounded-xl bg-ink-accent px-3 py-1.5 text-xs font-bold text-[rgb(var(--c-on-accent))] active:scale-95"
           >
             {t("install.action")}
           </button>
