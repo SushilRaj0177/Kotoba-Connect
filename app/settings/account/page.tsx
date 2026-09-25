@@ -1,9 +1,12 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import AccountSettings from "@/components/settings/AccountSettings";
 import SettingsSubpageHeader from "@/components/settings/SettingsSubpageHeader";
 import { getCurrentUser } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
+
+export const metadata: Metadata = { title: "Account settings", robots: { index: false, follow: false } };
 
 export default async function AccountSettingsPage() {
   const { t } = getServerTranslator();

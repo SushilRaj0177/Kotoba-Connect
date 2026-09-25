@@ -1,9 +1,19 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import EntryCard from "@/components/EntryCard";
 import EmptyState from "@/components/EmptyState";
 import { createClient, getCurrentUser } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
 import type { ContextEntry } from "@/types/database";
+
+export function generateMetadata({ params }: { params: { tag: string } }): Metadata {
+  const tag = decodeURIComponent(params.tag);
+  return {
+    title: `#${tag}`,
+    description: `Japanese sentences tagged #${tag} on Kotoba Engine.`,
+    alternates: { canonical: `/tags/${encodeURIComponent(tag)}` },
+  };
+}
 
 export default async function TagPage({ params }: { params: { tag: string } }) {
   const supabase = createClient();
@@ -35,9 +45,10 @@ export default async function TagPage({ params }: { params: { tag: string } }) {
     <>
       <Navbar title={`#${tag}`} />
       <main className="mx-auto max-w-3xl px-4 py-6 sm:px-6 lg:max-w-5xl">
-        <h1 className="mb-4 font-display text-xl font-bold text-ink-text-header">
+        {/* h2, not h1 — Navbar already renders the page's one h1 (the tag, via its title prop above) */}
+        <h2 className="mb-4 font-display text-xl font-bold text-ink-text-header">
           {t("tags.heading")} <span className="text-ink-accent">#{tag}</span>
-        </h1>
+        </h2>
 
         {!entries?.length ? (
           <EmptyState title={t("tags.empty")} description="" variant="obake" />

@@ -7,7 +7,8 @@ export default function TermsPage() {
     <>
       <Navbar title="Terms" />
       <main className="mx-auto max-w-2xl px-4 py-10 text-sm text-ink-text sm:px-6">
-        <h1 className="mb-6 text-2xl font-bold text-ink-text-header">Terms of Service</h1>
+        {/* h2, not h1 — Navbar already renders the page's one h1 ("Terms", via its title prop above) */}
+        <h2 className="mb-6 text-2xl font-bold text-ink-text-header">Terms of Service</h2>
         <p className="mb-4 text-ink-text-muted">
           Last updated: {new Date().toISOString().slice(0, 10)}
         </p>

@@ -1,8 +1,14 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import RightRail from "@/components/RightRail";
 import SearchView from "@/components/SearchView";
 import { getCurrentUser } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
+
+export const metadata: Metadata = {
+  title: "Search",
+  description: "Search Japanese sentences by meaning, not just keyword.",
+};
 
 export default async function SearchPage() {
   const { t } = getServerTranslator();

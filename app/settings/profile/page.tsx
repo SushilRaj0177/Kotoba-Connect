@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import ProfileSummaryCard from "@/components/settings/ProfileSummaryCard";
@@ -5,6 +6,8 @@ import ProfileSettingsForm from "@/components/settings/ProfileSettingsForm";
 import SettingsSubpageHeader from "@/components/settings/SettingsSubpageHeader";
 import { getCurrentUser, getCurrentProfile } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
+
+export const metadata: Metadata = { title: "Profile settings", robots: { index: false, follow: false } };
 
 export default async function ProfileSettingsPage() {
   const { t } = getServerTranslator();

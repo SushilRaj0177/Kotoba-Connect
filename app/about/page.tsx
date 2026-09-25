@@ -14,7 +14,8 @@ export default function AboutPage() {
           <Mascot size={48} mood="happy" />
           <Obake size={48} />
         </div>
-        <h1 className="mb-6 text-2xl font-bold text-ink-text-header">About Kotoba Engine</h1>
+        {/* h2, not h1 — Navbar already renders the page's one h1 ("About", via its title prop above) */}
+        <h2 className="mb-6 text-2xl font-bold text-ink-text-header">About Kotoba Engine</h2>
 
         <div className="space-y-6 text-sm leading-relaxed text-ink-text">
           <section className="space-y-2">

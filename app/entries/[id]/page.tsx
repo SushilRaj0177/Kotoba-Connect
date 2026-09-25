@@ -23,6 +23,7 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
   return {
     title,
     description,
+    alternates: { canonical: `/entries/${params.id}` },
     openGraph: { title, description, type: "article" },
     twitter: { card: "summary_large_image", title, description },
   };
@@ -58,7 +59,7 @@ export default async function EntryPage({ params }: { params: { id: string } }) 
 
   return (
     <>
-      <Navbar />
+      <Navbar title={entry.raw_japanese} />
       <main className="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:max-w-5xl">
         <Link
           href={user ? "/" : "/board"}

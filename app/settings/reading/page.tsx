@@ -1,9 +1,12 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import ReadingAidSettings from "@/components/settings/ReadingAidSettings";
 import SettingsSubpageHeader from "@/components/settings/SettingsSubpageHeader";
 import { getCurrentUser } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
+
+export const metadata: Metadata = { title: "Reading aid settings", robots: { index: false, follow: false } };
 
 export default async function ReadingAidSettingsPage() {
   const { t } = getServerTranslator();

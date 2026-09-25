@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import EntryCard from "@/components/EntryCard";
@@ -5,6 +6,8 @@ import EmptyState from "@/components/EmptyState";
 import { createClient, getCurrentUser } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
 import type { ContextEntry } from "@/types/database";
+
+export const metadata: Metadata = { title: "Bookmarks", robots: { index: false, follow: false } };
 
 export default async function BookmarksPage() {
   const supabase = createClient();

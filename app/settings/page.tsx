@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import SettingsGroup from "@/components/settings/SettingsGroup";
@@ -5,6 +6,10 @@ import SettingsRow from "@/components/settings/SettingsRow";
 import SignOutRow from "@/components/settings/SignOutRow";
 import { getCurrentUser, getCurrentProfile } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
+
+// robots: noindex — an account's own settings pages have nothing worth
+// surfacing in search results, and shouldn't be linkable/discoverable
+export const metadata: Metadata = { title: "Settings", robots: { index: false, follow: false } };
 
 // Settings used to be one long page (then, briefly, one page split into
 // tabs) — this instead makes it a short landing list of grouped rows,

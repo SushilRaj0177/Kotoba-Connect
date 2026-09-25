@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Avatar from "@/components/Avatar";
@@ -22,6 +23,28 @@ import type { ContextEntry, Profile } from "@/types/database";
 // streaks are all live data anyway, so this page was never a good caching
 // candidate to begin with.
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({ params }: { params: { username: string } }): Promise<Metadata> {
+  const supabase = createClient();
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("username, display_name, bio")
+    .eq("username", params.username)
+    .single();
+
+  if (!profile) return { title: "Profile not found" };
+
+  const title = profile.display_name?.trim() || `@${profile.username}`;
+  const description = profile.bio?.trim() || `@${profile.username} on Kotoba Engine.`;
+
+  return {
+    title,
+    description,
+    alternates: { canonical: `/u/${profile.username}` },
+    openGraph: { title, description, type: "profile" },
+    twitter: { card: "summary", title, description },
+  };
+}
 
 export default async function ProfilePage({ params }: { params: { username: string } }) {
   const supabase = createClient();
@@ -101,9 +124,11 @@ export default async function ProfilePage({ params }: { params: { username: stri
             <div className="flex min-w-0 items-start gap-3">
               <Avatar username={profile.username} avatarUrl={profile.avatar_url} size={56} />
               <div className="min-w-0 flex-1 pt-0.5">
-                <h1 className="truncate font-display text-lg font-bold text-ink-text-header sm:text-xl">
+                {/* h2, not h1 — Navbar already renders the page's one h1
+                   (the profile name, passed as its title prop below) */}
+                <h2 className="truncate font-display text-lg font-bold text-ink-text-header sm:text-xl">
                   {profile.display_name?.trim() || `@${profile.username}`}
-                </h1>
+                </h2>
                 {profile.display_name?.trim() && (
                   <p className="truncate text-sm text-ink-text-muted">@{profile.username}</p>
                 )}

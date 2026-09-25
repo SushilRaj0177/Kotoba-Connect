@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Avatar from "@/components/Avatar";
@@ -5,6 +6,11 @@ import EmptyState from "@/components/EmptyState";
 import { createClient } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
 import type { TopContributor } from "@/types/database";
+
+export const metadata: Metadata = {
+  title: "Leaderboard",
+  description: "The community's top contributors, ranked by a weighted, time-decayed engagement score.",
+};
 
 export default async function LeaderboardPage() {
   const supabase = createClient();

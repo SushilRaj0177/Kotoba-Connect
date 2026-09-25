@@ -1,9 +1,12 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import NotificationSettings from "@/components/settings/NotificationSettings";
 import SettingsSubpageHeader from "@/components/settings/SettingsSubpageHeader";
 import { getCurrentUser, getCurrentProfile } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
+
+export const metadata: Metadata = { title: "Notification settings", robots: { index: false, follow: false } };
 
 export default async function NotificationSettingsPage() {
   const { t } = getServerTranslator();

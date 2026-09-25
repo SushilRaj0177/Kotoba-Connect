@@ -8,7 +8,8 @@ export default function NotFound() {
       <Navbar title="Not found" />
       <main className="mx-auto flex max-w-md flex-col items-center px-6 py-20 text-center">
         <Obake size={96} />
-        <h1 className="mt-5 font-display text-2xl font-bold text-ink-text-header">Page not found</h1>
+        {/* h2, not h1 — Navbar already renders the page's one h1 ("Not found", via its title prop above) */}
+        <h2 className="mt-5 font-display text-2xl font-bold text-ink-text-header">Page not found</h2>
         <p className="mt-2 text-sm text-ink-text-muted">
           Whatever you were looking for isn't here — it may have been moved or removed.
         </p>

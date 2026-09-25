@@ -26,16 +26,22 @@ export default async function Navbar({ title }: { title?: string } = {}) {
           <span className="font-display text-2xl font-black text-ink-accent">言葉</span>
         </Link>
 
-        {/* Balances the toggles/auth cluster on the right — every reference
-            app anchors something on both sides of its header. The mascot
-            next to the label is what keeps this from reading as a bare
-            document title. */}
-        <span className="hidden items-center gap-2 md:flex">
-          <Mascot size={26} />
+        {/* Every page needs exactly one real <h1> for accessibility/SEO —
+           this used to be a plain <span>, hidden below the md breakpoint
+           entirely, which meant most pages (board, search, leaderboard,
+           settings, an entry...) had no heading of any kind on mobile.
+           sr-only keeps it present and announced to screen readers/crawlers
+           at every width; md:not-sr-only only changes how it's *displayed*
+           once there's room for the mascot + label treatment, it doesn't
+           add a second element. Balances the toggles/auth cluster on the
+           right — every reference app anchors something on both sides of
+           its header. */}
+        <h1 className="sr-only md:not-sr-only md:flex md:items-center md:gap-2">
+          <Mascot size={26} className="hidden md:block" />
           <span className="truncate font-display text-lg font-extrabold text-ink-text-header">
             {title ?? t("nav.home")}
           </span>
-        </span>
+        </h1>
 
         {/* Tightened from a flat gap-2.5: at the narrowest phone widths this
            row's own content (logo + 4 controls) was already right at the
