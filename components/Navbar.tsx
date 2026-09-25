@@ -9,8 +9,11 @@ import Mascot from "@/components/Mascot";
 
 export default async function Navbar({ title }: { title?: string } = {}) {
   const { t } = getServerTranslator();
-  const user = await getCurrentUser();
-  const profile = user ? await getCurrentProfile() : null;
+  // getCurrentProfile() internally awaits the same cached getCurrentUser()
+  // call and returns null itself when signed out — no need to gate it on
+  // `user` here first, which just serialized two round trips on every
+  // single page (Navbar renders on all of them).
+  const [user, profile] = await Promise.all([getCurrentUser(), getCurrentProfile()]);
   const username = profile?.username ?? null;
   const isAdmin = !!profile?.is_admin;
 

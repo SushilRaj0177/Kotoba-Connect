@@ -9,6 +9,7 @@ import EmptyState from "@/components/EmptyState";
 import { EntryListSkeleton } from "@/components/Skeletons";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { useBlockedIds } from "@/lib/use-blocked-ids";
+import { ENTRY_WITH_PROFILE_COLUMNS } from "@/lib/entry-columns";
 
 const PAGE_SIZE = 30;
 
@@ -94,7 +95,7 @@ export default function EntryBoard({
 
     const { data, error: fetchError } = await supabase
       .from("context_entries")
-      .select("*, profiles!context_entries_user_id_fkey(username, display_name, avatar_url, is_bot)")
+      .select(ENTRY_WITH_PROFILE_COLUMNS)
       .order("created_at", { ascending: false })
       .range(0, PAGE_SIZE - 1);
 
@@ -104,7 +105,7 @@ export default function EntryBoard({
       return;
     }
 
-    const { enriched, counts } = await enrichBatch((data ?? []) as ContextEntry[]);
+    const { enriched, counts } = await enrichBatch((data ?? []) as unknown as ContextEntry[]);
     setEntries(enriched);
     setCommentCounts(counts);
     setHasMore((data?.length ?? 0) >= PAGE_SIZE);
@@ -121,7 +122,7 @@ export default function EntryBoard({
 
     const { data, error: fetchError } = await supabase
       .from("context_entries")
-      .select("*, profiles!context_entries_user_id_fkey(username, display_name, avatar_url, is_bot)")
+      .select(ENTRY_WITH_PROFILE_COLUMNS)
       .order("created_at", { ascending: false })
       .range(entries.length, entries.length + PAGE_SIZE - 1);
 
@@ -132,7 +133,7 @@ export default function EntryBoard({
     }
 
     const existingIds = new Set(entries.map((e) => e.id));
-    const freshRows = (data as ContextEntry[]).filter((e) => !existingIds.has(e.id));
+    const freshRows = (data as unknown as ContextEntry[]).filter((e) => !existingIds.has(e.id));
     const { enriched, counts } = await enrichBatch(freshRows);
 
     setEntries((prev) => [...prev, ...enriched]);

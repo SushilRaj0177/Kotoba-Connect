@@ -3,6 +3,7 @@ import EntryBoard from "@/components/EntryBoard";
 import RightRail from "@/components/RightRail";
 import { createClient, getCurrentUser, getCurrentProfile } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
+import { ENTRY_WITH_PROFILE_COLUMNS } from "@/lib/entry-columns";
 import type { ContextEntry } from "@/types/database";
 
 // The board itself — shared by "/" (shown directly to signed-in visitors)
@@ -14,20 +15,19 @@ export default async function BoardView() {
   const { t } = getServerTranslator();
   const supabase = createClient();
 
-  // The entries query doesn't depend on who's viewing, so it doesn't need
-  // to wait behind the auth check — kick both off together instead of
-  // paying for two round trips back to back. (getCurrentProfile still
-  // waits on user since it needs the id, but that's a single indexed
-  // lookup, not the page's bottleneck.)
-  const [user, { data: initialData }] = await Promise.all([
+  // None of these three depend on each other's result (getCurrentProfile
+  // internally awaits the same cached getCurrentUser() call rather than
+  // needing it passed in, and returns null itself when signed out) — all
+  // three go out together instead of paying for round trips back to back.
+  const [user, profile, { data: initialData }] = await Promise.all([
     getCurrentUser(),
+    getCurrentProfile(),
     supabase
       .from("context_entries")
-      .select("*, profiles!context_entries_user_id_fkey(username, display_name, avatar_url, is_bot)")
+      .select(ENTRY_WITH_PROFILE_COLUMNS)
       .order("created_at", { ascending: false })
       .range(0, 29), // matches EntryBoard's PAGE_SIZE (30) so "load more" continues seamlessly
   ]);
-  const profile = user ? await getCurrentProfile() : null;
   const username = profile?.username ?? null;
   const avatarUrl = profile?.avatar_url ?? null;
 
@@ -63,7 +63,7 @@ export default async function BoardView() {
         ...e,
         has_voted: initialVotedIds.has(e.id),
         is_bookmarked: initialBookmarkedIds.has(e.id),
-      }) as ContextEntry
+      }) as unknown as ContextEntry
   );
 
   return (

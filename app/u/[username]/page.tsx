@@ -1,3 +1,4 @@
+import { cache } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Navbar from "@/components/Navbar";
@@ -10,6 +11,7 @@ import FollowerCount from "@/components/FollowerCount";
 import ProfileBadges from "@/components/ProfileBadges";
 import { createClient, getCurrentUser } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
+import { ENTRY_WITH_PROFILE_COLUMNS } from "@/lib/entry-columns";
 import type { ContextEntry, Profile } from "@/types/database";
 
 // Force this route to render fresh on every request instead of being
@@ -24,13 +26,16 @@ import type { ContextEntry, Profile } from "@/types/database";
 // candidate to begin with.
 export const dynamic = "force-dynamic";
 
-export async function generateMetadata({ params }: { params: { username: string } }): Promise<Metadata> {
+// Shared by generateMetadata and the page body below — without cache(),
+// the same profiles row was fetched twice per request.
+const getProfileByUsername = cache(async (username: string) => {
   const supabase = createClient();
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("username, display_name, bio")
-    .eq("username", params.username)
-    .single();
+  const { data } = await supabase.from("profiles").select("*").eq("username", username).single();
+  return data;
+});
+
+export async function generateMetadata({ params }: { params: { username: string } }): Promise<Metadata> {
+  const profile = await getProfileByUsername(params.username);
 
   if (!profile) return { title: "Profile not found" };
 
@@ -52,16 +57,15 @@ export default async function ProfilePage({ params }: { params: { username: stri
 
   // Independent of each other — the profile lookup doesn't need to know
   // who's viewing, so don't make it wait behind the auth check.
-  const [user, { data: profile }] = await Promise.all([
-    getCurrentUser(),
-    supabase.from("profiles").select("*").eq("username", params.username).single(),
-  ]);
+  // getProfileByUsername is cache()'d, so this reuses generateMetadata's
+  // fetch above instead of hitting the DB a second time for the same row.
+  const [user, profile] = await Promise.all([getCurrentUser(), getProfileByUsername(params.username)]);
 
   if (!profile) notFound();
 
   const { data: entries } = await supabase
     .from("context_entries")
-    .select("*, profiles!context_entries_user_id_fkey(username, display_name, avatar_url)")
+    .select(ENTRY_WITH_PROFILE_COLUMNS)
     .eq("user_id", profile.id)
     .order("created_at", { ascending: false })
     .limit(50);
@@ -225,7 +229,7 @@ export default async function ProfilePage({ params }: { params: { username: stri
             {entries.map((entry) => (
               <div key={entry.id} className="mb-4 break-inside-avoid">
                 <EntryCard
-                  entry={entry as ContextEntry}
+                  entry={entry as unknown as ContextEntry}
                   currentUserId={user?.id ?? null}
                   bookmarked={bookmarkedIds.has(entry.id)}
                 />

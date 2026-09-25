@@ -5,6 +5,7 @@ import EntryCard from "@/components/EntryCard";
 import EmptyState from "@/components/EmptyState";
 import { createClient, getCurrentUser } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
+import { ENTRY_WITH_PROFILE_COLUMNS } from "@/lib/entry-columns";
 import type { ContextEntry } from "@/types/database";
 
 export const metadata: Metadata = { title: "Bookmarks", robots: { index: false, follow: false } };
@@ -18,7 +19,7 @@ export default async function BookmarksPage() {
 
   const { data: bookmarks } = await supabase
     .from("bookmarks")
-    .select("entry_id, context_entries(*, profiles!context_entries_user_id_fkey(username, display_name, avatar_url))")
+    .select(`entry_id, context_entries(${ENTRY_WITH_PROFILE_COLUMNS})`)
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 

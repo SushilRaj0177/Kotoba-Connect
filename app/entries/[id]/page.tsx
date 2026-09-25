@@ -1,19 +1,29 @@
+import { cache } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import EntryDetail from "@/components/EntryDetail";
 import { createClient, getCurrentUser } from "@/lib/supabase/server";
+import { ENTRY_WITH_PROFILE_COLUMNS } from "@/lib/entry-columns";
 import type { ContextEntry } from "@/types/database";
 import { getServerTranslator } from "@/lib/i18n/server";
 
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+// Shared by generateMetadata and the page body below — without cache(),
+// the same context_entries row was fetched twice per request (once for
+// the title/description, once for the actual page content).
+const getEntryById = cache(async (id: string) => {
   const supabase = createClient();
-  const { data: entry } = await supabase
+  const { data } = await supabase
     .from("context_entries")
-    .select("raw_japanese, primary_translation")
-    .eq("id", params.id)
+    .select(ENTRY_WITH_PROFILE_COLUMNS)
+    .eq("id", id)
     .single();
+  return data;
+});
+
+export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+  const entry = await getEntryById(params.id);
 
   if (!entry) return { title: "Entry not found" };
 
@@ -35,14 +45,9 @@ export default async function EntryPage({ params }: { params: { id: string } }) 
 
   // Independent of each other — fetching the entry doesn't need to know
   // who's viewing, so don't make it wait behind the auth check.
-  const [user, { data: entry }] = await Promise.all([
-    getCurrentUser(),
-    supabase
-      .from("context_entries")
-      .select("*, profiles!context_entries_user_id_fkey(username, display_name, avatar_url, is_bot)")
-      .eq("id", params.id)
-      .single(),
-  ]);
+  // getEntryById is cache()'d, so this reuses generateMetadata's fetch
+  // above instead of hitting the DB a second time for the same row.
+  const [user, entry] = await Promise.all([getCurrentUser(), getEntryById(params.id)]);
 
   if (!entry) notFound();
 
@@ -67,7 +72,7 @@ export default async function EntryPage({ params }: { params: { id: string } }) 
         >
           {t("detail.back")}
         </Link>
-        <EntryDetail entry={entry as ContextEntry} userId={user?.id ?? null} bookmarked={bookmarked} />
+        <EntryDetail entry={entry as unknown as ContextEntry} userId={user?.id ?? null} bookmarked={bookmarked} />
       </main>
     </>
   );

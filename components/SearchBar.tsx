@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { ContextEntry } from "@/types/database";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { ENTRY_WITH_PROFILE_COLUMNS } from "@/lib/entry-columns";
 
 const DEBOUNCE_MS = 450;
 // Below this, a semantic-search embedding call is mostly noise (a couple
@@ -64,7 +65,7 @@ export default function SearchBar({
         const [{ data: fullEntries }, { data: votes }, { data: saves }] = await Promise.all([
           supabase
             .from("context_entries")
-            .select("*, profiles!context_entries_user_id_fkey(username, display_name, avatar_url, is_bot)")
+            .select(ENTRY_WITH_PROFILE_COLUMNS)
             .in("id", ids),
           userId
             ? supabase.from("entry_upvotes").select("entry_id").eq("user_id", userId).in("entry_id", ids)
@@ -83,7 +84,7 @@ export default function SearchBar({
           .sort((a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0))
           .map((e) => ({ ...e, has_voted: votedIds.has(e.id), is_bookmarked: bookmarkedIds.has(e.id) }));
 
-        onResults(sorted as ContextEntry[]);
+        onResults(sorted as unknown as ContextEntry[]);
       } catch {
         if (requestId !== requestIdRef.current) return;
         setNotice("Couldn't reach the search endpoint.");
