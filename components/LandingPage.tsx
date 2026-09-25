@@ -282,10 +282,16 @@ export default async function LandingPage() {
           </section>
         )}
 
-        {/* Closing CTA */}
-        <section className="bg-seigaiha mt-16 rounded-2xl bg-ink-accent p-8 text-center text-white sm:mt-20">
+        {/* Closing CTA — text-[rgb(var(--c-on-accent))], not a hardcoded
+           text-white: bg-ink-accent is a much lighter fill in dark/edge
+           (needed for contrast against their dark page background), which
+           flips white text on it to nearly unreadable. --c-on-accent is
+           the text color each theme itself declares as correct for its
+           own accent fill (near-black in dark/edge, white in light) —
+           same fix already applied to RightRail's tip box. */}
+        <section className="bg-seigaiha mt-16 rounded-2xl bg-ink-accent p-8 text-center text-[rgb(var(--c-on-accent))] sm:mt-20">
           <h2 className="font-display text-xl font-black sm:text-2xl">{t("landing.closingTitle")}</h2>
-          <p className="mx-auto mt-2 max-w-md text-sm text-white/90 sm:text-base">{t("landing.closingBody")}</p>
+          <p className="mx-auto mt-2 max-w-md text-sm text-[rgb(var(--c-on-accent)/0.85)] sm:text-base">{t("landing.closingBody")}</p>
           <Link
             href="/login"
             className="mt-5 inline-block rounded-2xl bg-white px-6 py-3 text-sm font-bold text-ink-accent shadow-md transition hover:scale-[1.03] sm:text-base"
