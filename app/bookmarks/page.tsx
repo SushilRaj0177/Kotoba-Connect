@@ -9,6 +9,14 @@ import { ENTRY_WITH_PROFILE_COLUMNS } from "@/lib/entry-columns";
 import type { ContextEntry } from "@/types/database";
 
 export const metadata: Metadata = { title: "Bookmarks", robots: { index: false, follow: false } };
+// Experiment: Vercel's default Node.js serverless functions have real
+// cold-start overhead (spinning up a fresh container before your code even
+// starts) — Edge Runtime functions don't, which is a large part of why
+// "instant"-feeling apps feel that way. Everything this page touches
+// (@supabase/ssr, next/headers) is edge-compatible. Testing on this one
+// page first, since it's the one specifically reported as slow, before
+// rolling it out further.
+export const runtime = "edge";
 
 export default async function BookmarksPage() {
   const supabase = createClient();

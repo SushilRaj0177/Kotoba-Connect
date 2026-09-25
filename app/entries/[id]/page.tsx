@@ -9,6 +9,11 @@ import { ENTRY_WITH_PROFILE_COLUMNS } from "@/lib/entry-columns";
 import type { ContextEntry } from "@/types/database";
 import { getServerTranslator } from "@/lib/i18n/server";
 
+// Edge Runtime: no cold-start container spin-up like Vercel's default
+// Node.js functions pay on every infrequently-hit route — this page only
+// touches @supabase/ssr + next/headers, both edge-compatible.
+export const runtime = "edge";
+
 // Shared by generateMetadata and the page body below — without cache(),
 // the same context_entries row was fetched twice per request (once for
 // the title/description, once for the actual page content).

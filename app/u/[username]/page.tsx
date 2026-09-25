@@ -14,6 +14,11 @@ import { getServerTranslator } from "@/lib/i18n/server";
 import { ENTRY_WITH_PROFILE_COLUMNS } from "@/lib/entry-columns";
 import type { ContextEntry, Profile } from "@/types/database";
 
+// Edge Runtime: no cold-start container spin-up like Vercel's default
+// Node.js functions pay on every infrequently-hit route — this page only
+// touches @supabase/ssr + next/headers, both edge-compatible.
+export const runtime = "edge";
+
 // Force this route to render fresh on every request instead of being
 // eligible for Next.js's static/ISR caching. A profile page cached as
 // static HTML can end up referencing a CSS chunk hash from whatever build

@@ -1,5 +1,10 @@
 import Navbar from "@/components/Navbar";
 
+// Edge Runtime: no cold-start container spin-up like Vercel's default
+// Node.js functions pay on every infrequently-hit route — this page only
+// touches @supabase/ssr + next/headers, both edge-compatible.
+export const runtime = "edge";
+
 export const metadata = { title: "Privacy Policy — Kotoba Engine" };
 
 export default function PrivacyPage() {

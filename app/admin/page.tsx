@@ -7,6 +7,11 @@ import BackfillEmbeddingsPanel from "@/components/BackfillEmbeddingsPanel";
 import AdminUsersList from "@/components/AdminUsersList";
 import { getCurrentUser, getCurrentProfile } from "@/lib/supabase/server";
 
+// Edge Runtime: no cold-start container spin-up like Vercel's default
+// Node.js functions pay on every infrequently-hit route — this page only
+// touches @supabase/ssr + next/headers, both edge-compatible.
+export const runtime = "edge";
+
 // robots: noindex — admin-only, nothing here should ever surface in search results
 export const metadata: Metadata = { title: "Moderation", robots: { index: false, follow: false } };
 

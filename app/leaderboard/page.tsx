@@ -7,6 +7,11 @@ import { createClient } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
 import type { TopContributor } from "@/types/database";
 
+// Edge Runtime: no cold-start container spin-up like Vercel's default
+// Node.js functions pay on every infrequently-hit route — this page only
+// touches @supabase/ssr + next/headers, both edge-compatible.
+export const runtime = "edge";
+
 export const metadata: Metadata = {
   title: "Leaderboard",
   description: "The community's top contributors, ranked by a weighted, time-decayed engagement score.",

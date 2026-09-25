@@ -3,6 +3,11 @@ import { Obake, Kitsune, Neko } from "@/components/mascots/candidates";
 import { MASCOT_CATALOG } from "@/lib/mascot-registry";
 import ThemeToggle from "@/components/theme/ThemeToggle";
 
+// Edge Runtime: no cold-start container spin-up like Vercel's default
+// Node.js functions pay on every infrequently-hit route — this page only
+// touches @supabase/ssr + next/headers, both edge-compatible.
+export const runtime = "edge";
+
 const RENDER: Record<string, (props: { size?: number }) => React.ReactElement> = {
   kokeshi: Mascot,
   obake: Obake,

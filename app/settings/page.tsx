@@ -7,6 +7,11 @@ import SignOutRow from "@/components/settings/SignOutRow";
 import { getCurrentUser, getCurrentProfile } from "@/lib/supabase/server";
 import { getServerTranslator } from "@/lib/i18n/server";
 
+// Edge Runtime: no cold-start container spin-up like Vercel's default
+// Node.js functions pay on every infrequently-hit route — this page only
+// touches @supabase/ssr + next/headers, both edge-compatible.
+export const runtime = "edge";
+
 // robots: noindex — an account's own settings pages have nothing worth
 // surfacing in search results, and shouldn't be linkable/discoverable
 export const metadata: Metadata = { title: "Settings", robots: { index: false, follow: false } };

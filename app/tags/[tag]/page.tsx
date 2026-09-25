@@ -7,6 +7,11 @@ import { getServerTranslator } from "@/lib/i18n/server";
 import { ENTRY_WITH_PROFILE_COLUMNS } from "@/lib/entry-columns";
 import type { ContextEntry } from "@/types/database";
 
+// Edge Runtime: no cold-start container spin-up like Vercel's default
+// Node.js functions pay on every infrequently-hit route — this page only
+// touches @supabase/ssr + next/headers, both edge-compatible.
+export const runtime = "edge";
+
 export function generateMetadata({ params }: { params: { tag: string } }): Metadata {
   const tag = decodeURIComponent(params.tag);
   return {
