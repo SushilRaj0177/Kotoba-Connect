@@ -124,7 +124,7 @@ export default async function LandingPage() {
           <div className="mt-2 flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/login"
-              className="btn-chunky rounded-2xl px-6 py-3 text-sm font-bold text-white sm:text-base"
+              className="btn-chunky rounded-2xl px-6 py-3 text-sm font-bold text-[rgb(var(--c-on-accent))] sm:text-base"
             >
               {t("landing.ctaSignIn")}
             </Link>

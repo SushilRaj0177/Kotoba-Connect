@@ -37,7 +37,7 @@ export default function PushNotificationRow() {
             className={`rounded-xl px-3.5 py-2 text-xs font-bold transition active:scale-95 disabled:opacity-60 ${
               status === "subscribed"
                 ? "border border-ink-border text-ink-text hover:bg-ink-bg-hover"
-                : "btn-chunky text-white"
+                : "btn-chunky text-[rgb(var(--c-on-accent))]"
             }`}
           >
             {busy

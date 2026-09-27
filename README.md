@@ -1,5 +1,11 @@
 # 言葉 Kotoba Engine — Kotoba Connect
 
+[![CI](https://github.com/SushilRaj0177/Kotoba-Connect/actions/workflows/ci.yml/badge.svg)](https://github.com/SushilRaj0177/Kotoba-Connect/actions/workflows/ci.yml)
+![Next.js 14](https://img.shields.io/badge/Next.js-14-black)
+![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)
+![Supabase](https://img.shields.io/badge/Supabase-Postgres%20%2B%20pgvector-3ecf8e)
+![License](https://img.shields.io/badge/license-MIT-lightgrey)
+
 A community board for annotating the **pragmatic, high-context meaning** behind real
 Japanese text — the politeness registers, implicit social cues, and slang that dictionary
 apps miss. Users post real Japanese sentences, the app tokenizes them into morphological
@@ -208,6 +214,18 @@ without them.
 5. If using Google sign-in, update the Supabase OAuth redirect URL and Google Cloud OAuth
    client's authorized redirect URI to your production domain.
 
+## Quality & CI
+
+- GitHub Actions (`.github/workflows/ci.yml`) runs on every push/PR to `main`: TypeScript
+  type-checking (`tsc --noEmit`), ESLint (`next/core-web-vitals`), and a full production build —
+  the same three checks required manually before every commit during development.
+- Every page/component route runs on either Vercel's Edge Runtime or Node.js serverless
+  functions depending on what it needs (see Architecture decisions below); CI's build step
+  exercises both.
+- Errors are caught at two levels: `app/error.tsx` recovers a single crashed page without losing
+  the surrounding nav (reported to Sentry, with a retry button), while `app/global-error.tsx` is
+  the last-resort fallback if the root layout itself throws.
+
 ## Security notes
 
 - Entry/annotation/comment/vote/follow/block/report writes go directly from the browser to
@@ -253,6 +271,7 @@ choice once its real tradeoffs showed up in production.
 | 13 | Text-to-speech via the browser's built-in `SpeechSynthesis` API | Free, no backend, no API key, ships immediately — and good enough as a first pass for "how is this pronounced" | VOICEVOX — also genuinely free (open-source), but self-hosted: it needs an always-on server, which is real infrastructure this project doesn't otherwise require. Documented as the upgrade path if browser voice quality turns out to be a real complaint, not ruled out |
 | 14 | "Card density" (how much of a card's content shows by default vs. behind a tap-to-expand) split out as its own setting, independent of color theme | The collapsed/expandable insight box was originally only reachable by switching to the all-black "Edge" theme — bundling a *layout density* preference into a *color* choice meant someone who liked Edge's information density but not its color had no way to get one without the other | Leaving density as an Edge-only behavior — simpler, but forces an unrelated tradeoff on anyone who wants just one of the two |
 | 15 | Web Push delivery via a Supabase Database Webhook (fires on `notifications` insert) calling a Next.js route, rather than a polling job | A push should fire the moment a notification is created, not on the next tick of a cron job | A scheduled job scanning for unsent notifications — adds latency and a job to keep running for no benefit over a webhook that already exists |
+| 16 | CI builds against fake `NEXT_PUBLIC_SUPABASE_*` placeholders (`.github/workflows/ci.yml`) rather than a real Supabase project | No route is statically prerendered against live data (everything data-backed runs on Edge/dynamic rendering at request time), so type-checking, linting, and a full `next build` all pass without any real credentials — meaning CI needs zero secrets and can't leak one | Provisioning a dedicated CI-only Supabase project — real infrastructure to maintain for a check that doesn't actually need live data |
 
 ## Project structure
 

@@ -50,7 +50,7 @@ export default function BotSeedPanel() {
       <h2 className="font-display text-base font-bold text-ink-text-header">Bot account</h2>
       <p className="mt-1 text-sm text-ink-text-muted">
         Posts starter Japanese sentences (with real AI nuance + embeddings) as the official bot so the board
-        doesn't feel empty. Run setup once, then seed batches whenever.
+        doesn&apos;t feel empty. Run setup once, then seed batches whenever.
       </p>
       <div className="mt-3 flex flex-wrap items-center gap-2">
         <button
