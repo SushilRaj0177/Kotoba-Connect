@@ -75,8 +75,29 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const theme = getServerTheme();
   const density = getServerDensity();
 
+  // Supabase (auth + data + realtime) is hit on essentially every page —
+  // without this, the browser only starts DNS/TLS for it after parsing
+  // the page down to the first fetch call. Warming that connection in
+  // parallel with the initial HTML parse shaves real time off the first
+  // request on every single page load, for free.
+  const supabaseOrigin = (() => {
+    try {
+      return new URL(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").origin;
+    } catch {
+      return null;
+    }
+  })();
+
   return (
     <html lang={locale} data-theme={theme} className={`${inter.variable} ${zenMaru.variable}`}>
+      <head>
+        {supabaseOrigin && (
+          <>
+            <link rel="preconnect" href={supabaseOrigin} crossOrigin="anonymous" />
+            <link rel="dns-prefetch" href={supabaseOrigin} />
+          </>
+        )}
+      </head>
       <body className="flex min-h-screen bg-ink-bg">
         <ThemeProvider initialTheme={theme}>
         <DensityProvider initialDensity={density}>

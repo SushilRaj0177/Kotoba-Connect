@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { memo, useState } from "react";
 import Link from "next/link";
 import type { ContextEntry } from "@/types/database";
 import FormalityBadge from "@/components/FormalityBadge";
@@ -22,7 +22,13 @@ import { useTranslate } from "@/lib/use-translate";
 import { useTheme } from "@/components/theme/ThemeProvider";
 import { useDensity } from "@/components/theme/DensityProvider";
 
-export default function EntryCard({
+// Memoized: EntryBoard's realtime handlers already keep entry/commentCount
+// prop values stable for every row *except* the one that actually changed
+// (see the postgres_changes UPDATE handler there), so without this, every
+// card in the list was still re-rendering on every realtime event anywhere
+// on the board — any upvote or comment, by anyone — not just the one card
+// it was about.
+function EntryCard({
   entry,
   currentUserId,
   bookmarked = false,
@@ -343,3 +349,5 @@ export default function EntryCard({
     </article>
   );
 }
+
+export default memo(EntryCard);
