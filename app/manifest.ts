@@ -5,7 +5,7 @@ import type { MetadataRoute } from "next";
 // manifest's icon URLs are plain strings, and installed PWAs / Chrome's
 // tab-switcher cache icons by that exact URL — so without a version query
 // param here, a new icon.tsx never gets picked up on existing installs.
-const ICON_VERSION = "2";
+const ICON_VERSION = "3";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {

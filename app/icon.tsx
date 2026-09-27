@@ -8,6 +8,22 @@ import { ImageResponse } from "next/og";
 export const size = { width: 512, height: 512 };
 export const contentType = "image/png";
 
+// Forced dynamic instead of Next's default for this route (statically
+// generated once at build time, then served immutably forever behind
+// an auto-hashed URL). That default is fine in theory — a new build
+// produces a new hash, so the old cached response should never be
+// requested again — but in practice this route got stuck serving the
+// old artwork through a full, confirmed-successful deploy (checked in
+// an incognito tab, past any client-side cache), which only a
+// build-time-baked static asset that didn't actually get regenerated
+// explains. Forcing this to render per-request sidesteps that build
+// caching path entirely, trading a negligible bit of latency on a
+// route each browser only hits once per (re)install for actually being
+// able to ship an icon change. (Passing a custom Cache-Control via
+// ImageResponse's `headers` option does nothing here — Next overrides
+// it with its own header for this file-convention route regardless.)
+export const dynamic = "force-dynamic";
+
 // The app's actual character — Kokeshi (components/Mascot.tsx), the
 // wooden-doll co-mascot — bolted down into an icon-legible mark, instead
 // of an abstract shape that could belong to any app. On a home screen
