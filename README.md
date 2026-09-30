@@ -217,8 +217,19 @@ without them.
 ## Quality & CI
 
 - GitHub Actions (`.github/workflows/ci.yml`) runs on every push/PR to `main`: TypeScript
-  type-checking (`tsc --noEmit`), ESLint (`next/core-web-vitals`), and a full production build —
-  the same three checks required manually before every commit during development.
+  type-checking (`tsc --noEmit`), ESLint (`next/core-web-vitals`), unit tests (Vitest), and a
+  full production build.
+- Unit tests (`npm test`, `lib/__tests__/`) cover the pure logic most likely to break silently:
+  EN/JA translation parity (every key present in both languages, with matching `{placeholders}`),
+  the Gemini embeddings client (L2 normalization, task types, 1536-dim truncation, API key sent
+  in a header rather than the URL, graceful `null` on failure — all against a mocked `fetch`),
+  spam heuristics (links/floods blocked, rude-register Japanese allowed), katakana→hiragana
+  furigana conversion, avatar preset tokens, and rate-limit client-IP extraction.
+- Security headers (`next.config.js`): `X-Frame-Options`, `X-Content-Type-Options`,
+  `Referrer-Policy`, and `Permissions-Policy` on every response, `X-Powered-By` removed. CSP is
+  deliberately not set — see the comment there for why.
+- All decorative motion (mascot idle loops, loading pulses, smooth scrolling) is disabled under
+  the OS-level `prefers-reduced-motion` setting.
 - Every page/component route runs on either Vercel's Edge Runtime or Node.js serverless
   functions depending on what it needs (see Architecture decisions below); CI's build step
   exercises both.
