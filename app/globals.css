@@ -541,3 +541,21 @@ rt {
     scroll-behavior: auto !important;
   }
 }
+
+/* Mobile browsers (iOS Safari especially) auto-zoom the whole page when
+   you focus a form field whose text is under 16px, and don't zoom back
+   out afterwards. Most inputs here don't set a size and inherit it from
+   their container, so any that sit inside a text-xs block land at ~14px
+   and trigger it. In @layer base, so an explicit text-* utility on an
+   input still wins; for everything that inherits, this is "inherit, but
+   never below 16px" — identical rendering for anything already >= 16px.
+   Touch-only, since desktop browsers don't do this. */
+@layer base {
+  @media (pointer: coarse) {
+    input,
+    textarea,
+    select {
+      font-size: max(16px, 1em);
+    }
+  }
+}
