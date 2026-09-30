@@ -1,7 +1,27 @@
 const { withSentryConfig } = require("@sentry/nextjs/config");
 
+// Baseline security headers on every response. No Content-Security-Policy
+// on purpose: a CSP strict enough to matter needs nonces threaded through
+// Next's inline scripts plus an allowlist for Supabase REST/realtime
+// websockets, and getting either wrong silently breaks auth or live
+// updates in production — not worth it without a way to test it live.
+const securityHeaders = [
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  // Nothing legitimately embeds this app in an iframe; blocks clickjacking.
+  { key: "X-Frame-Options", value: "DENY" },
+  // camera/microphone left at the browser default: the photo-to-text
+  // flow uses a file input, and speech is output-only, but restricting
+  // them isn't worth breaking a future feature over.
+  { key: "Permissions-Policy", value: "geolocation=(), payment=(), usb=(), interest-cohort=()" },
+];
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  poweredByHeader: false,
+  async headers() {
+    return [{ source: "/:path*", headers: securityHeaders }];
+  },
   experimental: {
     instrumentationHook: true,
     // kuromoji resolves its dictionary path at runtime via

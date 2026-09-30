@@ -42,7 +42,8 @@ export default function MascotChat() {
   const { entry: entryContext } = useEntryChatContext();
 
   useEffect(() => {
-    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: reduceMotion ? "auto" : "smooth" });
   }, [messages, sending]);
 
   // Not useful mid-conversation on a profile page (self, bot, or anyone
