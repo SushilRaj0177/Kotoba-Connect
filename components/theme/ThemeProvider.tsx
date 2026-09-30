@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
-import { THEME_COOKIE, type Theme } from "@/lib/theme-constants";
+import { THEME_COLORS, THEME_COOKIE, type Theme } from "@/lib/theme-constants";
 
 interface ThemeContextValue {
   theme: Theme;
@@ -27,6 +27,7 @@ export function ThemeProvider({
 
   const applyTheme = useCallback((next: Theme) => {
     document.documentElement.setAttribute("data-theme", next);
+    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", THEME_COLORS[next]);
     document.cookie = `${THEME_COOKIE}=${next}; path=/; max-age=31536000; SameSite=Lax`;
     setThemeState(next);
   }, []);

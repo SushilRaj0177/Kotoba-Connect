@@ -8,3 +8,12 @@
 // Settings rather than the quick light/dark toggle in the navbar.
 export type Theme = "light" | "dark" | "edge";
 export const THEME_COOKIE = "theme";
+
+// Each theme's page background (--c-bg in globals.css) as hex, for the
+// <meta name="theme-color"> that tints the mobile browser's toolbar and
+// status bar to match the app instead of a default white/grey strip.
+export const THEME_COLORS: Record<Theme, string> = {
+  light: "#fbf8f0",
+  dark: "#111210",
+  edge: "#000000",
+};

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Zen_Maru_Gothic } from "next/font/google";
 import "./globals.css";
 import SideRail from "@/components/SideRail";
@@ -8,6 +8,7 @@ import { LocaleProvider } from "@/components/i18n/LocaleProvider";
 import { getServerLocale } from "@/lib/i18n/server";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { getServerTheme } from "@/lib/theme";
+import { THEME_COLORS } from "@/lib/theme-constants";
 import { DensityProvider } from "@/components/theme/DensityProvider";
 import { getServerDensity } from "@/lib/density";
 import { SITE_URL } from "@/lib/site";
@@ -69,6 +70,12 @@ export const metadata: Metadata = {
     description,
   },
 };
+
+// Tints the mobile browser's toolbar/status bar to the active theme's
+// background; ThemeProvider keeps it in sync on client-side theme switches.
+export function generateViewport(): Viewport {
+  return { themeColor: THEME_COLORS[getServerTheme()] };
+}
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const locale = getServerLocale();
