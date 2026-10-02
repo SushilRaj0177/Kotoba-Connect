@@ -230,9 +230,8 @@ without them.
   deliberately not set — see the comment there for why.
 - All decorative motion (mascot idle loops, loading pulses, smooth scrolling) is disabled under
   the OS-level `prefers-reduced-motion` setting.
-- Every page/component route runs on either Vercel's Edge Runtime or Node.js serverless
-  functions depending on what it needs (see Architecture decisions below); CI's build step
-  exercises both.
+- All page and API routes run as Vercel Node.js functions (see Architecture decisions below for
+  why not Edge).
 - Errors are caught at two levels: `app/error.tsx` recovers a single crashed page without losing
   the surrounding nav (reported to Sentry, with a retry button), while `app/global-error.tsx` is
   the last-resort fallback if the root layout itself throws.
@@ -282,7 +281,8 @@ choice once its real tradeoffs showed up in production.
 | 13 | Text-to-speech via the browser's built-in `SpeechSynthesis` API | Free, no backend, no API key, ships immediately — and good enough as a first pass for "how is this pronounced" | VOICEVOX — also genuinely free (open-source), but self-hosted: it needs an always-on server, which is real infrastructure this project doesn't otherwise require. Documented as the upgrade path if browser voice quality turns out to be a real complaint, not ruled out |
 | 14 | "Card density" (how much of a card's content shows by default vs. behind a tap-to-expand) split out as its own setting, independent of color theme | The collapsed/expandable insight box was originally only reachable by switching to the all-black "Edge" theme — bundling a *layout density* preference into a *color* choice meant someone who liked Edge's information density but not its color had no way to get one without the other | Leaving density as an Edge-only behavior — simpler, but forces an unrelated tradeoff on anyone who wants just one of the two |
 | 15 | Web Push delivery via a Supabase Database Webhook (fires on `notifications` insert) calling a Next.js route, rather than a polling job | A push should fire the moment a notification is created, not on the next tick of a cron job | A scheduled job scanning for unsent notifications — adds latency and a job to keep running for no benefit over a webhook that already exists |
-| 16 | CI builds against fake `NEXT_PUBLIC_SUPABASE_*` placeholders (`.github/workflows/ci.yml`) rather than a real Supabase project | No route is statically prerendered against live data (everything data-backed runs on Edge/dynamic rendering at request time), so type-checking, linting, and a full `next build` all pass without any real credentials — meaning CI needs zero secrets and can't leak one | Provisioning a dedicated CI-only Supabase project — real infrastructure to maintain for a check that doesn't actually need live data |
+| 16 | CI builds against fake `NEXT_PUBLIC_SUPABASE_*` placeholders (`.github/workflows/ci.yml`) rather than a real Supabase project | No route is statically prerendered against live data (everything data-backed is dynamically rendered at request time), so type-checking, linting, and a full `next build` all pass without any real credentials — meaning CI needs zero secrets and can't leak one | Provisioning a dedicated CI-only Supabase project — real infrastructure to maintain for a check that doesn't actually need live data |
+| 17 | Page routes run on Vercel's Node.js runtime, after briefly moving all 21 to the Edge Runtime | Edge was adopted to cut cold-start latency, but Vercel bundles a project's Edge pages together, and the bundle crossed the Hobby plan's 1 MB Edge Function limit — failing every production build while the last good deploy kept serving silently. Node.js functions have a 250 MB limit, so page size can't block a deploy again | Staying on Edge and trimming the bundle under 1 MB — would have to be re-fought on every feature that adds client code |
 
 ## Project structure
 
