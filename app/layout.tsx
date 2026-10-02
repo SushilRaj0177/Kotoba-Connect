@@ -69,6 +69,17 @@ export const metadata: Metadata = {
     title,
     description,
   },
+  // Static files in public/ rather than a generated /icon route: every
+  // URL here is new, so no browser, CDN, or installed-PWA cache can still
+  // be holding the old three-bar artwork under it.
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "32x32" },
+      { url: "/kotoba-icon.svg", type: "image/svg+xml" },
+      { url: "/kotoba-icon-192.png", type: "image/png", sizes: "192x192" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+  },
 };
 
 // Tints the mobile browser's toolbar/status bar to the active theme's

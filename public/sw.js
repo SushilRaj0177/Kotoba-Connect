@@ -23,8 +23,8 @@ self.addEventListener("push", (event) => {
   event.waitUntil(
     self.registration.showNotification(payload.title || "言葉 Kotoba Engine", {
       body: payload.body,
-      icon: "/icon",
-      badge: "/icon",
+      icon: "/kotoba-icon-192.png",
+      badge: "/kotoba-icon-192.png",
       data: { url: payload.url || "/" },
     })
   );

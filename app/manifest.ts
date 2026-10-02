@@ -1,12 +1,5 @@
 import type { MetadataRoute } from "next";
 
-// Bumped whenever app/icon.tsx's actual artwork changes. Unlike the
-// favicon <link> tag (which Next.js content-hashes automatically), this
-// manifest's icon URLs are plain strings, and installed PWAs / Chrome's
-// tab-switcher cache icons by that exact URL — so without a version query
-// param here, a new icon.tsx never gets picked up on existing installs.
-const ICON_VERSION = "3";
-
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Kotoba Engine 言葉",
@@ -17,9 +10,11 @@ export default function manifest(): MetadataRoute.Manifest {
     background_color: "#171412",
     theme_color: "#688c4a",
     icons: [
-      { src: `/icon?v=${ICON_VERSION}`, sizes: "180x180", type: "image/png" },
-      { src: `/icon?v=${ICON_VERSION}`, sizes: "192x192", type: "image/png" },
-      { src: `/icon?v=${ICON_VERSION}`, sizes: "512x512", type: "image/png", purpose: "maskable" },
+      { src: "/kotoba-icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
+      { src: "/kotoba-icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
+      // Full-bleed with the artwork inside the central safe zone, so
+      // Android's circle/squircle masks don't crop it.
+      { src: "/kotoba-icon-maskable-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
     ],
   };
 }
