@@ -74,11 +74,11 @@ export const metadata: Metadata = {
   // be holding the old three-bar artwork under it.
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "32x32" },
-      { url: "/kotoba-icon.svg", type: "image/svg+xml" },
-      { url: "/kotoba-icon-192.png", type: "image/png", sizes: "192x192" },
+      { url: "/favicon.ico?v=mark", sizes: "32x32" },
+      { url: "/kotoba-mark.svg", type: "image/svg+xml" },
+      { url: "/kotoba-mark-192.png", type: "image/png", sizes: "192x192" },
     ],
-    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+    apple: [{ url: "/apple-touch-icon.png?v=mark", sizes: "180x180" }],
   },
 };
 
